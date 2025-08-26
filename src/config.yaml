@@ -1,5 +1,5 @@
 site:
-  name: Technically Creative LLC
+  name: Technically Creative
   site: 'https://technicallycreative.work'
   base: '/'
   trailingSlash: false
@@ -10,19 +10,19 @@ site:
 metadata:
   title:
     default: Technically Creative
-    template: '%s — Technically Creative LLC'
+    template: '%s — Technically Creative'
   description: "Process-oriented music technology & project management solutions for creatives and businesses."
   robots:
     index: true
     follow: true
   openGraph:
-    site_name: Technically Creative LLC
+    site_name: Technically Creative
     images:
       - url: '~/assets/images/default.png'
         width: 1200
         height: 628
     type: website
   twitter:
-    handle: '@technicallycre8' # if you have one, else leave null
+    handle: '@technicallycre8'
     site: '@technicallycre8'
     cardType: summary_large_image

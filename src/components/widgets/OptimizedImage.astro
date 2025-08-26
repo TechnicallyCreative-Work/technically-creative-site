@@ -1,0 +1,25 @@
+---
+import { getImage } from 'astro:assets';
+
+const { src, alt = '', width = 800 } = Astro.props;
+const optimized = await getImage({ src, width });
+---
+
+<img src={optimized.src} width={optimized.width} height={optimized.height} alt={alt} loading="lazy" />
+// c:\Users\kendev\technically-creative-site\src\components\OptimizedImage.astro
+---
+import { getImage } from 'astro:assets';
+
+export async function getStaticPaths() {
+  return { paths: [], fallback: 'blocking' };
+}
+
+export async function getStaticProps({ params }) {
+  const optimized = await getImage({ src: params.src, width: 800 });
+  return {
+    props: {
+      optimized,
+    },
+  };
+}
+--- 
