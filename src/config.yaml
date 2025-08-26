@@ -1,28 +1,40 @@
 site:
-  name: Technically Creative
-  site: 'https://technicallycreative.work'
-  base: '/'
+  name: "Technically Creative"
+  site: "https://technicallycreative.work"
+  base: "/"
   trailingSlash: false
+  googleSiteVerificationId: false
 
-  googleSiteVerificationId: null
-
-# Default SEO metadata
 metadata:
   title:
-    default: Technically Creative
-    template: '%s — Technically Creative'
-  description: "Process-oriented music technology & project management solutions for creatives and businesses."
+    default: "Technically Creative"
+    template: "%s — Technically Creative"
+  description: "Websites, automations, and creative systems—built the right way."
   robots:
     index: true
     follow: true
   openGraph:
-    site_name: Technically Creative
-    images:
-      - url: '~/assets/images/default.png'
-        width: 1200
-        height: 628
-    type: website
+  site_name: "Technically Creative"
+  images:
+    - url: "~/assets/images/og-default.jpg"
+      width: 1200
+      height: 628
   twitter:
-    handle: '@technicallycre8'
-    site: '@technicallycre8'
-    cardType: summary_large_image
+    card: "summary_large_image"
+    creator: "@"
+    site: "@"
+
+i18n:
+  language: "en"
+  textDirection: "ltr"
+
+ui:
+  theme: "system" # light | dark | system
+  nav:
+    showSocialIcons: true
+    showThemeToggle: true
+
+features:
+  rss: false
+  sitemap: true
+  analytics: false
