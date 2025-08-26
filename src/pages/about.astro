@@ -6,7 +6,7 @@ import Content from '~/components/widgets/Content.astro';
 import CallToAction from '~/components/widgets/CallToAction.astro';
 import { getPermalink } from '~/utils/permalinks';
 
-// Import profile image from src/assets so Astro infers width/height
+// Images imported from src/assets so Astro infers width/height (no CLS)
 import profilePic from '../assets/images/profile-pic.jpg';
 import studioHero from '../assets/images/studio-hero-16x9-cyberpunk.png';
 
@@ -41,15 +41,6 @@ const links = [
       Results: cleaner mixes, clearer timelines, and calmer projects.
     </Fragment>
   </Hero>
-  <!-- Studio Hero Image Section -->
-  <section class="mx-auto max-w-6xl px-6 py-12">
-    <img
-      src={studioHero}
-      alt="Kenny Dunn’s cyberpunk-inspired studio setup with curved monitor, speakers, and controllers"
-      class="w-full rounded-2xl shadow-xl"
-      loading="lazy"
-    />
-  </section>
 
   <!-- Bio / Photo -->
   <Content
@@ -73,7 +64,7 @@ const links = [
       },
     ]}
     image={{
-      src: profilePic, // imported asset => size inferred (no CLS)
+      src: profilePic,
       alt: 'Kenny Dunn in studio, arms crossed, circuit display background',
       loading: 'eager',
     }}
@@ -106,4 +97,14 @@ const links = [
     subtitle="Have a timeline, a reference track, or a production brief? I’ll turn it into a clear plan with milestones and previews."
     actions={[{ variant: 'primary', text: 'Get in touch', href: getPermalink('/contact#form') }]}
   />
+
+  
+  >
+    <Fragment slot="content">
+      <p class="text-slate-600 dark:text-slate-400">
+        The room is tuned for translation and speed—so decisions stick and mixes travel. From writing and sound design
+        to final delivery, the setup keeps the signal chain clean and the workflow predictable.
+      </p>
+    </Fragment>
+  </Content>
 </Layout>
