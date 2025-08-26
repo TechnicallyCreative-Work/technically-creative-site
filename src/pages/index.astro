@@ -1,5 +1,6 @@
 ---
 import Layout from '~/layouts/PageLayout.astro';
+import Header from '~/components/widgets/Header.astro';
 
 import Hero from '~/components/widgets/Hero.astro';
 import Note from '~/components/widgets/Note.astro';
@@ -7,20 +8,30 @@ import Features from '~/components/widgets/Features.astro';
 import Features2 from '~/components/widgets/Features2.astro';
 import Steps from '~/components/widgets/Steps.astro';
 import Content from '~/components/widgets/Content.astro';
-import BlogLatestPosts from '~/components/widgets/BlogLatestPosts.astro';
 import FAQs from '~/components/widgets/FAQs.astro';
 import Stats from '~/components/widgets/Stats.astro';
 import CallToAction from '~/components/widgets/CallToAction.astro';
 
 const metadata = {
-  title: 'AstroWind — Free template for creating websites with Astro + Tailwind CSS',
+  title: 'Technically Creative — Audio • PM • Delivery',
   ignoreTitleTemplate: true,
 };
+
+const links = [
+  { text: 'Home', href: '/' },
+  { text: 'Services', href: '/services' },
+  { text: 'About', href: '/about' },
+  { text: 'Personal', href: '/personal' },
+  { text: 'Contact', href: '/contact' },
+];
 ---
 
 <Layout metadata={metadata}>
-  <!-- Hero Widget ******************* -->
+  <Fragment slot="header">
+    <Header links={links} isSticky showToggleTheme />
+  </Fragment>
 
+  <!-- Hero Widget ******************* -->
   <Hero
     actions={[
       {
@@ -42,7 +53,6 @@ const metadata = {
   <!-- Note Widget ******************* -->
 
   <!-- Features Widget *************** -->
-
   <Features
     id="features"
     tagline="Highlights"
@@ -63,7 +73,6 @@ const metadata = {
   />
 
   <!-- Content Widget **************** -->
-
   <Content
     isReversed
     tagline="Inside template"
@@ -101,7 +110,6 @@ const metadata = {
   </Content>
 
   <!-- Content Widget **************** -->
-
   <Content
     isAfterContent
     items={[
@@ -138,7 +146,6 @@ const metadata = {
   </Content>
 
   <!-- Content Widget **************** -->
-
   <Content
     isReversed
     isAfterContent
@@ -176,7 +183,6 @@ const metadata = {
   </Content>
 
   <!-- Steps Widget ****************** -->
-
   <Steps
     title="Get your dream website up and running in no time with AstroWind."
     items={[
@@ -210,7 +216,6 @@ const metadata = {
   />
 
   <!-- Features2 Widget ************** -->
-
   <Features2
     title="Most used widgets"
     subtitle="Provides frequently used components for building websites using Tailwind CSS"
@@ -274,7 +279,8 @@ const metadata = {
   </Features2>
 
   <!-- HighlightedPosts Widget ******* -->
-
+  {
+    /*
   <BlogLatestPosts
     title="Find out more content in our Blog"
     information={`The blog is used to display AstroWind documentation.
@@ -282,9 +288,10 @@ const metadata = {
                         Astro is a very interesting technology. Thanks.
                 `}
   />
+  */
+  }
 
   <!-- FAQs Widget ******************* -->
-
   <FAQs
     title="Frequently Asked Questions"
     subtitle="Dive into the following questions to gain insights into the powerful features that AstroWind offers and how it can elevate your web development journey."
@@ -325,7 +332,6 @@ const metadata = {
   />
 
   <!-- Stats Widget ****************** -->
-
   <Stats
     stats={[
       { title: 'Downloads', amount: '132K' },
@@ -336,7 +342,6 @@ const metadata = {
   />
 
   <!-- CallToAction Widget *********** -->
-
   <CallToAction
     actions={[
       {
