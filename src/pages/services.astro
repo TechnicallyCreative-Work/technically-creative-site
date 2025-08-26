@@ -1,0 +1,110 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+import Header from '~/components/widgets/Header.astro';
+
+import Hero from '~/components/widgets/Hero.astro';
+import Features from '~/components/widgets/Features.astro';
+import Content from '~/components/widgets/Content.astro';
+import CallToAction from '~/components/widgets/CallToAction.astro';
+
+const metadata = {
+  title: 'Services — Technically Creative',
+  ignoreTitleTemplate: true,
+};
+
+const links = [
+  { text: 'Home', href: '/' },
+  { text: 'Services', href: '/services' },
+  { text: 'About', href: '/about' },
+  { text: 'Personal', href: '/personal' },
+  { text: 'Contact', href: '/contact' },
+];
+---
+
+<Layout metadata={metadata}>
+  <Fragment slot="header">
+    <Header links={links} isSticky showToggleTheme />
+  </Fragment>
+
+  <!-- Hero -->
+  <Hero
+    id="hero"
+    title="Services"
+    tagline="From sound to systems"
+    actions={[{ variant: 'primary', text: 'Contact', href: '/contact' }]}
+  >
+    <Fragment slot="subtitle">
+      I combine creative audio work with structured consulting so you get clarity, quality, and reliable delivery.
+    </Fragment>
+  </Hero>
+
+  <!-- Service Offerings -->
+  <Features
+    id="services"
+    tagline="What I offer"
+    items={[
+      {
+        title: 'Mixing & Mastering',
+        description:
+          'Your tracks, polished and powerful. From indie singles to full EPs, I’ll balance every detail for release-ready sound.',
+        icon: 'tabler:adjustments',
+      },
+      {
+        title: 'Sound Design & Foley',
+        description: 'Custom audio textures for games, film, and trailers. Designed to immerse and elevate your story.',
+        icon: 'tabler:speakerphone',
+      },
+      {
+        title: 'Music Technology Consulting',
+        description:
+          'Leverage my expertise in DAWs, audio systems, and emerging tools to improve how you create, record, and deliver. Ideal for studios, artists, and creative teams seeking efficiency and innovation. Available for short-term problem solving or long-term partnerships.',
+        icon: 'tabler:music',
+      },
+      {
+        title: 'Project Management Consulting',
+        description:
+          'Creative projects need more than talent—they need structure. With PMP and Lean Six Sigma credentials, I offer consulting on workflow improvement, Agile adoption, and delivery systems for creative businesses. Flexible engagement options include short contracts for specific challenges or long-term collaborations to sustain growth.',
+        icon: 'tabler:briefcase',
+      },
+      {
+        title: 'Workflow Automation for Creatives',
+        description:
+          'From automated client intake forms to smart logging systems, I build lightweight automations that save time and protect focus.',
+        icon: 'tabler:settings-automation',
+      },
+    ]}
+  />
+
+  <!-- Process -->
+  <Content
+    id="process"
+    title="How I work"
+    subtitle="Clear, pragmatic steps from idea to delivery"
+    items={[
+      {
+        title: 'Discover',
+        description: 'We align on your goals, audience, and success metrics so every feature has a purpose.',
+      },
+      { title: 'Build', description: 'Incremental delivery with previews before anything ships to production.' },
+      {
+        title: 'Care',
+        description: 'After launch, I monitor performance, train your team, and provide regular updates.',
+      },
+    ]}
+    image={{
+      src: 'https://images.unsplash.com/photo-1581091215367-59ab6c43a8b0?q=80&w=1600&auto=format&fit=crop',
+      alt: 'Workflow',
+    }}
+  >
+    <Fragment slot="bg">
+      <div class="absolute inset-0 bg-sky-50 dark:bg-transparent"></div>
+    </Fragment>
+  </Content>
+
+  <!-- CTA -->
+  <CallToAction
+    title="Ready to start?"
+    subtitle="Let’s match the right service to your goals."
+    actions={[{ variant: 'primary', text: 'Get in touch', href: '/contact' }]}
+  />
+</Layout>
