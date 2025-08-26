@@ -1,0 +1,15 @@
+---
+/**
+ * Drop-in analytics that activates only if the corresponding env var is set.
+ * Supports GA4 (PUBLIC_GA4_ID) or Plausible (PUBLIC_PLAUSIBLE_DOMAIN).
+ * Respects Do-Not-Track.
+ */
+import { Analytics } from '@astrolib/analytics';
+
+const GA4_ID = import.meta.env.PUBLIC_GA4_ID; // e.g., G-XXXXXXXXXX
+const PLAUSIBLE_DOMAIN = import.meta.env.PUBLIC_PLAUSIBLE_DOMAIN; // e.g., technicallycreative.work
+---
+
+{GA4_ID && <Analytics googleAnalytics={{ measurementId: GA4_ID }} respectDNT={true} />}
+
+{!GA4_ID && PLAUSIBLE_DOMAIN && <Analytics plausible={{ domain: PLAUSIBLE_DOMAIN }} respectDNT={true} />}

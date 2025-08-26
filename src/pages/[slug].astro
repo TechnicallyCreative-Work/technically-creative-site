@@ -1,0 +1,32 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const exclude = new Set(['about', 'services']); // keep these from src/pages/
+  const entries = await getCollection('pages', ({ data }) => data.published !== false);
+  return entries
+    .filter((e) => !exclude.has(e.slug))
+    .map((entry) => ({
+      params: { slug: entry.slug },
+      props: { slug: entry.slug },
+    }));
+}
+
+const { slug } = Astro.props as { slug: string };
+const entry = await getEntry('pages', slug); 
+if (!entry) return Astro.redirect('/404');
+const { Content, data } = await entry.render();
+const title = data.title ?? 'Page';
+const description = data.description ?? '';
+---
+
+<head>
+  <title>{title} — Technically Creative</title>
+  <meta name="description" content={description} />
+</head>
+<main class="mx-auto max-w-3xl px-6 py-12">
+  <article class="prose prose-slate dark:prose-invert">
+    <h1 class="mb-4">{title}</h1>
+    <Content />
+  </article>
+</main>

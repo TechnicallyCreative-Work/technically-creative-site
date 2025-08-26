@@ -1,14 +1,19 @@
 ---
 import Layout from '~/layouts/PageLayout.astro';
-import Header from '~/components/widgets/Header.astro';
 
+import Header from '~/components/widgets/Header.astro';
 import Hero from '~/components/widgets/Hero.astro';
 import Content from '~/components/widgets/Content.astro';
 import CallToAction from '~/components/widgets/CallToAction.astro';
+import Features3 from '~/components/widgets/Features3.astro';
+import Testimonials from '~/components/widgets/Testimonials.astro';
 import Steps from '~/components/widgets/Steps.astro';
+// import BlogLatestPosts from '~/components/widgets/BlogLatestPosts.astro'; // hidden for now
+import { getPermalink } from '~/utils/permalinks';
+import profilePic from '~/assets/images/profile-pic.jpg';
 
 const metadata = {
-  title: 'Personal — Kenny Dunn',
+  title: 'Personal — Kenny Dunn, PMP',
 };
 
 const links = [
@@ -21,119 +26,240 @@ const links = [
 ---
 
 <Layout metadata={metadata}>
+  <Fragment slot="announcement"></Fragment>
+
   <Fragment slot="header">
-    <Header links={links} isSticky showToggleTheme />
+    <Header
+      links={links}
+      actions={[{ text: 'Hire me', href: getPermalink('/contact#form') }]}
+      isSticky
+      showToggleTheme
+    />
   </Fragment>
 
-  <!-- Hero -->
+  <!-- Hero ******************* -->
   <Hero
     id="hero"
-    title="Kenneth Dunn"
-    tagline="Agile Product & Project Manager | Music Technologist"
-    actions={[{ variant: 'primary', text: 'Get in touch', href: '/contact' }]}
+    title="Kenny Dunn, PMP"
+    tagline="Audio • Music Technology • Project Delivery"
+    actions={[{ variant: 'primary', text: 'Hire me', href: getPermalink('/contact#form') }]}
   >
     <Fragment slot="subtitle">
-      Agile Product & Project Manager with an M.S. in Music Technology and PMP certification. I specialize
-      in bridging artist-centric goals with technical execution. With 12+ years in music production, hands-on experience
-      building generative AI tools, and a proven track record of workflow automation, I deliver clarity, efficiency, and
-      creativity for teams.
+      I blend a Master’s in Music Technology with PMP-certified delivery. That means creative sound with disciplined
+      execution—scoped, scheduled, and finished. I serve artists, studios, and teams who want release-ready audio and
+      reliable outcomes.
     </Fragment>
   </Hero>
 
-  <!-- Professional Summary -->
+  <!-- About ******************* -->
   <Content
-    id="summary"
-    title="Professional Summary"
+    id="about"
+    columns={3}
     items={[
       {
-        title: 'Overview',
-        description: `I combine expertise in Agile product management, Lean Six Sigma, and music technology to help teams deliver structured, creative projects. I've engineered Salesforce automations saving 30+ hours/month for a 120-person team, and I’ve led 100+ projects spanning software implementation, process optimization, and growth strategy.`,
+        icon: 'tabler:brand-linkedin',
+        callToAction: { target: '_blank', text: 'LinkedIn', href: 'https://www.linkedin.com/in/kennethdunnpmp/' },
+      },
+      {
+        icon: 'tabler:brand-github',
+        callToAction: { target: '_blank', text: 'GitHub', href: 'https://github.com/' },
+      },
+      {
+        icon: 'tabler:brand-youtube',
+        callToAction: { target: '_blank', text: 'YouTube', href: '#projects' },
       },
     ]}
-  />
+    image={{
+      src: profilePic, // ✅ imported asset (width/height inferred)
+      alt: 'Kenny Dunn in studio, arms crossed, circuit display background',
+      loading: 'eager',
+    }}
+  >
+    <Fragment slot="content">
+      <h2 class="text-2xl font-bold tracking-tight dark:text-white sm:text-3xl mb-2">About me</h2>
+      <p>
+        I’m a music technologist and project manager focused on outcomes: clean mixes, expressive sound design, and
+        smooth delivery. I’ve led creative work across recording, post, and media—always balancing detail in the
+        waveform with clarity in the plan.
+      </p>
+      <br />
+      <p>
+        Credentials include a Master’s in Music Technology and a PMP, with methods drawn from Agile and Lean Six Sigma.
+        I’m comfortable spanning DAWs and dashboards—Pro Tools to project boards—so the art ships on time without losing
+        the spark.
+      </p>
+      <br />
+      <p>
+        Current interests: workflow automation for creatives, lightweight client intake systems, and data-backed review
+        loops that reduce revisions while improving the final sound.
+      </p>
+    </Fragment>
 
-  <!-- Work Experience -->
+    <Fragment slot="bg">
+      <div class="absolute inset-0 bg-blue-50 dark:bg-transparent"></div>
+    </Fragment>
+  </Content>
+
+  <!-- Experience ****************** -->
   <Steps
-    id="experience"
-    title="Professional Experience"
+    id="resume"
+    title="Selected experience"
     items={[
       {
-        title: 'Strategic Manager of Business Excellence — Envita Solutions Inc. (2018–Present)',
-        description: `Product Owner for B2B Salesforce ecosystem (100+ employees). Built automated proposal + site visit logging flows, saving 30+ hours/month. Led 18-month transformation portfolio of 100+ projects, identifying $600k potential savings via Lean Six Sigma.`,
+        title:
+          'Co-Owner & Founder <br /> <span class="font-normal">Indianapolis Independent Entertainment LLC (IIE LLC), Indianapolis, IN</span> <br /> <span class="text-sm font-normal">Feb 2022 – Jun 2025</span>',
+        description: `Built and co-led a creative business focused on supporting DIY and independent artists in Indianapolis. Helped grow the local creative economy through community engagement, production support, and sustainable business practices.`,
         icon: 'tabler:briefcase',
       },
       {
-        title: 'Senior Program Manager — Envita Solutions Inc. (2020–2023)',
-        description: `Managed 6 Program Managers, doubling portfolio from $1M to $2M. Delivered Zero Waste to Landfill certification at 4 facilities. Mentored new hires and scaled program practices.`,
+        title:
+          'Project Manager <br /> <span class="font-normal">Envita Solutions</span> <br /> <span class="text-sm font-normal">Mar 2018 – Present</span>',
+        description: `Lead complex projects spanning operations and creative technology. Drive initiatives from planning through execution with PMP-certified methods. Focus on risk reduction, stakeholder alignment, and continuous process improvement.`,
         icon: 'tabler:briefcase',
       },
       {
-        title: 'Program Manager — Envita Solutions Inc. (2018–2020)',
-        description: `Exceeded contract goals by 15%. Formalized best practices via Knowledge Sharing Committee. Delivered client projects across North America.`,
-        icon: 'tabler:briefcase',
-      },
-      {
-        title: 'Project Manager — Hamilton Exhibits (2015–2017)',
-        description: `Led projects up to $500k budget. Introduced new PM software (Exhibit Force). Served on web/marketing committee for digital presence overhaul.`,
-        icon: 'tabler:briefcase',
+        title:
+          'Independent Audio Producer & Consultant <br /> <span class="font-normal">Freelance / Contract</span> <br /> <span class="text-sm font-normal">Ongoing</span>',
+        description: `Mixing and mastering for indie artists and media. Sound design & Foley for short form content and trailers. Technical advising on DAWs, studio setup, and delivery specs.`,
+        icon: 'tabler:music',
       },
     ]}
     classes={{ container: 'max-w-3xl' }}
   />
 
-  <!-- Key Projects -->
-  <Content
-    id="projects"
-    title="Key Music Technology Projects"
-    items={[
-      {
-        title: 'Generative Music AI — IU Indianapolis',
-        description: `Built core Max/MSP logic connecting Markov chain model to MIDI. Mentored peers on implementation. Demonstrated how AI can augment human creativity in composition.`,
-      },
-    ]}
-  />
-
-  <!-- Education -->
+  <!-- Education ****************** -->
   <Steps
     id="education"
-    title="Education"
+    title="Education & certifications"
     items={[
       {
-        title: `Master of Science, Music Technology — IU Indianapolis (In progress, GPA 4.0, May 2025)`,
+        title: `Master’s in Music Technology <br /> <span class="text-sm font-normal">Graduate coursework focused on audio production, DSP, and systems for media.</span>`,
         icon: 'tabler:school',
       },
       {
-        title: `Bachelor of Science, Organizational Leadership & Supervision — IUPUI (2011)`,
-        icon: 'tabler:school',
+        title: `Project Management Professional (PMP) <br /> <span class="text-sm font-normal">PMI — active certification</span>`,
+        icon: 'tabler:certificate',
+      },
+      {
+        title: `Business Foundations Certificate <br /> <span class="font-normal">Kelley School of Business</span> <br /> <span class="text-sm font-normal">2011</span>`,
+        icon: 'tabler:building-skyscraper',
+      },
+      {
+        title: `Lean Six Sigma <br /> <span class="text-sm font-normal">Methods applied to creative delivery and workflow improvement</span>`,
+        icon: 'tabler:chart-bar',
       },
     ]}
     classes={{ container: 'max-w-3xl' }}
   />
 
-  <!-- Certifications -->
-  <Content
-    id="certs"
-    title="Certifications & Professional Development"
+  <!-- Skills ****************** -->
+  <Features3
+    title="Skills"
+    subtitle="The blend of craft and control that gets projects finished"
+    columns={3}
+    defaultIcon="tabler:point-filled"
     items={[
+      { title: 'Mixing & Mastering', description: 'Release-ready balance, depth, and translation across systems.' },
       {
-        title: 'Project Management Professional (PMP)',
-        description: 'PMI | Active through Feb 2027',
+        title: 'Sound Design & Foley',
+        description: 'Original textures and tactile details for games, film, and trailers.',
+      },
+      { title: 'Music Tech Consulting', description: 'DAWs, studio signal flow, delivery pipelines, spec compliance.' },
+      { title: 'Project Management (PMP)', description: 'Scoping, scheduling, risk, and stakeholder communication.' },
+      { title: 'Agile & Lean Six Sigma', description: 'Iterative delivery and waste reduction for creative teams.' },
+      { title: 'Workflow Automation', description: 'Client intake, approvals, logging, and status reporting.' },
+      { title: 'Tooling', description: 'Pro Tools, Logic, Ableton; Notion/ClickUp; n8n; Firebase; Cloudflare.' },
+      { title: 'Documentation', description: 'Checklists, SOPs, and briefs that speed collaboration.' },
+      { title: 'Collaboration', description: 'Calm, concise, and deadline-aware communication.' },
+    ]}
+  />
+
+  <!-- Projects (YouTube embeds) ****** -->
+  <section id="projects" class="mx-auto max-w-6xl px-6 py-16">
+    <h2 class="text-3xl font-bold tracking-tight sm:text-4xl mb-8">Projects</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+      <div class="w-full aspect-video rounded-2xl overflow-hidden shadow-lg">
+        <iframe
+          class="w-full h-full"
+          src="https://www.youtube-nocookie.com/embed/g_iGfejNiSA"
+          title="YouTube video player"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen></iframe>
+      </div>
+      <div class="w-full aspect-video rounded-2xl overflow-hidden shadow-lg">
+        <iframe
+          class="w-full h-full"
+          src="https://www.youtube-nocookie.com/embed/7z41UJqyl8s"
+          title="YouTube video player"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen></iframe>
+      </div>
+      <div class="w-full aspect-video rounded-2xl overflow-hidden shadow-lg">
+        <iframe
+          class="w-full h-full"
+          src="https://www.youtube-nocookie.com/embed/OmkPsz1SsZI"
+          title="YouTube video player"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen></iframe>
+      </div>
+      <div class="w-full aspect-video rounded-2xl overflow-hidden shadow-lg">
+        <iframe
+          class="w-full h-full"
+          src="https://www.youtube-nocookie.com/embed/p-D9LjF1XJY"
+          title="YouTube video player"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials ****************** -->
+  <Testimonials
+    title="Client testimonials"
+    subtitle="What collaborators say about working together"
+    testimonials={[
+      {
+        testimonial: `Kenny brought structure and calm to a fast-moving creative timeline. Clear milestones, minimal rework, and a final mix that translated perfectly across systems.`,
+        name: 'Mark Thompson',
+        job: 'Creative Director',
+        image: {
+          src: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=crop&w=774&q=80',
+          alt: 'Mark Thompson Image',
+        },
       },
       {
-        title: 'Lean Six Sigma Greenbelt',
-        description: 'Expected Completion Aug 2025',
+        testimonial: `Great communication and attention to detail. He balanced aesthetics with delivery constraints and helped our team adopt a lighter workflow that stuck.`,
+        name: 'Emily Martinez',
+        job: 'Producer',
+        image: {
+          src: 'https://images.unsplash.com/photo-1554151228-14d9def656e4?ixlib=rb-4.0.3&auto=format&fit=crop&w=772&q=80',
+          alt: 'Emily Martinez Image',
+        },
       },
       {
-        title: 'Agile Basics Training',
-        description: 'DataArt | Completed Mar 2025',
+        testimonial: `Sound design was on-point and the process was painless. We always knew the status and risks, and the handoff was clean.`,
+        name: 'Laura Simmons',
+        job: 'Post Supervisor',
+        image: {
+          src: 'https://images.unsplash.com/photo-1554727242-741c14fa561c?ixlib=rb-4.0.3&auto=format&fit=crop&w=774&q=80',
+          alt: 'Laura Simmons Image',
+        },
       },
     ]}
   />
 
-  <!-- CTA -->
+  <!-- CTA ******************* -->
   <CallToAction
-    title="Let’s work together"
-    subtitle="Bridging creative vision with structured delivery."
-    actions={[{ variant: 'primary', text: 'Contact Me', href: '/contact' }]}
+    title="Let’s create together"
+    subtitle="Tell me about your timeline, scope, and reference tracks."
+    actions={[{ variant: 'primary', text: 'Start a project', href: getPermalink('/contact#form') }]}
   />
 </Layout>

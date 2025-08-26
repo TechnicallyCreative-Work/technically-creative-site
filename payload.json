@@ -1,0 +1,30 @@
+[
+  {
+    "date": "2025-08-25",
+    "timestamp": "2025-08-25T22:10:00-04:00",
+    "category": "Business",
+    "project": "Technically Creative Website",
+    "status": "In progress",
+    "decisions": "Rebuilt homepage into résumé-style layout, restored services page with offerings, cleaned routing collisions, and added OG image for social sharing.",
+    "risks_blockers": "Contact page still missing, nav/footer clutter remains, and blog not yet hidden.",
+    "next_steps": "Inventory pages to keep/hide/archive, prune demo pages, add simple contact page, tighten nav/footer, push to Cloudflare Pages for preview.",
+    "summary_bulleted": [
+      "Repo connected and dependencies updated — clean build.",
+      "Cyberpunk OG image implemented.",
+      "Routing collisions resolved.",
+      "Homepage redesigned with résumé sections.",
+      "Services page restored with Launch Kit, Automation Start, Care Plan.",
+      "Git hygiene and rollback strategy established."
+    ],
+    "artifacts_links": ["docs/route-audit.md"],
+    "tags": "astro, website, content, infrastructure",
+    "notes": "Added route audit checklist at docs/route-audit.md (Keep/Hide/Archive), plus helper commands for archiving, noindex, and nav pruning. Tomorrow: run route listing, mark Keep/Hide/Archive, and prune in one pass.",
+    "ai_summary": "First serious day of cleanup and restructuring. Homepage, services, and OG/social preview all corrected. Next move is trimming fat and ensuring core navigation works before Cloudflare push.",
+    "webhook_url": "https://technicallycreative.app.n8n.cloud/webhook/daily-log",
+    "execution_mode": "production",
+    "header": { "content_type": "application/json" },
+    "params": {},
+    "query": {},
+    "body": {}
+  }
+]
