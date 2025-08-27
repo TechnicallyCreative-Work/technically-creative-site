@@ -19,7 +19,8 @@
     "fix": "npm run fix:eslint && npm run fix:prettier",
     "fix:eslint": "eslint --fix .",
     "fix:prettier": "prettier -w .",
-    "log:append": "node scripts/append-log.mjs"
+    "log:append": "node scripts/append-log.mjs",
+    "log:ship": "node scripts/log-ship.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.12",
