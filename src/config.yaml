@@ -1,35 +1,35 @@
 site:
-  name: "Technically Creative"
-  site: "https://technicallycreative.work"
-  base: "/"
+  name: 'Technically Creative'
+  site: 'https://technicallycreative.work'
+  base: '/'
   trailingSlash: false
   googleSiteVerificationId: false
 
 metadata:
   title:
-    default: "Technically Creative"
-    template: "%s — Technically Creative"
-  description: "Websites, automations, and creative systems—built the right way."
+    default: 'Technically Creative'
+    template: '%s — Technically Creative'
+  description: 'Websites, automations, and creative systems—built the right way.'
   robots:
     index: true
     follow: true
   openGraph:
-  site_name: "Technically Creative"
+  site_name: 'Technically Creative'
   images:
-    - url: "~/assets/images/og-default.jpg"
+    - url: '~/assets/images/og-default.jpg'
       width: 1200
       height: 628
   twitter:
-    card: "summary_large_image"
-    creator: "@"
-    site: "@"
+    card: 'summary_large_image'
+    creator: '@'
+    site: '@'
 
 i18n:
-  language: "en"
-  textDirection: "ltr"
+  language: 'en'
+  textDirection: 'ltr'
 
 ui:
-  theme: "system" # light | dark | system
+  theme: 'system' # light | dark | system
   nav:
     showSocialIcons: true
     showThemeToggle: true

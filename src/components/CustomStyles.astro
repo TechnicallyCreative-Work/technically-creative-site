@@ -1,63 +1,97 @@
 ---
 import '@fontsource-variable/inter';
-
-// 'DM Sans'
-// Nunito
-// Dosis
-// Outfit
-// Roboto
-// Literata
-// 'IBM Plex Sans'
-// Karla
-// Poppins
-// 'Fira Sans'
-// 'Libre Franklin'
-// Inconsolata
-// Raleway
-// Oswald
-// 'Space Grotesk'
-// Urbanist
 ---
+
+<style is:global>
+  :root {
+    /* Brand (light) */
+    --tc-primary: rgb(0 200 255);
+    --tc-secondary: rgb(155 48 255);
+    --tc-accent: rgb(255 51 153);
+
+    --tc-text-heading: rgb(0 0 0);
+    --tc-text-default: rgb(16 16 16);
+    --tc-text-muted: rgb(16 16 16 / 66%);
+    --tc-bg-page: rgb(255 255 255);
+
+
+    /* Fonts */
+    --tc-font-sans: 'Inter Variable';
+    --tc-font-serif: 'Inter Variable';
+    --tc-font-heading: 'Inter Variable';
+  }
+  /* Dark mode on <html class="dark"> or <body class="dark"> */
+  .dark {
+    --tc-primary: rgb(0 200 255);
+    --tc-secondary: rgb(155 48 255);
+    --tc-accent: rgb(255 51 153);
+
+    --tc-text-heading: rgb(247 248 248);
+    --tc-text-default: rgb(229 236 246);
+    --tc-text-muted: rgb(160 170 190 / 66%);
+    --tc-bg-page: rgb(10 10 20);
+  }
+
+  /* Ensure the base colors actually apply */
+  html,
+  body {
+    background: var(--tc-bg-page);
+    color: var(--tc-text-default);
+    font-family:
+      var(--tc-font-sans),
+      system-ui,
+      -apple-system,
+      Segoe UI,
+      Roboto,
+      sans-serif;
+  }
+</style>
 
 <style is:inline>
   :root {
-    --aw-font-sans: 'Inter Variable';
-    --aw-font-serif: 'Inter Variable';
-    --aw-font-heading: 'Inter Variable';
+    /* ===== Brand (light) ===== */
+    --tc-primary: rgb(0 200 255);
+    --tc-secondary: rgb(155 48 255);
+    --tc-accent: rgb(255 51 153);
 
-    --aw-color-primary: rgb(1 97 239);
-    --aw-color-secondary: rgb(1 84 207);
-    --aw-color-accent: rgb(109 40 217);
+    --tc-text-heading: rgb(0 0 0);
+    --tc-text-default: rgb(16 16 16);
+    --tc-text-muted: rgb(16 16 16 / 66%);
+    --tc-bg-page: rgb(255 255 255);
 
-    --aw-color-text-heading: rgb(0 0 0);
-    --aw-color-text-default: rgb(16 16 16);
-    --aw-color-text-muted: rgb(16 16 16 / 66%);
-    --aw-color-bg-page: rgb(255 255 255);
+    /* Fonts */
+    --tc-font-sans: 'Inter Variable';
+    --tc-font-serif: 'Inter Variable';
+    --tc-font-heading: 'Inter Variable';
 
-    --aw-color-bg-page-dark: rgb(3 6 32);
+    /* Selection */
+    --tc-selection-bg: lavender;
+    --tc-selection-fg: rgb(16 16 16);
+  }
 
-    ::selection {
-      background-color: lavender;
-    }
+  ::selection {
+    background-color: var(--tc-selection-bg);
+    color: var(--tc-selection-fg);
   }
 
   .dark {
-    --aw-font-sans: 'Inter Variable';
-    --aw-font-serif: 'Inter Variable';
-    --aw-font-heading: 'Inter Variable';
+    /* ===== Brand (dark) ===== */
+    --tc-primary: rgb(0 200 255);
+    --tc-secondary: rgb(155 48 255);
+    --tc-accent: rgb(255 51 153);
 
-    --aw-color-primary: rgb(1 97 239);
-    --aw-color-secondary: rgb(1 84 207);
-    --aw-color-accent: rgb(109 40 217);
+    --tc-text-heading: rgb(247 248 248);
+    --tc-text-default: rgb(229 236 246);
+    --tc-text-muted: rgb(160 170 190 / 66%);
+    --tc-bg-page: rgb(10 10 20);
 
-    --aw-color-text-heading: rgb(247, 248, 248);
-    --aw-color-text-default: rgb(229 236 246);
-    --aw-color-text-muted: rgb(229 236 246 / 66%);
-    --aw-color-bg-page: rgb(3 6 32);
+    /* Fonts (same) */
+    --tc-font-sans: 'Inter Variable';
+    --tc-font-serif: 'Inter Variable';
+    --tc-font-heading: 'Inter Variable';
 
-    ::selection {
-      background-color: black;
-      color: snow;
-    }
+    /* Selection (dark) */
+    --tc-selection-bg: rgb(10 10 20);
+    --tc-selection-fg: snow;
   }
 </style>

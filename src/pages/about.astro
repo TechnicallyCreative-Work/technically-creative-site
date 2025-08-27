@@ -7,19 +7,24 @@ import CallToAction from '~/components/widgets/CallToAction.astro';
 import { getPermalink } from '~/utils/permalinks';
 
 // Images imported from src/assets so Astro infers width/height (no CLS)
-import profilePic from '../assets/images/profile-pic.jpg';
 import studioHero from '../assets/images/studio-hero-16x9-cyberpunk.png';
 
+
+// ────────────────────────────────────────────────────────────────────────────────
+// Page metadata
+// ────────────────────────────────────────────────────────────────────────────────
 const metadata = {
-  title: 'About — Kenny Dunn, PMP',
-  image: profilePic,
+  title: 'About — Technically Creative LLC',
+  description:
+    'Technically Creative LLC blends music technology, project management, and automation to help artists and teams deliver reliably—without burning out.',
+  image: studioHero,
 };
 
 const links = [
   { text: 'Home', href: '/' },
   { text: 'Services', href: '/services' },
   { text: 'About', href: '/about' },
-  { text: 'Personal', href: '/personal' },
+  { text: 'Credentials', href: '/credentials' },
   { text: 'Contact', href: '/contact' },
 ];
 ---
@@ -32,79 +37,184 @@ const links = [
   <!-- Hero -->
   <Hero
     id="hero"
-    title="About Kenny Dunn"
-    tagline="Music technology + project delivery, working in harmony"
-    actions={[{ variant: 'primary', text: 'Work with me', href: getPermalink('/contact#form') }]}
+    title="About Technically Creative LLC"
+    tagline="Where music technology meets structured delivery"
+    actions={[{ variant: 'primary', text: 'Start a project', href: getPermalink('/contact#form') }]}
   >
     <Fragment slot="subtitle">
-      I build reliable creative pipelines for artists and teams—combining audio craft with PMP-certified structure.
-      Results: cleaner mixes, clearer timelines, and calmer projects.
+      A creative consultancy built to turn chaos into momentum. We pair audio craft with PMP-informed delivery and
+      practical automation so your work ships on time—without dulling the art.
     </Fragment>
   </Hero>
 
-  <!-- Bio / Photo -->
+  <!-- Company Overview -->
   <Content
-    id="bio"
-    title="Who I am"
-    subtitle="Audio · Music Technology · Project Management"
+    id="company"
+    title="Who we are"
+    subtitle="Creative Services · Project Management · Automation"
     items={[
       {
         title: 'Focus',
         description:
-          'Mixing & mastering, sound design & Foley, music tech consulting, and workflow automation for creative teams.',
+          'Mixing & mastering, sound design & Foley, workflow automation, and project consulting for artists, studios, and teams.',
       },
       {
         title: 'Approach',
-        description:
-          'Blend creative taste with measurable delivery. Lightweight process, strong communication, tight handoffs.',
+        description: 'Artistic taste + measurable delivery. Fewer bottlenecks, clearer handoffs, stronger outcomes.',
       },
       {
         title: 'Methods',
-        description: 'PMP, Agile, and Lean Six Sigma—applied pragmatically to creative work so momentum never stalls.',
+        description:
+          'PMP, Agile, and Lean Six Sigma adapted for creative work—simple where possible, structured where helpful.',
       },
     ]}
     image={{
-      src: profilePic,
-      alt: 'Kenny Dunn in studio, arms crossed, circuit display background',
+      src: studioHero,
+      alt: 'Technically Creative studio with cyberpunk aesthetic',
       loading: 'eager',
     }}
   >
     <Fragment slot="content">
-      <p class="mb-4">
-        I’ve worked across indie projects and corporate initiatives, translating creative goals into shippable plans.
-        Comfortable in DAWs and dashboards alike, I keep projects scoped, scheduled, and finished—without dulling the
-        art.
-      </p>
-      <p class="mb-4">
-        Recent work spans <em>Envita Solutions</em> (2018–Present) and co-founding
-        <em> Indianapolis Independent Entertainment LLC (IIE LLC)</em> (2022–2025), supporting DIY and independent artists
-        to grow the creative economy in Indianapolis.
-      </p>
-      <p class="text-slate-600 dark:text-slate-400">
-        Credentials: Master’s in Music Technology · PMP · Business Foundations (Kelley School of Business, 2011) · Lean
-        Six Sigma.
-      </p>
+      <div class="w-full max-w-none">
+        <p class="mb-4">
+          Technically Creative LLC is an Indianapolis-based studio-consultancy founded in 2025. We help creatives and
+          organizations finish meaningful work by combining sound engineering, production support, and disciplined
+          delivery.
+        </p>
+        <p class="text-slate-600 dark:text-slate-400">
+          Want the human behind the company? See <a href={getPermalink('/credentials')} class="underline">Credentials</a
+          >
+          for founder background, certifications, and selected history.
+        </p>
+      </div>
     </Fragment>
 
     <Fragment slot="bg">
-      <div class="absolute inset-0 bg-blue-50 dark:bg-transparent"></div>
+      <div class="absolute inset-0 bg-blue-50/60 dark:bg-transparent"></div>
+    </Fragment>
+  </Content>
+
+  <!-- Mission · Vision · Values -->
+  <Content
+    id="mvv"
+    title="Mission · Vision · Values"
+    subtitle="Structure that protects creativity"
+    items={[
+      {
+        title: 'Mission',
+        description:
+          'Help creatives and teams finish on time, with quality, and without burnout—by pairing audio craft with disciplined delivery.',
+      },
+      {
+        title: 'Vision',
+        description:
+          'A creative economy where process is treated like an instrument—turning ideas into repeatable momentum.',
+      },
+      {
+        title: 'Values',
+        description:
+          'Clarity over complexity · Measurable progress · Respect for people and time · Continuous improvement · Accessible, ethical tech.',
+      },
+    ]}
+  >
+    <Fragment slot="content">
+      <div class="w-full max-w-none">
+        <ul class="list-disc pl-6 space-y-2">
+          <li>
+            <strong>Client-first clarity:</strong> shared “definition of done,” change control that protects scope, and calm
+            communication.
+          </li>
+          <li><strong>Hybrid methods:</strong> PMP, Agile, and Lean Six Sigma—tailored to your studio or team.</li>
+          <li>
+            <strong>Automation with judgment:</strong> n8n, ClickUp, Drive where they help; human review where it matters.
+          </li>
+          <li>
+            <strong>Quality in the signal chain:</strong> from DAW to delivery, decisions that travel and mixes that translate.
+          </li>
+        </ul>
+      </div>
+    </Fragment>
+
+    <Fragment slot="bg">
+      <div class="absolute inset-0 bg-emerald-50/60 dark:bg-transparent"></div>
+    </Fragment>
+  </Content>
+
+  <!-- What we do (snapshot) -->
+  <Content
+    id="offerings"
+    title="What we do"
+    subtitle="Service pillars you can plug into"
+    items={[
+      {
+        title: 'Music Technology',
+        description: 'Mixing, mastering, sound design & Foley, audio post. Practical, fast, and built to translate.',
+      },
+      {
+        title: 'Project Management',
+        description:
+          'Scope, schedule, risk, and review cadence designed for creative work—predictable delivery without the bureaucracy.',
+      },
+      {
+        title: 'Training & Workshops',
+        description:
+          'Studio ops, Agile/PM for creatives, and “finish-the-thing” intensives for teams and solo artists.',
+      },
+      {
+        title: 'AI / Automation',
+        description:
+          'ClickUp ↔ Drive logging, asset pipelines, and n8n flows that remove repetitive work, not the craft.',
+      },
+    ]}
+  >
+    <Fragment slot="content">
+      <div class="w-full max-w-none"></div>
+    </Fragment>
+
+    <Fragment slot="bg">
+      <div class="absolute inset-0 bg-violet-50/60 dark:bg-transparent"></div>
+    </Fragment>
+  </Content>
+
+  <!-- How we work (client journey) -->
+  <Content
+    id="process"
+    title="How we work"
+    subtitle="A calm, five-step arc from brief to bravo"
+    items={[
+      { title: '1) Intake', description: 'Simple brief to set goals, constraints, and references.' },
+      { title: '2) Plan', description: 'Milestones, review cadence, and decision points.' },
+      { title: '3) Build', description: 'Drafts and previews on a predictable rhythm.' },
+      { title: '4) Iterate', description: 'Tight feedback loops that protect scope and speed.' },
+      { title: '5) Deliver', description: 'Finals, assets, and an easy handoff—plus a playback plan.' },
+    ]}
+  >
+    <Fragment slot="content">
+      <div class="w-full max-w-none">
+        <p class="text-slate-600 dark:text-slate-400">
+          Tools include ClickUp for cadence, Drive for assets, and your preferred comms. Light process, strong outcomes.
+        </p>
+      </div>
+    </Fragment>
+
+    <Fragment slot="bg">
+      <div class="absolute inset-0 bg-amber-50/60 dark:bg-transparent"></div>
     </Fragment>
   </Content>
 
   <!-- CTA -->
   <CallToAction
-    title="Let’s collaborate"
-    subtitle="Have a timeline, a reference track, or a production brief? I’ll turn it into a clear plan with milestones and previews."
+    title="Let’s build together"
+    subtitle="Have a timeline, references, or a production brief? We’ll turn it into a clear plan with milestones and mix-ready checkpoints."
     actions={[{ variant: 'primary', text: 'Get in touch', href: getPermalink('/contact#form') }]}
   />
 
-  
-  >
-    <Fragment slot="content">
+  <Fragment slot="content">
+    <div class="w-full max-w-none">
       <p class="text-slate-600 dark:text-slate-400">
-        The room is tuned for translation and speed—so decisions stick and mixes travel. From writing and sound design
-        to final delivery, the setup keeps the signal chain clean and the workflow predictable.
+        Our systems are tuned for translation and speed—so decisions stick, mixes travel, and timelines hold. From idea
+        to delivery, we keep the signal chain—and the workflow—clean.
       </p>
-    </Fragment>
-  </Content>
+    </div>
+  </Fragment>
 </Layout>

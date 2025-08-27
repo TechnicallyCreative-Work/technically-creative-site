@@ -1,8 +1,17 @@
 ---
 import Layout from '~/layouts/PageLayout.astro';
+import Header from '~/components/widgets/Header.astro';
 import HeroText from '~/components/widgets/HeroText.astro';
 import ContactUs from '~/components/widgets/Contact.astro';
 import Features2 from '~/components/widgets/Features2.astro';
+
+const links = [
+  { text: 'Home', href: '/' },
+  { text: 'Services', href: '/services' },
+  { text: 'About', href: '/about' },
+  { text: 'Credentials', href: '/credentials' },
+  { text: 'Contact', href: '/contact' },
+];
 
 const metadata = {
   title: 'Contact',
@@ -10,6 +19,9 @@ const metadata = {
 ---
 
 <Layout metadata={metadata}>
+  <Fragment slot="header">
+    <Header links={links} isSticky showToggleTheme />
+  </Fragment>
   <!-- HeroText Widget ******************* -->
 
   <HeroText tagline="Contact" title="Let's Connect!" />

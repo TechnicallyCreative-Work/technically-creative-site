@@ -18,8 +18,8 @@ export const headerData = {
           href: getPermalink('/homes/mobile-app'),
         },
         {
-          text: 'Personal',
-          href: getPermalink('/homes/personal'),
+          text: 'Credentials',
+          href: getPermalink('/homes/credentials'),
         },
       ],
     },

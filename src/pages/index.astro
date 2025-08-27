@@ -21,7 +21,7 @@ const links = [
   { text: 'Home', href: '/' },
   { text: 'Services', href: '/services' },
   { text: 'About', href: '/about' },
-  { text: 'Personal', href: '/personal' },
+  { text: 'Credentials', href: '/credentials' },
   { text: 'Contact', href: '/contact' },
 ];
 ---
@@ -50,213 +50,89 @@ const links = [
     </Fragment>
   </Hero>
 
-  <!-- Note Widget ******************* -->
-
-  <!-- Features Widget *************** -->
-  <Features
-    id="features"
-    tagline="Highlights"
-    items={[
-      {
-        title: 'Music production that spans sound design, metal, and cinematic audio.',
-        description: '',
-      },
-      {
-        title: 'Structured delivery rooted in Agile + Lean Six Sigma methods.',
-        description: '',
-      },
-      {
-        title: 'End-to-end support: from initial brief to final master.',
-        description: '',
-      },
-    ]}
-  />
-
-  <!-- Content Widget **************** -->
-  <Content
-    isReversed
-    tagline="Inside template"
-    title="AstroWind's Blueprint: Fun Meets Functionality!"
-    items={[
-      {
-        title: 'Built on top of Astro 5.0',
-        description:
-          'Benefiting from the performance and developer-friendly features of this modern static site generator.',
-      },
-      {
-        title: 'Styled using Tailwind CSS',
-        description:
-          'Facilitating rapid design and consistent styling with this highly popular utility-first CSS framework.',
-      },
-      {
-        title: 'Cross-browser compatibility',
-        description:
-          'Ensure your website looks and functions consistently across various web browsers, delivering a seamless experience to all users.',
-      },
-    ]}
-    image={{
-      src: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-      alt: 'Colorful Image',
-    }}
-  >
-    <Fragment slot="content">
-      <h3 class="text-2xl font-bold tracking-tight dark:text-white sm:text-3xl mb-2">Building on modern foundations</h3>
-      Gain a competitive advantage by incorporating industry leading practices
-    </Fragment>
-
-    <Fragment slot="bg">
-      <div class="absolute inset-0 bg-blue-50 dark:bg-transparent"></div>
-    </Fragment>
-  </Content>
-
-  <!-- Content Widget **************** -->
-  <Content
-    isAfterContent
-    items={[
-      {
-        title: 'High level of customization',
-        description: `Tailor the template effortlessly to match your brand's identity and requirements, making your website distinct and saving you time.`,
-      },
-      {
-        title: 'Multiple layout possibilities',
-        description:
-          'Explore various layout options to find the structure that best presents your content, enhancing user engagement and navigation.',
-      },
-      {
-        title: 'Fully responsive design',
-        description:
-          "Ensure your website's optimal performance on various devices and screen sizes, providing a consistent and enjoyable user experience.",
-      },
-      {
-        title: 'Integration of media',
-        description:
-          'Seamlessly incorporate images, videos, and multimedia elements that enhance your content and engage visitors effectively.',
-      },
-    ]}
-    image={{
-      src: 'https://images.unsplash.com/photo-1600132806370-bf17e65e942f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2194&q=80',
-      alt: 'Blueprint Image',
-    }}
-  >
-    <Fragment slot="content">Ensure your online presence truly represents you.</Fragment>
-
-    <Fragment slot="bg">
-      <div class="absolute inset-0 bg-blue-50 dark:bg-transparent"></div>
-    </Fragment>
-  </Content>
-
-  <!-- Content Widget **************** -->
-  <Content
-    isReversed
-    isAfterContent
-    items={[
-      {
-        title: 'Enhanced user engagement',
-        description:
-          'Captivate your audience with interactive elements, intuitive navigation, and visually appealing layouts, encouraging longer visits.',
-      },
-      {
-        title: 'Continuous improvement',
-        description:
-          'Ensure your website stays aligned with the latest trends and technologies through regular updates and enhancements.',
-      },
-      {
-        title: 'Time and resource efficiency',
-        description:
-          'Skip the time-consuming process of building a website from scratch and launch your online presence sooner with AstroWind.',
-      },
-      {
-        title: 'Community support',
-        description: `Join the growing AstroWind community for insights, resources, and assistance, ensuring you're never alone on your web development journey.`,
-      },
-    ]}
-    image={{
-      src: 'https://images.unsplash.com/photo-1611462985358-60d3498e0364?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-      alt: 'Astronauts Image',
-    }}
-  >
-    <Fragment slot="content">Designed to foster growth and success.</Fragment>
-
-    <Fragment slot="bg">
-      <div class="absolute inset-0 bg-blue-50 dark:bg-transparent"></div>
-    </Fragment>
-  </Content>
-
-  <!-- Steps Widget ****************** -->
+  <!-- Steps Widget — Customer POV (PMI Lifecycle) ****************** -->
   <Steps
-    title="Get your dream website up and running in no time with AstroWind."
+    title="Work with Technically Creative — a clear, disciplined path from idea to launch."
     items={[
       {
-        title: 'Step 1: <span class="font-medium">Download</span>',
+        title: 'Discovery: <span class="font-medium">Goals, Constraints, and Fit</span>',
         description:
-          "Kickstart with GitHub! Either fork the AstroWind template or simply click 'Use this template'. Your canvas awaits, ready for your digital masterpiece. In just a few clicks, you've already set the foundation.",
-        icon: 'tabler:package',
+          'We start with a focused kickoff to understand your vision, target audience, success criteria, budget, and timeline. You’ll share any existing assets (brand kit, references, audio/video, copy). I map risks and assumptions, then return a concise Project Brief so we’re aligned before any build begins.',
+        icon: 'tabler:compass',
       },
       {
-        title: 'Step 2: <span class="font-medium">Add content</span>',
+        title: 'Planning: <span class="font-medium">Blueprint & Commitments</span>',
         description:
-          "Pour your vision into it. Add images, text, and all that jazz to breathe life into your digital space. Remember, it's the content that tells your story, so make it captivating.",
-        icon: 'tabler:letter-case',
+          'Together we develop a clear scope, work breakdown, and schedule. Deliverables are mapped in ClickUp, milestones are defined, and communication plans are locked in. You’ll approve a transparent plan that covers budget, risks, and change management so expectations stay realistic and under control.',
+        icon: 'tabler:map',
       },
       {
-        title: 'Step 3: <span class="font-medium">Customize styles</span>',
+        title: 'Execution: <span class="font-medium">Create & Deliver</span>',
         description:
-          'Give it your personal touch. Tailor colors, fonts, and layouts until it feels just right. Your unique flair, amplified by AstroWind! Precision in design ensures a seamless user experience.',
-        icon: 'tabler:paint',
+          'This is where the build happens — whether it’s a mix, sound design, automation workflow, or content asset. I keep progress visible in ClickUp and Drive so you see updates in real time. Drafts and prototypes are shared for your feedback to ensure alignment every step of the way.',
+        icon: 'tabler:tools',
       },
       {
-        title: 'Ready!',
-        icon: 'tabler:check',
+        title: 'Monitoring & Control: <span class="font-medium">Stay on Track</span>',
+        description:
+          'Performance, risks, and quality are tracked against the plan. Change requests are documented, timelines are adjusted as needed, and KPIs like turnaround and clarity are measured. You’ll always know where the project stands and what’s coming next.',
+        icon: 'tabler:chart-dots',
+      },
+      {
+        title: 'Closure: <span class="font-medium">Handover & Review</span>',
+        description:
+          'Final deliverables are approved, packaged, and delivered. We close with a brief review session to capture lessons learned, gather a testimonial, and discuss future opportunities. You leave with a polished result and a clear record of the project journey.',
+        icon: 'tabler:flag-check',
       },
     ]}
     image={{
-      src: 'https://images.unsplash.com/photo-1616198814651-e71f960c3180?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80',
+      src: 'https://images.unsplash.com/photo-1616198814651-e71f960c3180?ixlib=rb-4.0.3&auto=format&fit=crop&w=987&q=80',
       alt: 'Steps image',
     }}
   />
 
   <!-- Features2 Widget ************** -->
   <Features2
-    title="Most used widgets"
-    subtitle="Provides frequently used components for building websites using Tailwind CSS"
-    tagline="Components"
+    title="Technically Creative — Audio • PM • Delivery"
+    subtitle="A collection of offerings and services that will help you get your creative project done"
+    tagline="Highlights"
     items={[
       {
-        title: 'Headers',
+        title: 'Music production',
         description: "Ever tried driving without GPS? Boom! That's why websites need headers for direction.",
         icon: 'flat-color-icons:template',
       },
       {
-        title: 'Heros',
+        title: 'Sound Design',
         description:
           "Picture a superhero landing – epic, right? That's the job of a Hero section, making grand entrances!",
         icon: 'flat-color-icons:gallery',
       },
       {
-        title: 'Features',
+        title: 'Project Management',
         description:
           'Where websites strut their stuff and show off superpowers. No holding back on the bragging rights here!',
         icon: 'flat-color-icons:approval',
       },
       {
-        title: 'Content',
+        title: 'Agile',
         description:
           "Dive into the meat and potatoes of a site; without it, you'd just be window shopping. Content is king.",
         icon: 'flat-color-icons:document',
       },
       {
-        title: 'Call-to-Action',
+        title: 'Music Techcnology',
         description:
           'That enthusiastic friend who\'s always urging, "Do it! Do it!"? Yeah, that\'s this button nudging you towards adventure.',
         icon: 'flat-color-icons:advertising',
       },
       {
-        title: 'Pricing',
+        title: 'Digital Assets',
         description: 'Behold the dessert menu of the website world. Tempting choices await, can you resist?',
         icon: 'flat-color-icons:currency-exchange',
       },
       {
-        title: 'Testimonial',
+        title: 'Consulting and Master Classes',
         description: 'Step into the gossip corner! Here, other visitors spill the beans and share the juicy details.',
         icon: 'flat-color-icons:voice-presentation',
       },
@@ -265,11 +141,6 @@ const links = [
         description:
           'Like a digital mailbox, but faster! Drop a line, ask a question, or send a virtual high-five. Ding! Message in.',
         icon: 'flat-color-icons:business-contact',
-      },
-      {
-        title: 'Footers',
-        description: "The footer's like the credits of a movie but sprinkled with easter eggs. Time to hunt!",
-        icon: 'flat-color-icons:database',
       },
     ]}
   >
@@ -294,39 +165,39 @@ const links = [
   <!-- FAQs Widget ******************* -->
   <FAQs
     title="Frequently Asked Questions"
-    subtitle="Dive into the following questions to gain insights into the powerful features that AstroWind offers and how it can elevate your web development journey."
+    subtitle="Answers to the most common questions about Technically Creative LLC and how we can help elevate your projects."
     tagline="FAQs"
     classes={{ container: 'max-w-6xl' }}
     items={[
       {
-        title: 'Why AstroWind?',
+        title: 'What does Technically Creative LLC do?',
         description:
-          "Michael Knight a young loner on a crusade to champion the cause of the innocent. The helpless. The powerless in a world of criminals who operate above the law. Here he comes Here comes Speed Racer. He's a demon on wheels.",
+          'We blend music technology with professional project management. That means offering mixing, mastering, and sound design while also bringing structured workflows, Agile/Six Sigma efficiency, and automation to creative projects. Think of it as the best of art and systems working together.',
       },
       {
-        title: 'What do I need to start?',
+        title: 'Who do you work with?',
         description:
-          'Space, the final frontier. These are the voyages of the Starship Enterprise. Its five-year mission: to explore strange new worlds. Many say exploration is part of our destiny, but it’s actually our duty to future generations.',
+          'Our clients are creatives and teams—musicians, studios, indie developers, filmmakers, and freelancers—who want professional-quality output without chaos. We also help creative entrepreneurs who need structure in their business workflows.',
       },
       {
-        title: 'How to install the Astro + Tailwind CSS template?',
+        title: 'How do I start working with you?',
         description:
-          "Well, the way they make shows is, they make one show. That show's called a pilot. Then they show that show to the people who make shows, and on the strength of that one show they decide if they're going to make more shows.",
+          'It begins with a discovery call. We’ll review your goals, discuss your creative or operational challenges, and then propose a tailored plan. From there, we move into onboarding with clear expectations, timelines, and deliverables.',
       },
       {
-        title: "What's something that you don't understand?",
+        title: 'Do you only offer music production?',
         description:
-          "A flower in my garden, a mystery in my panties. Heart attack never stopped old Big Bear. I didn't even know we were calling him Big Bear.",
+          'Not at all. While music technology is at our core, we also provide consulting for workflow improvement, automation (using tools like ClickUp, n8n, and Google Drive), and training for creatives who want to level up their project management game.',
       },
       {
-        title: 'What is something that you would like to try again?',
+        title: 'How do you keep projects on track?',
         description:
-          "A business big enough that it could be listed on the NASDAQ goes belly up. Disappears! It ceases to exist without me. No, you clearly don't know who you're talking to, so let me clue you in.",
+          'We use a structured delivery process: intake → planning → execution → revisions → final delivery. Tools like ClickUp and HubSpot help us track progress, while regular check-ins ensure you’re never left in the dark.',
       },
       {
-        title: 'If you could only ask one question to each person you meet, what would that question be?',
+        title: 'What makes you different?',
         description:
-          "This is not about revenge. This is about justice. A lot of things can change in twelve years, Admiral. Well, that's certainly good to know. About four years. I got tired of hearing how young I looked.",
+          'Our founder is a PMP-certified project manager with a Master’s in Music Technology. That means every creative service comes with professional-grade project discipline. You don’t just get a deliverable—you get a system that ensures it’s delivered on time, with clarity and quality.',
       },
     ]}
   />
@@ -334,10 +205,10 @@ const links = [
   <!-- Stats Widget ****************** -->
   <Stats
     stats={[
-      { title: 'Downloads', amount: '132K' },
-      { title: 'Stars', amount: '24.8K' },
-      { title: 'Forks', amount: '10.3K' },
-      { title: 'Users', amount: '48.4K' },
+      { title: 'Asset Downloads', amount: '132K' },
+      { title: 'Projects Completed', amount: '24.8K' },
+      { title: 'Projects in Progress', amount: '10.3K' },
+      { title: 'Newletter Subscribers', amount: '48.4K' },
     ]}
   />
 
@@ -346,20 +217,18 @@ const links = [
     actions={[
       {
         variant: 'primary',
-        text: 'Get template',
-        href: 'https://github.com/arthelokyo/astrowind',
-        target: '_blank',
+        text: 'About Us →',
+        href: '/about',
         icon: 'tabler:download',
       },
     ]}
   >
     <Fragment slot="title">
-      Astro&nbsp;+&nbsp;<br class="block sm:hidden" /><span class="sm:whitespace-nowrap">Tailwind CSS</span>
+      Technnically <br class="block sm:hidden" /><span class="sm:whitespace-nowrap">Creative</span>
     </Fragment>
 
     <Fragment slot="subtitle">
-      Be very surprised by these huge fake numbers you are seeing on this page. <br class="hidden md:inline" />Don't
-      waste more time! :P
+      Want to learn more? <br class="hidden md:inline" /><br class="hidden md:inline" < Fragment />
     </Fragment>
   </CallToAction>
 </Layout>
