@@ -18,7 +18,8 @@
     "check:prettier": "prettier --check .",
     "fix": "npm run fix:eslint && npm run fix:prettier",
     "fix:eslint": "eslint --fix .",
-    "fix:prettier": "prettier -w ."
+    "fix:prettier": "prettier -w .",
+    "log:append": "node scripts/append-log.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.12",
@@ -40,6 +41,7 @@
     "@astrojs/tailwind": "^5.1.5",
     "@eslint/js": "^9.33.0",
     "@iconify-json/flat-color-icons": "^1.2.1",
+    "@iconify-json/lucide": "^1.2.64",
     "@iconify-json/tabler": "^1.2.20",
     "@tailwindcss/typography": "^0.5.16",
     "@types/js-yaml": "^4.0.9",
