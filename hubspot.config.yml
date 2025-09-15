@@ -1,0 +1,14 @@
+defaultPortal: techcre8hub
+portals:
+  - name: techcre8hub
+    portalId: 243565281
+    env: prod
+    authType: personalaccesskey
+    auth:
+      tokenInfo:
+        accessToken: >-
+          CNb44YKTMxIcQlNQMl8kQEwrAg8ACAkCFBwBAgEQAwoBAgMHGxjhhZJ0IObqoCco7ukMMhTvwQg3MafEdCCm0HVg6j1Hi1XawzovQlNQMl8kQEwrAiIACBMGBnErSAEBAQgBBgIUBBgEAQEBAQEEAQUBEgkDATEBV1pCFBmtaLyGtO7aYh0BaleqLr44sT6nSgNuYTJSAFoAYAFo5uqgJ3AAeAA
+        expiresAt: '2025-09-09T21:18:49.471Z'
+    accountType: STANDARD
+    personalAccessKey: >-
+      CiRuYTItZGNkMS1hN2I3LTQ1OGEtYmMzNy03NjI2ZmZmMjMzZDgQ4YWSdBjm6qAnKhkABeaRgg8o_4j1gf9x-bLBbsWLH4RI_b7tSgNuYTI
