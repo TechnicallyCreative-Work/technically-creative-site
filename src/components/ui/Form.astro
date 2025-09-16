@@ -2,64 +2,119 @@
 import type { Form as Props } from '~/types';
 import Button from '~/components/ui/Button.astro';
 
-const { inputs, textarea, disclaimer, button = 'Contact us', description = '' } = Astro.props;
+const {
+  inputs,
+  textarea,
+  disclaimer,
+  button = 'Contact us',
+  description = '',
+  formAttributes = {},
+} = Astro.props as Props & { formAttributes?: Record<string, string> };
+
+const formAttrs = formAttributes ?? {};
 ---
 
-<form>
-  {
-    inputs &&
-      inputs.map(
-        ({ type = 'text', name, label = '', autocomplete = 'on', placeholder = '' }) =>
-          name && (
-            <div class="mb-6">
-              {label && (
-                <label for={name} class="block text-sm font-medium">
-                  {label}
-                </label>
-              )}
-              <input
-                type={type}
-                name={name}
-                id={name}
-                autocomplete={autocomplete}
-                placeholder={placeholder}
-                class="py-3 px-4 block w-full text-md rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-900"
-              />
-            </div>
-          )
-      )
-  }
+<form {...formAttrs} data-hs-form-root>
+  <div data-hs-fields>
+    {
+      inputs &&
+        inputs.map(
+          ({
+            type = 'text',
+            name,
+            label = '',
+            autocomplete = 'on',
+            placeholder = '',
+            required = false,
+            options = [],
+          }) =>
+            name && (
+              <div class="mb-6" data-hs-field={name}>
+                {label && (
+                  <label for={name} class="block text-sm font-medium">
+                    {label}
+                  </label>
+                )}
+                {type === 'checkbox-group' ? (
+                  <div class="flex flex-col">
+                    {options.map((option) => (
+                      <label class="inline-flex items-center mt-3">
+                        <input
+                          type="checkbox"
+                          name={name}
+                          value={option.value}
+                          class="form-checkbox h-5 w-5 text-blue-600"
+                        />
+                        <span class="ml-2 text-gray-700 dark:text-gray-200">{option.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                ) : type === 'select' ? (
+                  <select
+                    name={name}
+                    id={name}
+                    required={required}
+                    class="py-3 px-4 block w-full text-md rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-900"
+                  >
+                    {options.map((option) => (
+                      <option value={option.value}>{option.label}</option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    type={type}
+                    name={name}
+                    id={name}
+                    autocomplete={autocomplete}
+                    placeholder={placeholder}
+                    required={required}
+                    class="py-3 px-4 block w-full text-md rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-900"
+                  />
+                )}
+              </div>
+            )
+        )
+    }
 
-  {
-    textarea && (
-      <div>
-        <label for="textarea" class="block text-sm font-medium">
-          {textarea.label}
-        </label>
-        <textarea
-          id="textarea"
-          name={textarea.name ? textarea.name : 'message'}
-          rows={textarea.rows ? textarea.rows : 4}
-          placeholder={textarea.placeholder}
-          class="py-3 px-4 block w-full text-md rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-900"
-        />
-      </div>
-    )
-  }
+    {
+      textarea && (
+        <div class="mb-6" data-hs-field={textarea.name ? textarea.name : 'message'}>
+          {textarea.label && (
+            <label for={textarea.name ? textarea.name : 'message'} class="block text-sm font-medium">
+              {textarea.label}
+            </label>
+          )}
+          <textarea
+            id={textarea.name ? textarea.name : 'message'}
+            name={textarea.name ? textarea.name : 'message'}
+            rows={textarea.rows ? textarea.rows : 4}
+            placeholder={textarea.placeholder}
+            required={textarea.required}
+            class="py-3 px-4 block w-full text-md rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-900"
+          />
+        </div>
+      )
+    }
+  </div>
 
   {
     disclaimer && (
-      <div class="mt-3 flex items-start">
+      <div class="mt-3 flex items-start" data-hs-disclaimer={disclaimer.name ? disclaimer.name : 'disclaimer'}>
         <div class="flex mt-0.5">
           <input
-            id="disclaimer"
-            name="disclaimer"
+            id={disclaimer.name ? disclaimer.name : 'disclaimer'}
+            name={disclaimer.name ? disclaimer.name : 'disclaimer'}
             type="checkbox"
+            value={disclaimer.value ?? 'true'}
+            required={disclaimer.required}
             class="cursor-pointer mt-1 py-3 px-4 block w-full text-md rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-900"
           />
         </div>
         <div class="ml-3">
-          <label for="disclaimer" class="cursor-pointer select-none text-sm text-gray-600 dark:text-gray-400">
+          <label
+            for={disclaimer.name ? disclaimer.name : 'disclaimer'}
+            class="cursor-pointer select-none text-sm text-gray-600 dark:text-gray-400"
+          >
             {disclaimer.label}
           </label>
         </div>
@@ -84,4 +139,6 @@ const { inputs, textarea, disclaimer, button = 'Contact us', description = '' } 
       </div>
     )
   }
+
+  <div data-hs-hidden-fields class="hidden"></div>
 </form>

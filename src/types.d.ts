@@ -167,6 +167,8 @@ export interface Input {
   label?: string;
   autocomplete?: string;
   placeholder?: string;
+  required?: boolean;
+  options?: Array<{ label: string; value: string }>;
 }
 
 export interface Textarea {
@@ -174,10 +176,14 @@ export interface Textarea {
   name?: string;
   placeholder?: string;
   rows?: number;
+  required?: boolean;
 }
 
 export interface Disclaimer {
   label?: string;
+  name?: string;
+  required?: boolean;
+  value?: string;
 }
 
 // COMPONENTS
@@ -210,6 +216,7 @@ export interface Form {
   disclaimer?: Disclaimer;
   button?: string;
   description?: string;
+  formAttributes?: Record<string, string>;
 }
 
 // WIDGETS
@@ -278,4 +285,17 @@ export interface Content extends Omit<Headline, 'classes'>, Widget {
   callToAction?: CallToAction;
 }
 
-export interface Contact extends Omit<Headline, 'classes'>, Form, Widget {}
+export interface HubspotBridgeConfig {
+  portalId: string;
+  formId: string;
+  region?: string;
+  fieldMapping?: Record<string, string>;
+  loadingText?: string;
+}
+
+export interface Contact extends Omit<Headline, 'classes'>, Form, Widget {
+  successMessage?: string;
+  errorMessage?: string;
+  hubspot?: HubspotBridgeConfig;
+}
+
