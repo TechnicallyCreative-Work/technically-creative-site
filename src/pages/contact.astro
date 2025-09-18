@@ -31,11 +31,11 @@ const hubspotForm = {
   </Fragment>
   <!-- HeroText Widget ******************* -->
 
-  <HeroText tagline="Contact" title="Let's Connect!" />
+  <HeroText tagline="Contact" title="How do we get started?" />
 
   <ContactUs
     id="form"
-    title="Let'get started on that project!"
+    title="Fill out this form!"
     subtitle="Please do not hesistate to reach out! I don't care if you are a novice or professional I am going to support you the whole way! We gotta take the power back!"
     inputs={[
       {
@@ -127,7 +127,7 @@ const hubspotForm = {
       value: 'granted',
     }}
     button="Send message"
-    description="Our support team typically responds within 24 business hours."
+    description="Technically Creative representative will get back to you as soon as possible typically within 24-48 business hours."
     successMessage="Thanks! We've received your note and will follow up shortly."
     errorMessage="We couldn't submit your message. Please double-check the form and try again."
     hubspot={hubspotForm}
@@ -139,36 +139,23 @@ const hubspotForm = {
   <!-- Features2 Widget ************** -->
 
   <Features2
-    title="We are here to help!"
+    title="Selection details"
     items={[
       {
-        title: 'General support',
-        description: `Chat with us for inquiries related to account management, website navigation, payment issues, accessing purchased templates or general questions about the website's functionality.`,
+        title: 'Project Type',
+        description: '<ul><li>Mixing / Mastering</li><li>Trailer Sound Design</li><li>AI Workflow Consulting</li><li>Other</li></ul>',
       },
       {
-        title: 'Contact sales',
-        description:
-          'Chat with us for questions about purchases, customization options, licensing for commercial use, inquiries about specific template, etc.',
+        title: 'Budget Range',
+        description: '<ul><li>Under $500</li><li>$500-$1000</li><li>$1,000-$2,500</li><li>$2,500-$5,000</li><li>$5000+</li></ul>',
       },
       {
-        title: 'Technical support',
-        description:
-          'Chat with us when facing issues like template installation, problems editing difficulties, compatibility issues with software or download errors, or other technical challenges related to using the templates.',
+        title: 'Timeline / Urgency',
+        description: '<ul><li>ASAP (Within 1 Month)</li><li>1-3 Months</li><li>3-6 Months</li><li>Flexible</li></ul>',
       },
       {
-        title: 'Phone',
-        description: '+1 (234) 567-890',
-        icon: 'tabler:headset',
-      },
-      {
-        title: 'Email',
-        description: 'contact@support.com',
-        icon: 'tabler:mail',
-      },
-      {
-        title: 'Location',
-        description: '1234 Lorem Ipsum St, 12345, Miami, EEUU',
-        icon: 'tabler:map-pin',
+        title: 'Referral Source',
+        description: '<ul><li>LinkedIn</li><li>Website / Blog</li><li>Word of Mouth / Referral</li><li>PMI / AES Network</li><li>Social Media (IG, YouTube, etc.)</li><li>Other</li></ul>',
       },
     ]}
   />

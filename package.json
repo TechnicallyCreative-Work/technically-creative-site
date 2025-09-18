@@ -31,6 +31,8 @@
     "astro": "^5.12.9",
     "astro-embed": "^0.9.0",
     "astro-icon": "^1.1.5",
+    "freezeframe": "^5.0.2",
+    "gifler": "^0.1.0",
     "limax": "4.1.0",
     "lodash.merge": "^4.6.2",
     "unpic": "^4.1.3"
