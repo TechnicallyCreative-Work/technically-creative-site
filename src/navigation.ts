@@ -48,7 +48,7 @@ export const headerData = {
       href: getPermalink('/contact'),
     },
   ],
-  actions: [{ text: 'Download', href: 'https://github.com/arthelokyo/astrowind', target: '_blank' }],
+  actions: [{ text: 'Start a Project', href: getPermalink('/contact') }],
 };
 
 export const footerData = {
@@ -88,12 +88,12 @@ export const footerData = {
     { text: 'Contact', href: getPermalink('/contact') },
   ],
   socialLinks: [
-    { ariaLabel: 'X', icon: 'tabler:brand-x', href: '#' },
-    { ariaLabel: 'Instagram', icon: 'tabler:brand-instagram', href: '#' },
-    { ariaLabel: 'LinkedIn', icon: 'tabler:brand-linkedin', href: '#' },
-    { ariaLabel: 'GitHub', icon: 'tabler:brand-github', href: '#' },
+    { ariaLabel: 'LinkedIn', icon: 'tabler:brand-linkedin', href: 'https://www.linkedin.com/company/technically-creative-llc/' },
+    { ariaLabel: 'Instagram', icon: 'tabler:brand-instagram', href: 'https://www.instagram.com/technicallycreativellc/' },
+    { ariaLabel: 'YouTube', icon: 'tabler:brand-youtube', href: 'https://www.youtube.com/@technicallycreativellc' },
+    { ariaLabel: 'Email', icon: 'tabler:mail', href: 'mailto:hello@technicallycreative.work' },
   ],
   footNote: 
-    `&copy; ${new Date().getFullYear()} . All rights reserved.`
+    `&copy; ${new Date().getFullYear()} Technically Creative LLC. All rights reserved.`
   ,
 };
