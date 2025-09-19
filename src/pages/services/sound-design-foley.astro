@@ -1,0 +1,162 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+import Header from '~/components/widgets/Header.astro';
+import Hero from '~/components/widgets/Hero.astro';
+import Steps from '~/components/widgets/Steps.astro';
+import Pricing from '~/components/widgets/Pricing.astro';
+import Content from '~/components/widgets/Content.astro';
+import CallToAction from '~/components/widgets/CallToAction.astro';
+
+const metadata = {
+  title: 'Sound Design & Foley | Technically Creative',
+  description:
+    'Custom sound design, Foley, and sonic branding for trailers, short-form content, and interactive media with a repeatable production workflow.',
+};
+
+const links = [
+  { text: 'Home', href: '/' },
+  { text: 'Services', href: '/services' },
+  { text: 'About', href: '/about' },
+  { text: 'Credentials', href: '/credentials' },
+  { text: 'Contact', href: '/contact' },
+];
+---
+
+<Layout metadata={metadata}>
+  <Fragment slot="header">
+    <Header links={links} isSticky showToggleTheme />
+  </Fragment>
+
+  <Hero
+    id="sound-hero"
+    title="Sound Design & Foley"
+    tagline="Cinematic detail delivered with discipline"
+    actions={[
+      { variant: 'primary', text: 'Request a quote', href: '/contact#form' },
+      { variant: 'secondary', text: 'Back to services', href: '/services' },
+    ]}
+  >
+    <Fragment slot="subtitle">
+      Whether it is a streaming trailer, social spot, or gameplay moment, I build soundscapes that reinforce narrative
+      beats and deliver clean handoffs to your editorial or mixing team. Expect clear checkpoints, asset labeling, and
+      coverage for alt versions.
+    </Fragment>
+  </Hero>
+
+  <Steps
+    id="sound-process"
+    title="The sound design sprint"
+    items={[
+      {
+        title: 'Creative brief & spotting',
+        description:
+          'We review storyboard or rough cut, establish emotional anchors, and log sync moments inside a shared cue sheet.',
+        icon: 'tabler:map-pin',
+      },
+      {
+        title: 'Palette build',
+        description:
+          'Custom source recording, library pulls, and synthesized textures captured into a project palette for rapid iteration.',
+        icon: 'tabler:library',
+      },
+      {
+        title: 'Design passes & approvals',
+        description:
+          'Two preview passes with timecoded notes keep stakeholders aligned. Foley, SFX, and transitions are balanced against dialogue and music.',
+        icon: 'tabler:timeline-event',
+      },
+      {
+        title: 'Final mix prep & delivery',
+        description:
+          'Deliverables include full mix, split stems (DX/MX/FX), alt versions, and documentation for downstream mix stages.',
+        icon: 'tabler:archive',
+      },
+    ]}
+  />
+
+  <Pricing
+    id="sound-rates"
+    title="Packages & base pricing"
+    subtitle="Quotes scale with scope, but these tiers cover most common engagements."
+    prices={[
+      {
+        title: 'Short-form Social',
+        subtitle: 'Up to 60 seconds / 48-hour turnaround',
+        price: '350',
+        period: 'per deliverable',
+        items: [
+          { description: 'Targeted Foley & sweeteners' },
+          { description: 'Mix-ready FX stem + alt mix' },
+          { description: 'Two rounds of revisions' },
+        ],
+        callToAction: { text: 'Book social spot', href: '/contact#form' },
+      },
+      {
+        title: 'Trailer / Short Film',
+        subtitle: '60-180 seconds / narrative focus',
+        price: '750',
+        period: 'per project',
+        hasRibbon: true,
+        ribbonTitle: 'Trailer ready',
+        items: [
+          { description: 'Full cue sheet + sync notes' },
+          { description: 'Custom assets + library curation' },
+          { description: 'Deliverables in 5.1 & stereo' },
+        ],
+        callToAction: { text: 'Plan your trailer', href: '/contact#form' },
+      },
+      {
+        title: 'Interactive/Game Scenes',
+        subtitle: 'Up to 4 minutes branching audio',
+        price: '1200',
+        period: 'per scene or level',
+        items: [
+          { description: 'Layered assets for RTPC / middleware' },
+          { description: 'Loop variants + failure / success cues' },
+          { description: 'Integration-ready naming & metadata' },
+        ],
+        callToAction: { text: 'Discuss game audio', href: '/contact#form' },
+      },
+    ]}
+  />
+
+  <Content
+    id="sound-addons"
+    title="Add-ons for bigger campaigns"
+    subtitle="Easily bolt on extra coverage when your deliverable list expands"
+    items={[
+      {
+        title: 'Voiceover casting & direction',
+        description: 'Sourcing, scheduling, and directing VO talent with cleanly edited takes sent back in session format.',
+        icon: 'tabler:microphone',
+      },
+      {
+        title: 'Localization support',
+        description: 'Session prep, cue sheets, and mix notes to streamline multi-language versioning.',
+        icon: 'tabler:language',
+      },
+      {
+        title: 'On-location Foley capture',
+        description: 'Mobile rig for prop-specific recording when the project needs unique textures.',
+        icon: 'tabler:compass',
+      },
+    ]}
+  >
+    <Fragment slot="content">
+      <p>
+        Need a longer-form series or rapid weekly cadence? Retainers are available for studios requiring ongoing asset
+        creation and editorial partnering.
+      </p>
+    </Fragment>
+  </Content>
+
+  <CallToAction
+    title="Let's shape the soundtrack"
+    subtitle="Send a link to your cut, temp music, or animatics and I'll outline a production schedule within one business day."
+    actions={[{ variant: 'primary', text: 'Share your brief', href: '/contact#form' }]}
+  />
+</Layout>
+
+
+
+

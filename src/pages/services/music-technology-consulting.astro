@@ -1,0 +1,160 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+import Header from '~/components/widgets/Header.astro';
+import Hero from '~/components/widgets/Hero.astro';
+import Steps from '~/components/widgets/Steps.astro';
+import Pricing from '~/components/widgets/Pricing.astro';
+import Content from '~/components/widgets/Content.astro';
+import CallToAction from '~/components/widgets/CallToAction.astro';
+
+const metadata = {
+  title: 'Music Technology Consulting | Technically Creative',
+  description:
+    'Studio audits, workflow consulting, and ongoing creative coaching that blend technical depth with project discipline.',
+};
+
+const links = [
+  { text: 'Home', href: '/' },
+  { text: 'Services', href: '/services' },
+  { text: 'About', href: '/about' },
+  { text: 'Credentials', href: '/credentials' },
+  { text: 'Contact', href: '/contact' },
+];
+---
+
+<Layout metadata={metadata}>
+  <Fragment slot="header">
+    <Header links={links} isSticky showToggleTheme />
+  </Fragment>
+
+  <Hero
+    id="consulting-hero"
+    title="Music Technology Consulting"
+    tagline="Systems coaching for creative teams"
+    actions={[
+      { variant: 'primary', text: 'Book discovery call', href: '/contact#form' },
+      { variant: 'secondary', text: 'Back to services', href: '/services' },
+    ]}
+  >
+    <Fragment slot="subtitle">
+      I help artists, studios, and production teams streamline the way they create by pairing deep DAW knowledge with PMP
+      project leadership. From hybrid studio buildouts to coaching your assistants, everything is documented and tracked
+      so improvements stick.
+    </Fragment>
+  </Hero>
+
+  <Steps
+    id="consulting-process"
+    title="Engagement roadmap"
+    items={[
+      {
+        title: 'Assess & benchmark',
+        description:
+          'We inventory tools, signal flow, and collaboration habits. Pain points and bottlenecks become user stories inside a shared backlog.',
+        icon: 'tabler:list-details',
+      },
+      {
+        title: 'Design actionable playbooks',
+        description:
+          'Together we prioritize improvements and outline the procedures, templates, and automations required to support them.',
+        icon: 'tabler:notebook',
+      },
+      {
+        title: 'Integrate & train',
+        description:
+          'I implement the changes or coach your team through them. Expect live working sessions, screen shares, and reference documentation.',
+        icon: 'tabler:school',
+      },
+      {
+        title: 'Measure & iterate',
+        description:
+          'We track KPIs such as turnaround, revision count, or revenue per deliverable, then refine the system on a monthly or quarterly cadence.',
+        icon: 'tabler:chart-arrows',
+      },
+    ]}
+  />
+
+  <Pricing
+    id="consulting-rates"
+    title="Coaching & consulting options"
+    subtitle="Pick the engagement level that matches your bandwidth. Subscriptions include asynchronous support between sessions."
+    prices={[
+      {
+        title: 'Studio Audit Intensive',
+        subtitle: 'Half-day onsite or virtual',
+        price: '425',
+        period: 'flat fee',
+        items: [
+          { description: 'Signal flow and template review' },
+          { description: 'Written recommendations within 48 hours' },
+          { description: 'Priority roadmap for next 90 days' },
+        ],
+        callToAction: { text: 'Schedule audit', href: '/contact#form' },
+      },
+      {
+        title: 'Coaching Subscription',
+        subtitle: '2 sessions monthly + async support',
+        price: '350',
+        period: 'per month',
+        hasRibbon: true,
+        ribbonTitle: 'Best for growth',
+        items: [
+          { description: '60-minute Zoom coaching calls (biweekly)' },
+          { description: 'Office-hours chat for quick questions' },
+          { description: 'Shared dashboard to track progress' },
+        ],
+        callToAction: { text: 'Join the program', href: '/contact#form' },
+      },
+      {
+        title: 'Fractional Systems Lead',
+        subtitle: '4 sessions + implementation each month',
+        price: '620',
+        period: 'per month',
+        items: [
+          { description: 'Template creation & workflow automation' },
+          { description: 'Team training sessions recorded for replay' },
+          { description: 'Monthly metrics & executive summary' },
+        ],
+        callToAction: { text: 'Request proposal', href: '/contact#form' },
+      },
+    ]}
+  />
+
+  <Content
+    id="consulting-focus"
+    title="Common focus areas"
+    subtitle="Every plan ends with a living knowledge base your team can own"
+    items={[
+      {
+        title: 'Hybrid studio integration',
+        description: 'Outboard recall sheets, patchbay mapping, and DAW templates that translate between collaborators.',
+        icon: 'tabler:wave-sine',
+      },
+      {
+        title: 'Content pipeline design',
+        description: 'Build publishing calendars, asset trackers, and automation that connect creative and marketing teams.',
+        icon: 'tabler:device-analytics',
+      },
+      {
+        title: 'Education & enablement',
+        description: 'Team workshops, SOP writing, and tool onboarding sessions to lock in the new process.',
+        icon: 'tabler:chalkboard',
+      },
+    ]}
+  >
+    <Fragment slot="content">
+      <p>
+        Need to involve a wider team? I can facilitate workshops up to 12 participants with follow-up action logs and
+        leadership-ready summaries.
+      </p>
+    </Fragment>
+  </Content>
+
+  <CallToAction
+    title="Bring calm to your creative systems"
+    subtitle="Tell me about your current stack, bottlenecks, and team goals—I'll reply with next steps within one business day."
+    actions={[{ variant: 'primary', text: 'Book a discovery call', href: '/contact#form' }]}
+  />
+</Layout>
+
+

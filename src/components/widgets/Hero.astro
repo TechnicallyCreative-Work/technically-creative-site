@@ -12,10 +12,13 @@ const {
   content = await Astro.slots.render('content'),
   actions = await Astro.slots.render('actions'),
   image = await Astro.slots.render('image'),
+  inlineImage = false,
 
   id,
   bg = await Astro.slots.render('bg'),
 } = Astro.props;
+
+const hasInlineImage = inlineImage && Boolean(image);
 ---
 
 <section class="relative md:-mt-[76px] not-prose" {...id ? { id } : {}}>
@@ -29,75 +32,103 @@ const {
     <div class="py-12 md:py-20">
       <div class="text-left pb-10 md:pb-16 max-w-5xl">
         <div class="relative overflow-hidden rounded-3xl border border-slate-200/80 dark:border-slate-700/60 bg-white/80 dark:bg-slate-900/70 backdrop-blur-md shadow-xl">
-          <div class="px-6 py-8 sm:px-10 sm:py-12 space-y-6 sm:space-y-8">
-            {
-              tagline && (
-                <p
-                  class="text-base text-secondary dark:text-blue-200 font-bold tracking-wide uppercase intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade"
-                  set:html={tagline}
-                />
-              )
-            }
-            {
-              title && (
-                <h1
-                  class="text-5xl md:text-6xl font-bold leading-tight md:leading-[1.15] tracking-tight mb-4 font-heading dark:text-gray-200 intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade"
-                  set:html={title}
-                />
-              )
-            }
-            <div class="max-w-3xl">
+          <div
+            class:list={[
+              'px-6 py-8 sm:px-10 sm:py-12',
+              { 'md:flex md:items-center md:gap-10': hasInlineImage },
+              { 'space-y-6 sm:space-y-8': !hasInlineImage },
+            ]}
+          >
+            <div
+              class:list={[
+                'space-y-6 sm:space-y-8',
+                { 'md:flex-1': hasInlineImage },
+              ]}
+            >
               {
-                subtitle && (
+                tagline && (
                   <p
-                    class="text-xl text-muted leading-relaxed mb-6 dark:text-slate-300 intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade"
-                    set:html={subtitle}
+                    class="text-base text-secondary dark:text-blue-200 font-bold tracking-wide uppercase intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade"
+                    set:html={tagline}
                   />
                 )
               }
               {
-                actions && (
-                  <div class="max-w-xs sm:max-w-md flex flex-nowrap flex-col sm:flex-row sm:justify-start gap-4 intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade">
-                    {Array.isArray(actions) ? (
-                      actions.map((action) => (
-                        <div class="flex w-full sm:w-auto">
-                          <Button {...(action || {})} class="w-full sm:mb-0" />
-                        </div>
-                      ))
-                    ) : (
-                      <Fragment set:html={actions} />
-                    )}
-                  </div>
+                title && (
+                  <h1
+                    class="text-5xl md:text-6xl font-bold leading-tight md:leading-[1.15] tracking-tight mb-4 font-heading dark:text-gray-200 intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade"
+                    set:html={title}
+                  />
                 )
               }
+              <div class="max-w-3xl">
+                {
+                  subtitle && (
+                    <p
+                      class="text-xl text-muted leading-relaxed mb-6 dark:text-slate-300 intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade"
+                      set:html={subtitle}
+                    />
+                  )
+                }
+                {
+                  actions && (
+                    <div class="max-w-xs sm:max-w-md flex flex-nowrap flex-col sm:flex-row sm:justify-start gap-4 intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade">
+                      {Array.isArray(actions) ? (
+                        actions.map((action) => (
+                          <div class="flex w-full sm:w-auto">
+                            <Button {...(action || {})} class="w-full sm:mb-0" />
+                          </div>
+                        ))
+                      ) : (
+                        <Fragment set:html={actions} />
+                      )}
+                    </div>
+                  )
+                }
+              </div>
+              {content && <Fragment set:html={content} />}
             </div>
-            {content && <Fragment set:html={content} />}
+            {
+              hasInlineImage && (
+                <div class="mt-8 md:mt-0 md:flex-shrink-0 flex w-full justify-center md:justify-end intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade">
+                  <div class="relative">
+                    {typeof image === 'string' ? (
+                      <Fragment set:html={image} />
+                    ) : (
+                      <Image {...image} />
+                    )}
+                  </div>
+                </div>
+              )
+            }
           </div>
         </div>
       </div>
-      <div
-        class="intersect-once intersect-no-queue intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade"
-      >
-        {
-          image && (
-            <div class="relative m-auto max-w-5xl">
-              {typeof image === 'string' ? (
-                <Fragment set:html={image} />
-              ) : (
-                <Image
-                  class="mx-auto rounded-md w-full"
-                  widths={[400, 768, 1024, 2040]}
-                  sizes="(max-width: 767px) 400px, (max-width: 1023px) 768px, (max-width: 2039px) 1024px, 2040px"
-                  loading="eager"
-                  width={1024}
-                  height={576}
-                  {...image}
-                />
-              )}
-            </div>
-          )
-        }
-      </div>
+      {!hasInlineImage && (
+        <div
+          class="intersect-once intersect-no-queue intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade"
+        >
+          {
+            image && (
+              <div class="relative m-auto max-w-5xl">
+                {typeof image === 'string' ? (
+                  <Fragment set:html={image} />
+                ) : (
+                  <Image
+                    class="mx-auto rounded-md w-full"
+                    widths={[400, 768, 1024, 2040]}
+                    sizes="(max-width: 767px) 400px, (max-width: 1023px) 768px, (max-width: 2039px) 1024px, 2040px"
+                    loading="eager"
+                    width={1024}
+                    height={576}
+                    {...image}
+                  />
+                )}
+              </div>
+            )
+          }
+        </div>
+      )}
     </div>
   </div>
 </section>

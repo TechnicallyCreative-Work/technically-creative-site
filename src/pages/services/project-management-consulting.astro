@@ -1,0 +1,159 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+import Header from '~/components/widgets/Header.astro';
+import Hero from '~/components/widgets/Hero.astro';
+import Steps from '~/components/widgets/Steps.astro';
+import Pricing from '~/components/widgets/Pricing.astro';
+import Content from '~/components/widgets/Content.astro';
+import CallToAction from '~/components/widgets/CallToAction.astro';
+
+const metadata = {
+  title: 'Project Management Consulting | Technically Creative',
+  description:
+    'Fractional project management for creative teams—scope, scheduling, risk, and reporting handled with PMP rigor.',
+};
+
+const links = [
+  { text: 'Home', href: '/' },
+  { text: 'Services', href: '/services' },
+  { text: 'About', href: '/about' },
+  { text: 'Credentials', href: '/credentials' },
+  { text: 'Contact', href: '/contact' },
+];
+---
+
+<Layout metadata={metadata}>
+  <Fragment slot="header">
+    <Header links={links} isSticky showToggleTheme />
+  </Fragment>
+
+  <Hero
+    id="pm-hero"
+    title="Project Management Consulting"
+    tagline="Delivery leadership for creative teams"
+    actions={[
+      { variant: 'primary', text: 'Book project consult', href: '/contact#form' },
+      { variant: 'secondary', text: 'Back to services', href: '/services' },
+    ]}
+  >
+    <Fragment slot="subtitle">
+      When your production calendar is crowded, I help map scope, coordinate stakeholders, and keep risks visible. From
+      sprint cadences to live production launches, you get the structure without the bureaucracy.
+    </Fragment>
+  </Hero>
+
+  <Steps
+    id="pm-process"
+    title="Framework for every engagement"
+    items={[
+      {
+        title: 'Intake & charter',
+        description:
+          'We clarify objectives, constraints, and success metrics. Deliverables, owners, and timelines live in a shared ClickUp or Notion board.',
+        icon: 'tabler:clipboard',
+      },
+      {
+        title: 'Roadmap & comms plan',
+        description:
+          'I produce a milestone roadmap, risk register, and communication cadence so stakeholders know what is happening and when.',
+        icon: 'tabler:route',
+      },
+      {
+        title: 'Execution oversight',
+        description:
+          'I facilitate standups, manage change requests, document decisions, and escalate blockers early.',
+        icon: 'tabler:arrows-join',
+      },
+      {
+        title: 'Retrospective & handoff',
+        description:
+          'Each engagement ends with a lessons-learned recap, updated SOPs, and future recommendations for the team.',
+        icon: 'tabler:report',
+      },
+    ]}
+  />
+
+  <Pricing
+    id="pm-rates"
+    title="Consulting formats"
+    subtitle="Pick the level of support that fits your production cycle. Custom retainers available for enterprise teams."
+    prices={[
+      {
+        title: 'Sprint Planning Day',
+        subtitle: 'Virtual or onsite facilitation',
+        price: '680',
+        period: 'flat fee',
+        items: [
+          { description: 'Roadmap + backlog grooming' },
+          { description: 'Risk register & mitigation plan' },
+          { description: 'Comms cadence template' },
+        ],
+        callToAction: { text: 'Schedule planning day', href: '/contact#form' },
+      },
+      {
+        title: 'Launch Management',
+        subtitle: '4-week engagement',
+        price: '1450',
+        period: 'per project',
+        hasRibbon: true,
+        ribbonTitle: 'Launch ready',
+        items: [
+          { description: 'Timeline + dependency mapping' },
+          { description: 'Stakeholder reporting (weekly)' },
+          { description: 'Budget tracking & risk escalations' },
+        ],
+        callToAction: { text: 'Kick off launch', href: '/contact#form' },
+      },
+      {
+        title: 'Fractional PM Retainer',
+        subtitle: '10 hours/month minimum',
+        price: '2200',
+        period: 'per month',
+        items: [
+          { description: 'Integrated with your team tools' },
+          { description: 'Executive dashboards & KPIs' },
+          { description: 'Priority support for high-risk moments' },
+        ],
+        callToAction: { text: 'Request proposal', href: '/contact#form' },
+      },
+    ]}
+  />
+
+  <Content
+    id="pm-artifacts"
+    title="Deliverables you can reuse"
+    subtitle="Every project comes with documentation your team can keep running"
+    items={[
+      {
+        title: 'Operating procedures',
+        description: 'Checklists and SOPs tailored to your production environment so the process holds after I roll off.',
+        icon: 'tabler:checkup-list',
+      },
+      {
+        title: 'Stakeholder dashboards',
+        description: 'Live reporting inside ClickUp, Notion, or Google Data Studio to keep leadership aligned.',
+        icon: 'tabler:dashboard',
+      },
+      {
+        title: 'Risk & change logs',
+        description: 'Easy-to-reference logs that document history, decisions, and next actions.',
+        icon: 'tabler:alert-triangle',
+      },
+    ]}
+  >
+    <Fragment slot="content">
+      <p>
+        Need support during live events or production days? I can embed onsite to handle run-of-show, talent wrangling,
+        and vendor communication.
+      </p>
+    </Fragment>
+  </Content>
+
+  <CallToAction
+    title="Keep the project on track"
+    subtitle="Share your timeline, stakeholders, and delivery risks so I can send an engagement outline within one business day."
+    actions={[{ variant: 'primary', text: 'Talk project details', href: '/contact#form' }]}
+  />
+</Layout>
+
+

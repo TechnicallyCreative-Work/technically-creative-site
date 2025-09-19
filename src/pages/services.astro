@@ -8,7 +8,7 @@ import Content from '~/components/widgets/Content.astro';
 import CallToAction from '~/components/widgets/CallToAction.astro';
 
 const metadata = {
-  title: 'Services — Technically Creative',
+  title: 'Services - Technically Creative',
   ignoreTitleTemplate: true,
 };
 
@@ -46,31 +46,44 @@ const links = [
       {
         title: 'Mixing & Mastering',
         description:
-          'Your tracks, polished and powerful. From indie singles to full EPs, I’ll balance every detail for release-ready sound.',
+          'Your tracks, polished and powerful. Singles start at $249 per song with EP and album bundles plus unlimited mix notes for 10 days.',
         icon: 'tabler:adjustments',
+        callToAction: { text: 'Mixing workflow', href: '/services/mixing-mastering' },
       },
       {
         title: 'Sound Design & Foley',
-        description: 'Custom audio textures for games, film, and trailers. Designed to immerse and elevate your story.',
+        description:
+          'Custom audio textures for games, film, and trailers. Project bundles start at $350 with delivery-ready stems and alternate mixes.',
         icon: 'tabler:speakerphone',
+        callToAction: { text: 'Sound design process', href: '/services/sound-design-foley' },
       },
       {
         title: 'Music Technology Consulting',
         description:
-          'Leverage my expertise in DAWs, audio systems, and emerging tools to improve how you create, record, and deliver. Ideal for studios, artists, and creative teams seeking efficiency and innovation. Available for short-term problem solving or long-term partnerships.',
+          'Studio audits, systems guidance, and creative coaching subscriptions (two or four sessions monthly) starting at $350 per month.',
         icon: 'tabler:music',
+        callToAction: { text: 'Consulting details', href: '/services/music-technology-consulting' },
       },
       {
         title: 'Project Management Consulting',
         description:
-          'Creative projects need more than talent—they need structure. With PMP and Lean Six Sigma credentials, I offer consulting on workflow improvement, Agile adoption, and delivery systems for creative businesses. Flexible engagement options include short contracts for specific challenges or long-term collaborations to sustain growth.',
+          'Campaign planning, risk mapping, and stakeholder reporting. Retainers start at $95 per hour with sprint or launch packages.',
         icon: 'tabler:briefcase',
+        callToAction: { text: 'Delivery playbook', href: '/services/project-management-consulting' },
       },
       {
         title: 'Workflow Automation for Creatives',
         description:
-          'From automated client intake forms to smart logging systems, I build lightweight automations that save time and protect focus.',
+          'ClickUp, Airtable, and n8n automation builds that reduce admin churn. Discovery-to-build roadmaps from $600.',
         icon: 'tabler:settings-automation',
+        callToAction: { text: 'Automation roadmap', href: '/services/workflow-automation' },
+      },
+      {
+        title: 'Public Speaking Workshops',
+        description:
+          'Keynotes and interactive workshops on creative discipline, delivery, and emerging audio tech. Sessions begin at $750.',
+        icon: 'tabler:microphone',
+        callToAction: { text: 'Workshop formats', href: '/services/public-speaking-workshops' },
       },
     ]}
   />
@@ -104,7 +117,7 @@ const links = [
   <!-- CTA -->
   <CallToAction
     title="Ready to start?"
-    subtitle="Let’s match the right service to your goals."
+    subtitle="Let's match the right service to your goals."
     actions={[{ variant: 'primary', text: 'Get in touch', href: '/contact' }]}
   />
 </Layout>

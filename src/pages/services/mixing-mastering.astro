@@ -1,0 +1,157 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+import Header from '~/components/widgets/Header.astro';
+import Hero from '~/components/widgets/Hero.astro';
+import Steps from '~/components/widgets/Steps.astro';
+import Pricing from '~/components/widgets/Pricing.astro';
+import Content from '~/components/widgets/Content.astro';
+import CallToAction from '~/components/widgets/CallToAction.astro';
+
+const metadata = {
+  title: 'Mixing & Mastering | Technically Creative',
+  description:
+    'Mixing and mastering services with structured revisions, transparent pricing, and delivery-ready files for independent artists and teams.',
+};
+
+const links = [
+  { text: 'Home', href: '/' },
+  { text: 'Services', href: '/services' },
+  { text: 'About', href: '/about' },
+  { text: 'Credentials', href: '/credentials' },
+  { text: 'Contact', href: '/contact' },
+];
+---
+
+<Layout metadata={metadata}>
+  <Fragment slot="header">
+    <Header links={links} isSticky showToggleTheme />
+  </Fragment>
+
+  <Hero
+    id="mix-hero"
+    title="Mixing & Mastering"
+    tagline="Release-ready mixing"
+    actions={[
+      { variant: 'primary', text: 'Start your mix', href: '/contact#form' },
+      { variant: 'secondary', text: 'Back to services', href: '/services' },
+    ]}
+  >
+    <Fragment slot="subtitle">
+      Every engagement follows a documented workflow so your stems, notes, and approvals stay organized. Expect fast
+      communication, structured revisions, and final deliverables that translate across playback systems.
+    </Fragment>
+  </Hero>
+
+  <Steps
+    id="mix-process"
+    title="How the mix & master flow works"
+    items={[
+      {
+        title: 'Discovery & session audit',
+        description:
+          'We align on references, priorities, and mix notes. I perform a stem health check, organize naming conventions, and build a shared task board for transparency.',
+        icon: 'tabler:clipboard-check',
+      },
+      {
+        title: 'First pass mix delivery',
+        description:
+          'Within 5 business days you receive a level-balanced mix preview plus a process summary outlining key creative decisions and any flagged risks.',
+        icon: 'tabler:wave-sine',
+      },
+      {
+        title: 'Revision window & mastering',
+        description:
+          'Two targeted revision rounds keep momentum. Approved mixes are mastered for the requested formats (streaming, vinyl, live stems) and QC checked in multiple environments.',
+        icon: 'tabler:adjustments-check',
+      },
+      {
+        title: 'Delivery & archival',
+        description:
+          'Finals, alt mixes, instrumental/TV versions, and project notes are packaged in a versioned Drive folder so your team can pull assets anytime.',
+        icon: 'tabler:cloud-upload',
+      },
+    ]}
+  />
+
+  <Pricing
+    id="mix-rates"
+    title="Packages & base rates"
+    subtitle="Flat-rate tiers cover prep, mix, master, and delivery. Custom scoring or large ensemble work is quoted separately."
+    prices={[
+      {
+        title: 'Single',
+        subtitle: 'Up to 36 stems / 2 revisions',
+        price: '249',
+        period: 'per song',
+        items: [
+          { description: 'Detailed session cleanup + gain staging' },
+          { description: 'Mix + mastering with LUFS / peak report' },
+          { description: 'Instrumental & performance track included' },
+        ],
+        callToAction: { text: 'Book single mix', href: '/contact#form' },
+      },
+      {
+        title: 'EP Bundle',
+        subtitle: '3-6 songs / shared sonic palette',
+        price: '899',
+        period: 'per project',
+        hasRibbon: true,
+        ribbonTitle: 'Popular',
+        items: [
+          { description: 'Dedicated reference board for all songs' },
+          { description: 'Weekly status updates + progress exports' },
+          { description: 'Radio edit or clean versions on request' },
+        ],
+        callToAction: { text: 'Plan the EP', href: '/contact#form' },
+      },
+      {
+        title: 'Album / Live Set',
+        subtitle: '7-12 songs or 60 min live capture',
+        price: '2199',
+        period: 'per project',
+        items: [
+          { description: 'Hybrid analog / digital summing as needed' },
+          { description: 'Real-time feedback sessions (2 x 60 min)' },
+          { description: 'Archival stems + show playback deliverables' },
+        ],
+        callToAction: { text: 'Schedule discovery', href: '/contact#form' },
+      },
+    ]}
+  />
+
+  <Content
+    id="mix-addons"
+    title="Add-ons & delivery extras"
+    subtitle="Optional upgrades to support campaign rollouts and platform-specific submissions"
+    items={[
+      {
+        title: 'Stem mastering',
+        description: 'Ideal for remix partners or sync licensing; includes labeled folders and cue sheets.',
+        icon: 'tabler:folder-symlink',
+      },
+      {
+        title: 'Dolby Atmos prep',
+        description: 'Session organization and mix notes handed off to your immersive engineer or facility.',
+        icon: 'tabler:sphere',
+      },
+      {
+        title: 'Release coordination',
+        description: 'ISRC / UPC documentation, metadata sheets, and distribution-ready checklists.',
+        icon: 'tabler:playlist',
+      },
+    ]}
+  >
+    <Fragment slot="content">
+      <p>
+        Need something outside these bundles? I routinely support stems from Logic, Ableton, Pro Tools, and Reaper.
+        Hybrid mixing (outboard compression, summing, re-amping) is available on request and scoped during discovery.
+      </p>
+    </Fragment>
+  </Content>
+
+  <CallToAction
+    title="Let's finish your release"
+    subtitle="Share your references, stem count, and deadline so I can send over a tailored statement of work."
+    actions={[{ variant: 'primary', text: 'Start a project', href: '/contact#form' }]}
+  />
+</Layout>

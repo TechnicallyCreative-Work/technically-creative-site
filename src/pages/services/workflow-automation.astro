@@ -1,0 +1,160 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+import Header from '~/components/widgets/Header.astro';
+import Hero from '~/components/widgets/Hero.astro';
+import Steps from '~/components/widgets/Steps.astro';
+import Pricing from '~/components/widgets/Pricing.astro';
+import Content from '~/components/widgets/Content.astro';
+import CallToAction from '~/components/widgets/CallToAction.astro';
+
+const metadata = {
+  title: 'Workflow Automation for Creatives | Technically Creative',
+  description:
+    'Automation design and implementation for creative teams using ClickUp, Airtable, n8n, and custom scripts with full documentation.',
+};
+
+const links = [
+  { text: 'Home', href: '/' },
+  { text: 'Services', href: '/services' },
+  { text: 'About', href: '/about' },
+  { text: 'Credentials', href: '/credentials' },
+  { text: 'Contact', href: '/contact' },
+];
+---
+
+<Layout metadata={metadata}>
+  <Fragment slot="header">
+    <Header links={links} isSticky showToggleTheme />
+  </Fragment>
+
+  <Hero
+    id="automation-hero"
+    title="Workflow Automation for Creatives"
+    tagline="Automate your creative operations"
+    actions={[
+      { variant: 'primary', text: 'Start a discovery', href: '/contact#form' },
+      { variant: 'secondary', text: 'Back to services', href: '/services' },
+    ]}
+  >
+    <Fragment slot="subtitle">
+      From intake forms and approvals to asset handoffs, I map and automate the workflows that slow your team down.
+      Expect clean documentation, testing, and training so the automations keep working long after launch.
+    </Fragment>
+  </Hero>
+
+  <Steps
+    id="automation-process"
+    title="Automation engagement outline"
+    items={[
+      {
+        title: 'Discovery & mapping',
+        description:
+          'We diagram your current process, identify manual pain points, and agree on success metrics for automation.',
+        icon: 'tabler:hierarchy',
+      },
+      {
+        title: 'Prototype & validation',
+        description:
+          'I build low-risk prototypes in a sandbox environment, gather feedback, and confirm edge cases before rollout.',
+        icon: 'tabler:flask',
+      },
+      {
+        title: 'Implementation & training',
+        description:
+          'Automations are deployed with detailed documentation, user permissions, and video walkthroughs.',
+        icon: 'tabler:robot',
+      },
+      {
+        title: 'Monitoring & optimization',
+        description:
+          'We establish ownership, alerts, and maintenance cadences so the solution remains healthy as your team scales.',
+        icon: 'tabler:gauge',
+      },
+    ]}
+  />
+
+  <Pricing
+    id="automation-rates"
+    title="Automation packages"
+    subtitle="Pick a starting point—each engagement can expand as your needs evolve."
+    prices={[
+      {
+        title: 'Intake Automation',
+        subtitle: 'Inquiry forms → project boards',
+        price: '600',
+        period: 'per implementation',
+        items: [
+          { description: 'Form + triage workflow design' },
+          { description: 'Auto-create tasks, folders, or docs' },
+          { description: 'Email notifications + client updates' },
+        ],
+        callToAction: { text: 'Automate intake', href: '/contact#form' },
+      },
+      {
+        title: 'Production Ops Automation',
+        subtitle: 'Asset routing & approvals',
+        price: '1100',
+        period: 'per implementation',
+        hasRibbon: true,
+        ribbonTitle: 'Team favorite',
+        items: [
+          { description: 'Multi-stage approvals with SLA tracking' },
+          { description: 'Asset versioning + cloud storage syncing' },
+          { description: 'Dashboards and stakeholder alerts' },
+        ],
+        callToAction: { text: 'Streamline production', href: '/contact#form' },
+      },
+      {
+        title: 'Optimization Retainer',
+        subtitle: '2 improvement sprints each month',
+        price: '400',
+        period: 'per month',
+        items: [
+          { description: 'Monitor automations & error handling' },
+          { description: 'Quarterly roadmap + reporting' },
+          { description: 'Team training refreshers as tools evolve' },
+        ],
+        callToAction: { text: 'Add ongoing support', href: '/contact#form' },
+      },
+    ]}
+  />
+
+  <Content
+    id="automation-stack"
+    title="Platforms I work with"
+    subtitle="Your stack stays central—automations connect the tools you already trust"
+    items={[
+      {
+        title: 'Project management',
+        description: 'ClickUp, Notion, Asana, Airtable, Trello, Jira—configured with custom fields and automations.',
+        icon: 'tabler:checkbox',
+      },
+      {
+        title: 'Automation engines',
+        description: 'n8n, Make, Zapier, and lightweight TypeScript scripts for bespoke integrations.',
+        icon: 'tabler:circuit-bulb',
+      },
+      {
+        title: 'Storage & delivery',
+        description: 'Google Workspace, Dropbox, Frame.io, Drive, and AWS S3 with organized folder structures.',
+        icon: 'tabler:cloud-data-connection',
+      },
+    ]}
+  >
+    <Fragment slot="content">
+      <p>
+        Have an internal dev team? I can hand off detailed technical specs and user stories so they can take it across the
+        finish line.
+      </p>
+    </Fragment>
+  </Content>
+
+  <CallToAction
+    title="Free up creative time"
+    subtitle="Send a loom or write-up of your current workflow and I'll respond with suggested automations and next steps."
+    actions={[{ variant: 'primary', text: 'Share your workflow', href: '/contact#form' }]}
+  />
+</Layout>
+
+
+

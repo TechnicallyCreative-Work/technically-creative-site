@@ -1,0 +1,160 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+import Header from '~/components/widgets/Header.astro';
+import Hero from '~/components/widgets/Hero.astro';
+import Steps from '~/components/widgets/Steps.astro';
+import Pricing from '~/components/widgets/Pricing.astro';
+import Content from '~/components/widgets/Content.astro';
+import CallToAction from '~/components/widgets/CallToAction.astro';
+
+const metadata = {
+  title: 'Public Speaking Workshops | Technically Creative',
+  description:
+    'Keynotes and workshops that translate disciplined creative delivery into actionable habits for teams, conferences, and classrooms.',
+};
+
+const links = [
+  { text: 'Home', href: '/' },
+  { text: 'Services', href: '/services' },
+  { text: 'About', href: '/about' },
+  { text: 'Credentials', href: '/credentials' },
+  { text: 'Contact', href: '/contact' },
+];
+---
+
+<Layout metadata={metadata}>
+  <Fragment slot="header">
+    <Header links={links} isSticky showToggleTheme />
+  </Fragment>
+
+  <Hero
+    id="speaking-hero"
+    title="Public Speaking & Workshops"
+    tagline="Creative leadership talks & training"
+    actions={[
+      { variant: 'primary', text: 'Check availability', href: '/contact#form' },
+      { variant: 'secondary', text: 'Back to services', href: '/services' },
+    ]}
+  >
+    <Fragment slot="subtitle">
+      I blend real-world production case studies with actionable frameworks that audiences can implement immediately. Each
+      session includes worksheets, follow-up resources, and optional coaching add-ons.
+    </Fragment>
+  </Hero>
+
+  <Steps
+    id="speaking-process"
+    title="How we build your session"
+    items={[
+      {
+        title: 'Pre-event discovery',
+        description:
+          'We define audience, goals, and success metrics. You receive an outline confirming key topics and interactive elements.',
+        icon: 'tabler:messages',
+      },
+      {
+        title: 'Content tailoring',
+        description:
+          'I customize stories, demos, and worksheets to match your industry and desired takeaways. Draft slides are shared for review.',
+        icon: 'tabler:edit',
+      },
+      {
+        title: 'Delivery & facilitation',
+        description:
+          'Sessions are high-energy, practical, and include live Q&A. Workshops feature small-group exercises to cement concepts.',
+        icon: 'tabler:podium',
+      },
+      {
+        title: 'Post-session reinforcement',
+        description:
+          'Within 48 hours you receive recap notes, recommended next steps, and optional coaching offer for attendees.',
+        icon: 'tabler:mail-forward',
+      },
+    ]}
+  />
+
+  <Pricing
+    id="speaking-rates"
+    title="Speaking formats"
+    subtitle="Travel costs added at cost. Virtual delivery available for all options."
+    prices={[
+      {
+        title: 'Keynote Talk',
+        subtitle: '45 minutes + 15 min Q&A',
+        price: '750',
+        period: 'flat fee',
+        items: [
+          { description: 'Customized slide deck & handout' },
+          { description: 'Up to 150 attendees' },
+          { description: 'Recording rights optional add-on' },
+        ],
+        callToAction: { text: 'Request keynote', href: '/contact#form' },
+      },
+      {
+        title: 'Half-Day Workshop',
+        subtitle: 'Interactive training for teams',
+        price: '1450',
+        period: 'per session',
+        hasRibbon: true,
+        ribbonTitle: 'Most booked',
+        items: [
+          { description: 'Worksheets + facilitation toolkit' },
+          { description: 'Breakout coaching with live exercises' },
+          { description: 'Follow-up office hours (30 min)' },
+        ],
+        callToAction: { text: 'Plan a workshop', href: '/contact#form' },
+      },
+      {
+        title: 'Two-Day Intensive',
+        subtitle: 'Strategic offsite or academic program',
+        price: '3200',
+        period: 'per engagement',
+        items: [
+          { description: 'Curriculum co-design + success metrics' },
+          { description: 'Participant resource hub & recordings' },
+          { description: 'Optional coaching add-on for attendees' },
+        ],
+        callToAction: { text: 'Design the intensive', href: '/contact#form' },
+      },
+    ]}
+  />
+
+  <Content
+    id="speaking-topics"
+    title="Popular topics"
+    subtitle="Each session is tailored, but these themes resonate across creative teams"
+    items={[
+      {
+        title: 'Creative discipline meets delivery',
+        description: 'How to protect experimentation while still hitting deadlines and budgets.',
+        icon: 'tabler:compass',
+      },
+      {
+        title: 'Systems for independent creatives',
+        description: 'Building lightweight project hubs, automations, and rituals that prevent burnout.',
+        icon: 'tabler:binary-tree',
+      },
+      {
+        title: 'Audio + AI collaboration',
+        description: 'Demystifying the tools and outlining ethical, efficient workflows for modern productions.',
+        icon: 'tabler:sparkles',
+      },
+    ]}
+  >
+    <Fragment slot="content">
+      <p>
+        Need a custom theme? I collaborate with your programming team to weave in company priorities, product launches,
+        or curriculum outcomes.
+      </p>
+    </Fragment>
+  </Content>
+
+  <CallToAction
+    title="Bring the workshop to your team"
+    subtitle="Share your event date, audience profile, and desired outcomes—I'll reply with availability and next steps."
+    actions={[{ variant: 'primary', text: 'Check my calendar', href: '/contact#form' }]}
+  />
+</Layout>
+
+
+

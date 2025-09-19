@@ -3,11 +3,8 @@ import Layout from '~/layouts/PageLayout.astro';
 import Header from '~/components/widgets/Header.astro';
 
 import Hero from '~/components/widgets/Hero.astro';
-import Note from '~/components/widgets/Note.astro';
-import Features from '~/components/widgets/Features.astro';
 import Features2 from '~/components/widgets/Features2.astro';
 import Steps from '~/components/widgets/Steps.astro';
-import Content from '~/components/widgets/Content.astro';
 import FAQs from '~/components/widgets/FAQs.astro';
 import Stats from '~/components/widgets/Stats.astro';
 import CallToAction from '~/components/widgets/CallToAction.astro';
@@ -40,14 +37,12 @@ const links = [
         href: '/services',
       },
     ]}
-  >
-    <Fragment slot="title"> Creative sound. <p>Engineered <p>with discipline</p> </Fragment>
-    
-<p>
+  > 
+    <Fragment slot="title"> Creative sound. <p>Engineered with discipline</p> </Fragment>
+
+
   <br />
-  
-  <br /> 
-</p>
+  <br />
     <Fragment slot="subtitle">
       At Technically Creative LLC, I bring together a Master’s in Music Technology and PMP project management expertise.
       That means your music or media project gets the artistry it deserves—and the professional process it needs to
@@ -103,49 +98,38 @@ const links = [
     tagline="Highlights"
     items={[
       {
-        title: 'Music production',
-        description: "Ever tried driving without GPS? Boom! That's why websites need headers for direction.",
-        icon: 'flat-color-icons:template',
+        title: 'Mixing & Mastering',
+        description: "Release-ready mixes and masters that translate across all playback systems.",
+        icon: 'tabler:music',
       },
       {
-        title: 'Sound Design',
+        title: 'Sound Design & Foley',
         description:
-          "Picture a superhero landing – epic, right? That's the job of a Hero section, making grand entrances!",
-        icon: 'flat-color-icons:gallery',
+          "Custom soundscapes and immersive audio for film, games, and interactive experiences.",
+        icon: 'flat-color-icons:sound',
+      },
+      {
+        title: 'Music Technology Consulting',
+        description:
+          'Expert guidance on DAWs, studio setup, signal flow, and audio software optimization.',
+        icon: 'flat-color-icons:idea',
       },
       {
         title: 'Project Management',
         description:
-          'Where websites strut their stuff and show off superpowers. No holding back on the bragging rights here!',
-        icon: 'flat-color-icons:approval',
+          "Structured workflows and Agile methodologies to keep your creative projects on track and on budget.",
+        icon: 'flat-color-icons:planner',
       },
       {
-        title: 'Agile',
+        title: 'Workflow Automation',
         description:
-          "Dive into the meat and potatoes of a site; without it, you'd just be window shopping. Content is king.",
-        icon: 'flat-color-icons:document',
+          'Automate repetitive tasks, streamline client intake, and optimize your creative pipeline for efficiency.',
+        icon: 'flat-color-icons:workflow',
       },
       {
-        title: 'Music Techcnology',
-        description:
-          'That enthusiastic friend who\'s always urging, "Do it! Do it!"? Yeah, that\'s this button nudging you towards adventure.',
-        icon: 'flat-color-icons:advertising',
-      },
-      {
-        title: 'Digital Assets',
-        description: 'Behold the dessert menu of the website world. Tempting choices await, can you resist?',
-        icon: 'flat-color-icons:currency-exchange',
-      },
-      {
-        title: 'Consulting and Master Classes',
-        description: 'Step into the gossip corner! Here, other visitors spill the beans and share the juicy details.',
+        title: 'Public Speaking & Workshops',
+        description: 'Engaging presentations and hands-on training on music technology, audio production, and project management for creatives.',
         icon: 'flat-color-icons:voice-presentation',
-      },
-      {
-        title: 'Contact',
-        description:
-          'Like a digital mailbox, but faster! Drop a line, ask a question, or send a virtual high-five. Ding! Message in.',
-        icon: 'flat-color-icons:business-contact',
       },
     ]}
   >
@@ -210,10 +194,10 @@ const links = [
   <!-- Stats Widget ****************** -->
   <Stats
     stats={[
-      { title: 'Asset Downloads', amount: '132K' },
-      { title: 'Projects Completed', amount: '24.8K' },
-      { title: 'Projects in Progress', amount: '10.3K' },
-      { title: 'Newletter Subscribers', amount: '48.4K' },
+      { title: 'Asset Downloads', amount: '.12K' },
+      { title: 'Projects Completed', amount: '0.8K' },
+      { title: 'Projects in Progress', amount: '0.3K' },
+      { title: 'Newletter Subscribers', amount: '0.1K' },
     ]}
   />
 
@@ -229,11 +213,11 @@ const links = [
     ]}
   >
     <Fragment slot="title">
-      Technnically <br class="block sm:hidden" /><span class="sm:whitespace-nowrap">Creative</span>
+      Technically <br class="block sm:hidden" /><span class="sm:whitespace-nowrap">Creative</span>
     </Fragment>
 
     <Fragment slot="subtitle">
-      Want to learn more? <br class="hidden md:inline" /><br class="hidden md:inline" < Fragment />
+      Want to learn more? <br class="hidden md:inline" /><br class="hidden md:inline" />
     </Fragment>
   </CallToAction>
 </Layout>
