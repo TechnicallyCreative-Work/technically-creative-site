@@ -16,6 +16,9 @@ const {
 
   id,
   bg = await Astro.slots.render('bg'),
+  backgroundImage,
+  backgroundClass = 'bg-cover bg-center bg-no-repeat',
+  backgroundOverlayClass = 'bg-slate-900/60',
 } = Astro.props;
 
 const hasInlineImage = inlineImage && Boolean(image);
@@ -23,9 +26,21 @@ const hasInlineImage = inlineImage && Boolean(image);
 
 <section class="relative md:-mt-[76px] not-prose" {...id ? { id } : {}}>
   <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
-    <slot name="bg">
-      {bg ? <Fragment set:html={bg} /> : null}
-    </slot>
+    {backgroundImage ? (
+      <Fragment>
+        <div
+          class={`absolute inset-0 ${backgroundClass}`}
+          style={`background-image: url(${backgroundImage});`}
+        ></div>
+        {backgroundOverlayClass && (
+          <div class={`absolute inset-0 ${backgroundOverlayClass}`}></div>
+        )}
+      </Fragment>
+    ) : (
+      <slot name="bg">
+        {bg ? <Fragment set:html={bg} /> : null}
+      </slot>
+    )}
   </div>
   <div class="relative max-w-7xl mx-auto px-4 sm:px-6">
     <div class="pt-0 md:pt-[76px] pointer-events-none"></div>
@@ -132,4 +147,5 @@ const hasInlineImage = inlineImage && Boolean(image);
     </div>
   </div>
 </section>
+
 

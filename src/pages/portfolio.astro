@@ -1,0 +1,93 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+import Header from '~/components/widgets/Header.astro';
+import Hero from '~/components/widgets/Hero.astro';
+import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
+import CallToAction from '~/components/widgets/CallToAction.astro';
+import heroBackground from '~/assets/images/wbckgroundtemp.jpg';
+import { getPermalink } from '~/utils/permalinks';
+
+const metadata = {
+  title: 'Portfolio - Technically Creative LLC',
+  description: 'Selected audio, sound design, and project management work from Technically Creative LLC.',
+};
+
+const links = [
+  { text: 'Home', href: '/' },
+  { text: 'Services', href: '/services' },
+  { text: 'About', href: '/about' },
+  { text: 'Credentials', href: '/credentials' },
+  { text: 'Portfolio', href: '/portfolio' },
+  { text: 'Contact', href: '/contact' },
+];
+
+const projects = [
+  {
+    title: 'Cinematic Trailer Sound Design',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/g_iGfejNiSA',
+  },
+  {
+    title: 'Audio Post for Short Film',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/7z41UJqyl8s',
+  },
+  {
+    title: 'Electronic Music Production Showcase',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/OmkPsz1SsZI',
+  },
+  {
+    title: 'Live Performance Mix Breakdown',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/p-D9LjF1XJY',
+  },
+];
+---
+
+<Layout metadata={metadata}>
+  <Fragment slot="header">
+    <Header
+      links={links}
+      actions={[{ text: 'Hire me', href: getPermalink('/contact#form') }]}
+      isSticky
+      showToggleTheme
+    />
+  </Fragment>
+  <Hero
+    tagline="Portfolio"
+    title="Featured Work"
+    backgroundImage={heroBackground.src}
+    backgroundOverlayClass="bg-slate-900/70"
+    actions={[{ variant: 'primary', text: 'Start a project', href: getPermalink('/contact#form') }]}
+  >
+    <Fragment slot="subtitle">
+      A curated mix of recent sound design, mixing, and production work. Each project balances creative impact with
+      delivery discipline—the same workflows I bring to every client engagement.
+    </Fragment>
+  </Hero>
+
+  <WidgetWrapper id="video-projects" containerClass="max-w-6xl mx-auto py-12 md:py-16">
+    <h2 class="text-3xl font-bold tracking-tight sm:text-4xl mb-8 text-center text-slate-900 dark:text-white">
+      Featured Projects
+    </h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+      {projects.map(({ title, embedUrl }) => (
+        <div class="w-full aspect-video rounded-2xl overflow-hidden shadow-lg">
+          <iframe
+            class="w-full h-full"
+            src={embedUrl}
+            title={title}
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+          ></iframe>
+        </div>
+      ))}
+    </div>
+  </WidgetWrapper>
+
+  <CallToAction
+    title="Have a project in mind?"
+    subtitle="Tell me what you need—mixing, sound design, workflow cleanup—and I’ll reply within one business day."
+    actions={[{ variant: 'primary', text: 'Start a project', href: getPermalink('/contact#form') }]}
+  />
+</Layout>
+

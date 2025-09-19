@@ -21,15 +21,26 @@ const {
   id,
   isDark = false,
   classes = {},
+  containerClass = '',
+  as = 'section',
   bg = await Astro.slots.render('bg'),
 } = Astro.props;
+
+const {
+  container: containerClassName = '',
+  inner: innerClassName = '',
+  content: contentClassName = '',
+  image: imageClassName = '',
+  imageInner: imageInnerClassName = '',
+} = classes ?? {};
 ---
 
 <WidgetWrapper
   id={id}
   isDark={isDark}
-  containerClass={`max-w-7xl mx-auto ${isAfterContent ? 'pt-0 md:pt-0 lg:pt-0' : ''} ${classes?.container ?? ''}`}
+  containerClass={`max-w-7xl mx-auto ${isAfterContent ? 'pt-0 md:pt-0 lg:pt-0' : ''} ${containerClass} ${containerClassName}`}
   bg={bg}
+  as={as}
 >
   <Headline
     title={title}
@@ -42,8 +53,8 @@ const {
     }}
   />
   <div class="mx-auto max-w-7xl p-4 md:px-8">
-    <div class={`md:flex md:items-stretch ${isReversed ? 'md:flex-row-reverse' : ''} md:gap-16`}>
-      <div class={`${image ? 'md:basis-1/2' : ''} self-center`}>
+    <div class={`md:flex md:items-stretch ${isReversed ? 'md:flex-row-reverse' : ''} md:gap-16 ${innerClassName}`}>
+      <div class={`${image ? 'md:basis-1/2' : ''} self-center ${contentClassName}`}>
         {content && <div class="mb-12 text-lg dark:text-slate-400" set:html={content} />}
 
         {
@@ -69,10 +80,10 @@ const {
         />
       </div>
       {image && (
-        <div aria-hidden="true" class="mt-10 md:mt-0 md:basis-1/2 h-full">
+        <div aria-hidden="true" class={`mt-10 md:mt-0 md:basis-1/2 h-full ${imageClassName}`}>
           {
             image && (
-              <div class="relative m-auto max-w-4xl">
+              <div class={`relative m-auto max-w-4xl ${imageInnerClassName}`}>
                 {typeof image === 'string' ? (
                   <Fragment set:html={image} />
                 ) : (

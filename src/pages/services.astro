@@ -6,6 +6,7 @@ import Hero from '~/components/widgets/Hero.astro';
 import Features from '~/components/widgets/Features.astro';
 import Content from '~/components/widgets/Content.astro';
 import CallToAction from '~/components/widgets/CallToAction.astro';
+import heroBackground from '~/assets/images/wbckgroundtemp.jpg';
 
 const metadata = {
   title: 'Services - Technically Creative',
@@ -17,6 +18,7 @@ const links = [
   { text: 'Services', href: '/services' },
   { text: 'About', href: '/about' },
   { text: 'Credentials', href: '/credentials' },
+  { text: 'Portfolio', href: '/portfolio' },
   { text: 'Contact', href: '/contact' },
 ];
 ---
@@ -28,6 +30,8 @@ const links = [
 
   <!-- Hero -->
   <Hero
+    backgroundImage={heroBackground.src}
+    backgroundOverlayClass="bg-slate-900/70"
     id="hero"
     title="Services"
     tagline="From sound to systems"

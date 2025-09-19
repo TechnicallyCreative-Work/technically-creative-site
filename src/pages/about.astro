@@ -8,6 +8,7 @@ import { getPermalink } from '~/utils/permalinks';
 
 // Images imported from src/assets so Astro infers width/height (no CLS)
 import studioHero from '../assets/images/studio-hero-16x9-cyberpunk.png';
+import heroBackground from '~/assets/images/wbckgroundtemp.jpg';
 
 
 // ────────────────────────────────────────────────────────────────────────────────
@@ -25,6 +26,7 @@ const links = [
   { text: 'Services', href: '/services' },
   { text: 'About', href: '/about' },
   { text: 'Credentials', href: '/credentials' },
+  { text: 'Portfolio', href: '/portfolio' },
   { text: 'Contact', href: '/contact' },
 ];
 ---
@@ -36,6 +38,8 @@ const links = [
 
   <!-- Hero -->
   <Hero
+    backgroundImage={heroBackground.src}
+    backgroundOverlayClass="bg-slate-900/70"
     id="hero"
     title="About the company"
     tagline="Where music technology meets structured delivery"
