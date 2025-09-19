@@ -5,7 +5,7 @@ export interface Post {
   /** A unique ID number that identifies a post. */
   id: string;
 
-  /** A post’s unique slug – part of the post’s URL based on its name, i.e. a post called “My Sample Page” has a slug “my-sample-page”. */
+  /** A postΓÇÖs unique slug ΓÇô part of the postΓÇÖs URL based on its name, i.e. a post called ΓÇ£My Sample PageΓÇ¥ has a slug ΓÇ£my-sample-pageΓÇ¥. */
   slug: string;
 
   /**  */
