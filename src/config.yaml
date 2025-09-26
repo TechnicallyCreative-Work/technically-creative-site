@@ -8,21 +8,19 @@ site:
 metadata:
   title:
     default: 'Technically Creative'
-    template: '%s — Technically Creative'
-  description: 'Websites, automations, and creative systems—built the right way.'
+    template: '%s - Technically Creative'
+  description: 'Websites, automations, and creative systems built the right way.'
   robots:
     index: true
     follow: true
   openGraph:
-  site_name: 'Technically Creative'
-  images:
-    - url: '~/assets/images/og-default.jpg'
-      width: 1200
-      height: 628
+    site_name: 'Technically Creative'
+    images:
+      - url: '~/assets/images/og-default.jpg'
+        width: 1200
+        height: 628
   twitter:
     card: 'summary_large_image'
-    creator: '@'
-    site: '@'
 
 i18n:
   language: 'en'

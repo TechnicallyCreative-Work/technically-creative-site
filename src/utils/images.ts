@@ -8,7 +8,7 @@ type OptimizedImage = Awaited<ReturnType<ImagesOptimizer>>[0];
 const load = async function () {
   let images: Record<string, () => Promise<unknown>> | undefined = undefined;
   try {
-    images = import.meta.glob('../../assets/images/**/*.{jpeg,jpg,png,tiff,webp,gif,svg}');
+    images = import.meta.glob('../assets/images/**/*.{jpeg,jpg,png,tiff,webp,gif,svg}');
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     // continue regardless of error
@@ -44,14 +44,20 @@ export const findImage = async (
   }
 
   const images = await fetchLocalImages();
-  const key = imagePath
-  .replace('~/', '/src/')           // Handle virtual import paths
-  .replace(/^\/?/, '/src/');        // Ensure it starts with `/src/`
-console.log('Looking for image with key:', key);
+  const normalized = imagePath.replace(/^~\//, '').replace(/^\/+/, '').replace(/\\/g, '/');
+  const candidates = [
+    `/src/${normalized}`,
+    `src/${normalized}`,
+    `./${normalized}`,
+    `../${normalized}`,
+    `../../${normalized}`
+  ];
+  const match = images
+    ? candidates.find((candidate) => typeof images[candidate] === 'function')
+    : undefined;
 
-
-  return images && typeof images[key] === 'function'
-    ? ((await images[key]()) as { default: ImageMetadata })['default']
+  return match && images
+    ? ((await images[match]()) as { default: ImageMetadata })['default']
     : null;
 };
 

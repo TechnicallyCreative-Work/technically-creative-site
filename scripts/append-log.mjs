@@ -1,125 +1,93 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
 
-const [,, filePath, titleArg = '' ] = process.argv;
+const [, , filePath, titleArg = '' ] = process.argv;
+
 if (!filePath) {
   console.error('Usage: node scripts/append-log.mjs <path-to-json> "<short-title>"');
   process.exit(1);
 }
 
-function ensureReadmeSkeleton(p) {
-  if (!existsSync(p)) {
-    const dir = dirname(p);
-    if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
-    writeFileSync(p,
-`# Daily Logs — Changelog (v1)
+const readmePath = 'daily-logs/README.md';
+
+function ensureReadmeSkeleton(path) {
+  if (existsSync(path)) {
+    return;
+  }
+
+  const directory = dirname(path);
+  if (!existsSync(directory)) {
+    mkdirSync(directory, { recursive: true });
+  }
+
+  const template = `# Daily Logs - Changelog (v1)
 
 This README tracks changes to the \`daily-logs/\` folder.
 ## Conventions
 - File naming: \`YYYY-MM-DD-<short-label>.json\`
 - One entry per file using the canonical schema.
-- Commit message: \`chore(logs): <action> for YYYY-MM-DD — <short label>\`
+- Commit message: \`chore(logs): <action> for YYYY-MM-DD - <short label>\`
 
 ## Entries
-`);
-  }
+`;
+
+  writeFileSync(path, template);
 }
 
-function mdEscape(s) {
-  return String(s).replace(/\r?\n/g, ' ').trim();
+function mdEscape(value) {
+  return String(value ?? '')
+    .replace(/\r?\n/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
-const readmePath = 'daily-logs/README.md';
 ensureReadmeSkeleton(readmePath);
 
-const jsonRaw = readFileSync(filePath, 'utf8');
+let raw;
+try {
+  raw = readFileSync(filePath, 'utf8');
+} catch (error) {
+  console.error('Unable to read log JSON at', filePath);
+  process.exit(1);
+}
+
 let data;
 try {
-  data = JSON.parse(jsonRaw);
-} catch (e) {
+  data = JSON.parse(raw);
+} catch (error) {
   console.error('Invalid JSON in', filePath);
   process.exit(1);
 }
 
-const entry = Array.isArray(data) ? data[0] : data;
+const entry = Array.isArray(data) ? data[0] : (data ?? {});
+
 const date = entry?.date ?? 'UNKNOWN-DATE';
-const fileName = filePath.split('/').pop();
-const shortTitle = titleArg || entry?.project || 'Log Entry';
+const fileName = filePath.split(/[/\\]/).pop() ?? 'UNKNOWN-FILE';
+const shortTitle = titleArg.trim() || entry?.project || 'Log Entry';
 const note = entry?.ai_summary || entry?.notes || '';
-const snippet = mdEscape(note).slice(0, 240) + (note.length > 2
+const excerpt = mdEscape(note).slice(0, 240);
+const snippet = excerpt ? `${excerpt}${note.length > 240 ? '...' : ''}` : '-';
 
-cd ~/technically-creative-site
-
-# 1) Add the helper script
-mkdir -p scripts
-cat > scripts/append-log.mjs <<'EOF'
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
-import { dirname } from 'path';
-
-const [,, filePath, titleArg = '' ] = process.argv;
-if (!filePath) {
-  console.error('Usage: node scripts/append-log.mjs <path-to-json> "<short-title>"');
-  process.exit(1);
-}
-
-function ensureReadmeSkeleton(p) {
-  if (!existsSync(p)) {
-    const dir = dirname(p);
-    if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
-    writeFileSync(p,
-`# Daily Logs — Changelog (v1)
-
-This README tracks changes to the \`daily-logs/\` folder.
-## Conventions
-- File naming: \`YYYY-MM-DD-<short-label>.json\`
-- One entry per file using the canonical schema.
-- Commit message: \`chore(logs): <action> for YYYY-MM-DD — <short label>\`
-
-## Entries
-`);
-  }
-}
-
-function mdEscape(s) {
-  return String(s).replace(/\r?\n/g, ' ').trim();
-}
-
-const readmePath = 'daily-logs/README.md';
-ensureReadmeSkeleton(readmePath);
-
-const jsonRaw = readFileSync(filePath, 'utf8');
-let data;
+let readme = '';
 try {
-  data = JSON.parse(jsonRaw);
-} catch (e) {
-  console.error('Invalid JSON in', filePath);
+  readme = readFileSync(readmePath, 'utf8');
+} catch (error) {
+  console.error('Unable to read', readmePath);
   process.exit(1);
 }
 
-const entry = Array.isArray(data) ? data[0] : data;
-const date = entry?.date ?? 'UNKNOWN-DATE';
-const fileName = filePath.split('/').pop();
-const shortTitle = titleArg || entry?.project || 'Log Entry';
-const note = entry?.ai_summary || entry?.notes || '';
-const snippet = mdEscape(note).slice(0, 240) + (note.length > 240 ? '…' : '');
-
-let readme = readFileSync(readmePath, 'utf8');
-
-// Skip if an entry for this file already exists
-const already = new RegExp(`\\*\\*File:\\*\\*\\s*\`${fileName}\\``).test(readme);
-if (already) {
+const marker = `**File:** \`${fileName}\``;
+if (readme.includes(marker)) {
   console.log('README already contains an entry for', fileName);
   process.exit(0);
 }
 
-const block =
-`\n### ${date} — ${shortTitle}
-- **File:** \`${fileName}\`
-- **Status:** Added
-- **Notes:** ${snippet || '—'}
-`;
+const block = `\n### ${date} - ${shortTitle}\n- **File:** \`${fileName}\`\n- **Status:** Added\n- **Notes:** ${snippet}\n`;
 
-readme += block;
-writeFileSync(readmePath, readme, 'utf8');
-
-console.log('Appended changelog entry for', fileName);
+try {
+  writeFileSync(readmePath, readme + block, 'utf8');
+  console.log('Appended changelog entry for', fileName);
+} catch (error) {
+  console.error('Failed to update changelog README:', error.message);
+  process.exit(1);
+}

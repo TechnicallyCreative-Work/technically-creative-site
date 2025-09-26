@@ -1,9 +1,21 @@
 ---
 import { SITE } from 'astrowind:config';
+import logoMark from '~/assets/images/logo.svg';
+
+const siteName = SITE?.name ?? 'Technically Creative';
 ---
 
-<span
-  class="self-center ml-2 rtl:ml-0 rtl:mr-2 text-2xl md:text-xl font-bold text-gray-900 whitespace-nowrap dark:text-white"
->
-   {SITE?.name}
+<span class="flex items-center text-gray-900 dark:text-white">
+  <img
+    src={logoMark.src}
+    width={48}
+    height={48}
+    loading="lazy"
+    decoding="async"
+    alt={siteName}
+    class="h-9 w-auto md:h-8 drop-shadow-sm"
+  />
+  <span class="ml-2 text-2xl font-bold whitespace-nowrap hidden sm:inline md:text-xl">
+    {siteName}
+  </span>
 </span>

@@ -21,6 +21,13 @@ const links = [
   { text: 'Portfolio', href: '/portfolio' },
   { text: 'Contact', href: '/contact' },
 ];
+
+const workflowVisual = {
+  src: '~/assets/images/verticalcool.jpg',
+  alt: 'Workflow',
+  width: 889,
+  height: 2000,
+};
 ---
 
 <Layout metadata={metadata}>
@@ -108,13 +115,7 @@ const links = [
         description: 'After launch, I monitor performance, train your team, and provide regular updates.',
       },
     ]}
-    image={{
-      src: 'https://images.unsplash.com/photo-1581091215367-59ab6c43a8b0?q=80&w=1600&auto=format&fit=crop',
-      alt: 'Workflow',
-      aspectRatio: '16:9',
-      width: 1600,
-      height: 900,
-    }}
+    image={workflowVisual}
   >
     <Fragment slot="bg">
       <div class="absolute inset-0 bg-sky-50 dark:bg-transparent"></div>
@@ -128,4 +129,3 @@ const links = [
     actions={[{ variant: 'primary', text: 'Get in touch', href: '/contact' }]}
   />
 </Layout>
-
