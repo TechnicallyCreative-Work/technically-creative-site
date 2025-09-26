@@ -5,7 +5,7 @@ import logoMark from '~/assets/images/logo.svg';
 const siteName = SITE?.name ?? 'Technically Creative';
 ---
 
-<span class="flex items-center text-gray-900 dark:text-white">
+<span class="flex min-w-0 items-center text-gray-900 dark:text-white">
   <img
     src={logoMark.src}
     width={48}
@@ -13,9 +13,9 @@ const siteName = SITE?.name ?? 'Technically Creative';
     loading="lazy"
     decoding="async"
     alt={siteName}
-    class="h-9 w-auto md:h-8 drop-shadow-sm"
+    class="h-9 w-auto shrink-0 md:h-8 drop-shadow-sm"
   />
-  <span class="ml-2 text-2xl font-bold whitespace-nowrap hidden sm:inline md:text-xl">
+  <span class="ml-2 hidden whitespace-nowrap text-2xl font-bold md:text-xl lg:inline">
     {siteName}
   </span>
 </span>
