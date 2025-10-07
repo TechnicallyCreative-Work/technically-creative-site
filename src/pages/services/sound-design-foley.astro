@@ -6,6 +6,7 @@ import Steps from '~/components/widgets/Steps.astro';
 import Pricing from '~/components/widgets/Pricing.astro';
 import Content from '~/components/widgets/Content.astro';
 import CallToAction from '~/components/widgets/CallToAction.astro';
+import { headerData } from '~/navigation';
 import heroBackground from '~/assets/images/wbckgroundtemp.jpg';
 
 const metadata = {
@@ -14,14 +15,7 @@ const metadata = {
     'Custom sound design, Foley, and sonic branding for trailers, short-form content, and interactive media with a repeatable production workflow.',
 };
 
-const links = [
-  { text: 'Home', href: '/' },
-  { text: 'Services', href: '/services' },
-  { text: 'About', href: '/about' },
-  { text: 'Credentials', href: '/credentials' },
-  { text: 'Portfolio', href: '/portfolio' },
-  { text: 'Contact', href: '/contact' },
-];
+const links = [...headerData.links, { text: 'Portfolio', href: '/portfolio' }];
 ---
 
 <Layout metadata={metadata}>

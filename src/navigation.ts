@@ -44,6 +44,10 @@ export const headerData = {
       href: getPermalink('/credentials'),
     },
     {
+      text: 'Store',
+      href: 'https://store.technicallycreative.work',
+    },
+    {
       text: 'Contact',
       href: getPermalink('/contact'),
     },

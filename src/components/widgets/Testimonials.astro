@@ -1,8 +1,8 @@
 ---
+import { Icon } from 'astro-icon/components';
 import Headline from '~/components/ui/Headline.astro';
 import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
 import Button from '~/components/ui/Button.astro';
-import Image from '~/components/common/Image.astro';
 import type { Testimonials as Props } from '~/types';
 
 const {
@@ -14,62 +14,178 @@ const {
 
   id,
   isDark = false,
+  isFullWidth = false,
   classes = {},
   bg = await Astro.slots.render('bg'),
-} = Astro.props;
+} = Astro.props as Props;
+
+const normalizedTestimonials =
+  (testimonials ?? [])
+    .map(({ testimonial, quote, name, title: personTitle, job, relationship, image }) => ({
+      quote: (quote ?? testimonial ?? '').trim(),
+      name: name ?? '',
+      title: (personTitle ?? job ?? '').trim(),
+      relationship: relationship ?? '',
+      image,
+    }))
+    .filter(({ quote }) => Boolean(quote)) ?? [];
+
+const hasCarousel = normalizedTestimonials.length > 1;
+const carouselId = `${id ?? 'testimonials'}-${Math.random().toString(36).slice(2, 8)}`;
 ---
 
-<WidgetWrapper id={id} isDark={isDark} containerClass={`max-w-6xl mx-auto ${classes?.container ?? ''}`} bg={bg}>
+<WidgetWrapper
+  id={id}
+  isDark={isDark}
+  containerClass={`${isFullWidth ? 'w-full' : 'max-w-6xl mx-auto'} ${classes?.container ?? ''}`}
+  bg={bg}
+>
   <Headline title={title} subtitle={subtitle} tagline={tagline} />
 
-  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-    {
-      testimonials &&
-        testimonials.map(({ title, testimonial, name, job, image }) => (
-          <div class="flex h-auto intersect-once motion-safe:md:intersect:animate-fade motion-safe:md:opacity-0 intersect-quarter">
-            <div class="flex flex-col p-4 md:p-6 rounded-md shadow-xl dark:shadow-none dark:border dark:border-slate-600">
-              {title && <h2 class="text-lg font-medium leading-6 pb-4">{title}</h2>}
-              {testimonial && (
-                <blockquote class="flex-auto">
-                  <p class="text-muted">" {testimonial} "</p>
-                </blockquote>
-              )}
-
-              <hr class="border-slate-200 dark:border-slate-600 my-4" />
-
-              <div class="flex items-center">
-                {image && (
-                  <div class="h-10 w-10 rounded-full border border-slate-200 dark:border-slate-600">
-                    {typeof image === 'string' ? (
-                      <Fragment set:html={image} />
-                    ) : (
-                      <Image
-                        class="h-10 w-10 rounded-full border border-slate-200 dark:border-slate-600 min-w-full min-h-full"
-                        width={40}
-                        height={40}
-                        widths={[400, 768]}
-                        layout="fixed"
-                        {...image}
-                      />
-                    )}
-                  </div>
-                )}
-
-                <div class="grow ml-3 rtl:ml-0 rtl:mr-3">
-                  {name && <p class="text-base font-semibold">{name}</p>}
-                  {job && <p class="text-xs text-muted">{job}</p>}
-                </div>
-              </div>
-            </div>
-          </div>
+  <div
+    class="relative mt-8 md:mt-10"
+    data-carousel-root
+    data-carousel-id={carouselId}
+  >
+    <div
+      class="flex gap-6 overflow-x-auto pb-6 scroll-smooth snap-x snap-mandatory"
+      data-carousel-track
+      role="group"
+      aria-roledescription="carousel"
+      aria-label={title || 'Testimonials'}
+    >
+      {
+        normalizedTestimonials.map(({ quote, name, title: jobTitle, relationship }) => (
+          <figure class="min-w-full md:min-w-[70%] lg:min-w-[50%] xl:min-w-[40%] snap-center bg-white/95 dark:bg-slate-900/80 border border-slate-200/70 dark:border-slate-600/60 rounded-2xl p-6 md:p-8 shadow-lg dark:shadow-none">
+            <blockquote class="text-base leading-relaxed text-slate-700 dark:text-slate-300">
+              “{quote}”
+            </blockquote>
+            <figcaption class="mt-6">
+              {name && <p class="text-lg font-semibold text-slate-900 dark:text-white">{name}</p>}
+              {
+                jobTitle && (
+                  <p class="text-sm text-slate-600 dark:text-slate-400">
+                    {jobTitle}
+                  </p>
+                )
+              }
+              {
+                relationship && (
+                  <p class="mt-1 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+                    {relationship}
+                  </p>
+                )
+              }
+            </figcaption>
+          </figure>
         ))
+      }
+    </div>
+
+    {
+      hasCarousel && (
+        <>
+          <div class="pointer-events-none absolute inset-y-0 left-0 right-0 hidden md:block">
+            <div class="h-full w-24 bg-gradient-to-r from-white dark:from-slate-950 to-transparent pointer-events-none" />
+            <div class="h-full w-24 bg-gradient-to-l from-white dark:from-slate-950 to-transparent pointer-events-none ml-auto" />
+          </div>
+
+          <div class="absolute inset-x-0 -bottom-14 flex items-center justify-center gap-6">
+            <button
+              type="button"
+              class="flex h-11 w-11 items-center justify-center rounded-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 shadow-md text-slate-700 dark:text-slate-200 transition hover:bg-slate-100 dark:hover:bg-slate-800"
+              data-carousel-button="prev"
+              aria-label="Previous testimonial"
+            >
+              <Icon name="tabler:chevron-left" class="h-5 w-5" />
+            </button>
+            <button
+              type="button"
+              class="flex h-11 w-11 items-center justify-center rounded-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 shadow-md text-slate-700 dark:text-slate-200 transition hover:bg-slate-100 dark:hover:bg-slate-800"
+              data-carousel-button="next"
+              aria-label="Next testimonial"
+            >
+              <Icon name="tabler:chevron-right" class="h-5 w-5" />
+            </button>
+          </div>
+
+          <div class="mt-10 flex items-center justify-center gap-2" data-carousel-dots>
+            {
+              normalizedTestimonials.map((_, index) => (
+                <span
+                  class="h-2.5 w-2.5 rounded-full bg-slate-300 dark:bg-slate-600 opacity-60 transition-opacity"
+                  data-carousel-dot={index}
+                />
+              ))
+            }
+          </div>
+        </>
+      )
     }
   </div>
+
   {
     callToAction && (
-      <div class="flex justify-center mx-auto w-fit mt-8 md:mt-12 font-medium">
+      <div class="flex justify-center mx-auto w-fit mt-14 md:mt-16 font-medium">
         <Button {...callToAction} />
       </div>
     )
   }
 </WidgetWrapper>
+
+{
+  hasCarousel && (
+    <script is:inline>
+      const initCarousel = (root) => {
+        const track = root.querySelector('[data-carousel-track]');
+        if (!track) return;
+        const prev = root.querySelector('[data-carousel-button="prev"]');
+        const next = root.querySelector('[data-carousel-button="next"]');
+        const dots = Array.from(root.querySelectorAll('[data-carousel-dot]'));
+
+        const scrollToIndex = (index) => {
+          const width = track.clientWidth;
+          track.scrollTo({ left: index * width, behavior: 'smooth' });
+        };
+
+        const updateDots = () => {
+          const width = track.clientWidth;
+          const index = width ? Math.round(track.scrollLeft / width) : 0;
+          dots.forEach((dot, idx) => {
+            dot.classList.toggle('opacity-100', idx === index);
+            dot.classList.toggle('opacity-60', idx !== index);
+          });
+        };
+
+        prev?.addEventListener('click', () => {
+          const width = track.clientWidth;
+          const nextIndex = Math.max(Math.round(track.scrollLeft / width) - 1, 0);
+          scrollToIndex(nextIndex);
+        });
+
+        next?.addEventListener('click', () => {
+          const width = track.clientWidth;
+          const nextIndex = Math.min(Math.round(track.scrollLeft / width) + 1, dots.length - 1);
+          scrollToIndex(nextIndex);
+        });
+
+        dots.forEach((dot, idx) => {
+          dot.addEventListener('click', () => scrollToIndex(idx));
+        });
+
+        track.addEventListener('scroll', () => window.requestAnimationFrame(updateDots));
+        updateDots();
+      };
+
+      const setupAllCarousels = () => {
+        document.querySelectorAll('[data-carousel-root]').forEach((root) => initCarousel(root));
+      };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupAllCarousels);
+      } else {
+        setupAllCarousels();
+      }
+    </script>
+  )
+}
