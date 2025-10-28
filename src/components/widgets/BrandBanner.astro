@@ -1,0 +1,25 @@
+---
+import brandBannerImage from '~/assets/images/tc-logo-banner.png';
+import brandBannerVideo from '~/assets/videos/Website (3840 x 1080 px) (Video).mp4';
+---
+
+<div class="relative w-full overflow-hidden bg-black">
+  <video
+    class="block w-full h-auto"
+    autoplay
+    muted
+    loop
+    playsinline
+    poster={brandBannerImage.src}
+  >
+    <source src={brandBannerVideo} type="video/mp4" />
+    <img
+      src={brandBannerImage.src}
+      width={brandBannerImage.width ?? 3840}
+      height={brandBannerImage.height ?? 1080}
+      alt="Technically Creative circuit heads branding artwork"
+      loading="lazy"
+      decoding="async"
+    />
+  </video>
+</div>

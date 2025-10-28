@@ -3,13 +3,13 @@ import Layout from '~/layouts/PageLayout.astro';
 import Header from '~/components/widgets/Header.astro';
 
 import Hero from '~/components/widgets/Hero.astro';
+import BrandBanner from '~/components/widgets/BrandBanner.astro';
 import Features2 from '~/components/widgets/Features2.astro';
 import Steps from '~/components/widgets/Steps.astro';
 import FAQs from '~/components/widgets/FAQs.astro';
 import Stats from '~/components/widgets/Stats.astro';
 import CallToAction from '~/components/widgets/CallToAction.astro';
 import { headerData } from '~/navigation';
-import heroBackground from '~/assets/images/wbckgroundtemp.jpg';
 
 const metadata = {
   title: 'Technically Creative - Audio / PM / Delivery',
@@ -24,10 +24,10 @@ const links = [...headerData.links, { text: 'Portfolio', href: '/portfolio' }];
     <Header links={links} isSticky showToggleTheme />
   </Fragment>
 
+  <BrandBanner />
+
   <!-- Hero Widget ******************* -->
   <Hero
-    backgroundImage={heroBackground.src}
-    backgroundOverlayClass="bg-slate-900/70"
     actions={[
       {
         variant: 'primary',

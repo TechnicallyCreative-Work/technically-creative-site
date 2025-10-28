@@ -2,6 +2,7 @@
 import Layout from '~/layouts/PageLayout.astro';
 import Header from '~/components/widgets/Header.astro';
 import Hero from '~/components/widgets/Hero.astro';
+import BrandBanner from '~/components/widgets/BrandBanner.astro';
 import Content from '~/components/widgets/Content.astro';
 import CallToAction from '~/components/widgets/CallToAction.astro';
 import { headerData } from '~/navigation';
@@ -9,7 +10,6 @@ import { getPermalink } from '~/utils/permalinks';
 
 // Images imported from src/assets so Astro infers width/height (no CLS)
 import studioHero from '../assets/images/studio-hero-16x9-cyberpunk.png';
-import heroBackground from '~/assets/images/wbckgroundtemp.jpg';
 
 
 // ────────────────────────────────────────────────────────────────────────────────
@@ -30,10 +30,10 @@ const links = [...headerData.links, { text: 'Portfolio', href: '/portfolio' }];
     <Header links={links} isSticky showToggleTheme />
   </Fragment>
 
+  <BrandBanner />
+
   <!-- Hero -->
   <Hero
-    backgroundImage={heroBackground.src}
-    backgroundOverlayClass="bg-slate-900/70"
     id="hero"
     title="About the company"
     tagline="Where music technology meets structured delivery"

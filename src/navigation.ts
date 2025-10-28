@@ -37,19 +37,27 @@ export const headerData = {
     },
     {
       text: 'About',
-      href: getPermalink('/about'),
-    },
-    {
-      text: 'Credentials',
-      href: getPermalink('/credentials'),
+      links: [
+        {
+          text: 'About',
+          href: getPermalink('/about'),
+        },
+        {
+          text: 'Credentials',
+          href: getPermalink('/credentials'),
+        },
+        {
+          text: 'Contact',
+          href: getPermalink('/contact'),
+        },
+      ],
     },
     {
       text: 'Store',
       href: 'https://store.technicallycreative.work',
-    },
-    {
-      text: 'Contact',
-      href: getPermalink('/contact'),
+      modalId: 'storefront-modal',
+      modalTitle: 'Technically Creative Store',
+      modalUrl: 'https://store.technicallycreative.work',
     },
   ],
   actions: [{ text: 'Start a Project', href: getPermalink('/contact') }],

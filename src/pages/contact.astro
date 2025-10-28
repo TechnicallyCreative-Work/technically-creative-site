@@ -2,10 +2,10 @@
 import Layout from '~/layouts/PageLayout.astro';
 import Header from '~/components/widgets/Header.astro';
 import Hero from '~/components/widgets/Hero.astro';
+import BrandBanner from '~/components/widgets/BrandBanner.astro';
 import ContactUs from '~/components/widgets/Contact.astro';
 import Features2 from '~/components/widgets/Features2.astro';
 import { headerData } from '~/navigation';
-import heroBackground from '~/assets/images/wbckgroundtemp.jpg';
 
 const links = [...headerData.links, { text: 'Portfolio', href: '/portfolio' }];
 
@@ -25,12 +25,11 @@ const hubspotForm = {
   <Fragment slot="header">
     <Header links={links} isSticky showToggleTheme />
   </Fragment>
+  <BrandBanner />
   <!-- Hero Widget ******************* -->
   <Hero
     tagline="Contact"
     title="How do we get started?"
-    backgroundImage={heroBackground.src}
-    backgroundOverlayClass="bg-slate-900/70"
   >
     <Fragment slot="subtitle">
       Tell me what you need, how fast you need it, and any reference material. I'll respond within one business day so we

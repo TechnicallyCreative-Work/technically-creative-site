@@ -14,6 +14,9 @@ interface Link {
   href?: string;
   ariaLabel?: string;
   icon?: string;
+  modalId?: string;
+  modalTitle?: string;
+  modalUrl?: string;
 }
 
 interface MenuLink extends Link {
@@ -84,10 +87,19 @@ const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
         class="flex flex-col md:flex-row md:self-center w-full md:w-auto text-xl md:text-[0.9375rem] tracking-[0.01rem] font-medium md:justify-center"
       >
         {
-          links.map(({ text, href, links }) => (
-            <li class={links?.length ? 'dropdown' : ''}>
-              {links?.length ? (
-                <>
+          links.map((item) => {
+            const {
+              text,
+              href,
+              links: childLinks,
+              modalId,
+              modalTitle,
+              modalUrl,
+            } = item;
+
+            if (childLinks?.length) {
+              return (
+                <li class="dropdown">
                   <button
                     type="button"
                     class="header-nav-link"
@@ -96,7 +108,7 @@ const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
                     <Icon name="tabler:chevron-down" class="w-3.5 h-3.5 ml-0.5 rtl:ml-0 rtl:mr-0.5 hidden md:inline" />
                   </button>
                   <ul class="dropdown-menu bg-white/95 dark:bg-slate-900/95 md:backdrop-blur-md dark:md:bg-slate-900/90 border border-slate-200/70 dark:border-slate-700/70 rounded md:absolute pl-4 md:pl-0 md:hidden font-medium md:min-w-[220px] shadow-xl">
-                    {links.map(({ text: text2, href: href2 }) => (
+                    {childLinks.map(({ text: text2, href: href2 }) => (
                       <li>
                         <a
                           class:list={[
@@ -110,20 +122,27 @@ const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
                       </li>
                     ))}
                   </ul>
-                </>
-              ) : (
+                </li>
+              );
+            }
+
+            return (
+              <li>
                 <a
                   class:list={[
                     'header-nav-link',
                     { 'aw-link-active': href === currentPath },
                   ]}
                   href={href}
+                  {...(modalId ? { 'data-modal-target': modalId } : {})}
+                  {...(modalTitle ? { 'data-modal-title': modalTitle } : {})}
+                  {...(modalId ? { 'data-modal-url': modalUrl ?? href } : {})}
                 >
                   {text}
                 </a>
-              )}
-            </li>
-          ))
+              </li>
+            );
+          })
         }
       </ul>
     </nav>
@@ -163,3 +182,206 @@ const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
     </div>
   </div>
 </header>
+
+<dialog
+  id="storefront-modal"
+  class="storefront-modal max-w-[min(92vw,1100px)] w-full p-0 m-0 bg-transparent"
+  aria-label="Technically Creative Store"
+  aria-hidden="true"
+>
+  <div class="relative flex h-[85vh] max-h-[720px] w-full flex-col overflow-hidden rounded-lg border border-slate-200/80 bg-white shadow-2xl dark:border-slate-700/80 dark:bg-slate-950">
+    <div class="flex items-center justify-between border-b border-slate-200/70 bg-slate-50 px-5 py-3 dark:border-slate-700/70 dark:bg-slate-900">
+      <h2 class="text-base font-semibold text-slate-900 dark:text-slate-100" data-modal-heading>
+        Technically Creative Store
+      </h2>
+      <button
+        type="button"
+        class="inline-flex items-center rounded-md border border-transparent bg-slate-200/80 px-2.5 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-300/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-400 dark:bg-slate-800/80 dark:text-slate-200 dark:hover:bg-slate-700 dark:focus:ring-slate-600"
+        data-modal-close="storefront-modal"
+      >
+        Close
+      </button>
+    </div>
+    <div class="relative flex-1 bg-white dark:bg-slate-950">
+      <iframe
+        data-storefront-frame
+        title="Technically Creative Store"
+        src=""
+        loading="lazy"
+        class="h-full w-full border-0"
+        referrerpolicy="no-referrer"
+      ></iframe>
+      <div class="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white via-white/70 to-transparent dark:from-slate-950 dark:via-slate-950/70"></div>
+    </div>
+    <div class="border-t border-slate-200/70 bg-white px-5 py-3 text-sm text-slate-600 dark:border-slate-700/70 dark:bg-slate-950 dark:text-slate-300">
+      Having trouble loading the shop?
+      <a
+        class="font-semibold text-link hover:underline"
+        href="https://store.technicallycreative.work"
+        target="_blank"
+        rel="noopener noreferrer"
+        data-storefront-fallback
+      >
+        Open the store in a new tab.
+      </a>
+    </div>
+  </div>
+</dialog>
+
+<style is:global>
+  #storefront-modal {
+    border: none;
+  }
+
+  #storefront-modal::backdrop {
+    background-color: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(6px);
+  }
+
+  body.storefront-modal-open {
+    overflow: hidden;
+  }
+</style>
+
+<script is:inline>
+  const initStorefrontModal = () => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const modal = document.getElementById('storefront-modal');
+    if (!modal) {
+      return;
+    }
+
+    const iframe = modal.querySelector('iframe[data-storefront-frame]');
+    const fallbackLink = modal.querySelector('[data-storefront-fallback]');
+    const heading = modal.querySelector('[data-modal-heading]');
+    const bodyClass = 'storefront-modal-open';
+
+    const closeModal = () => {
+      if (modal.open) {
+        if (typeof modal.close === 'function') {
+          modal.close();
+        } else {
+          modal.removeAttribute('open');
+        }
+      } else {
+        modal.removeAttribute('open');
+      }
+
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove(bodyClass);
+    };
+
+    const openModal = (trigger) => {
+      const targetUrl = trigger?.dataset.modalUrl;
+      const title = trigger?.dataset.modalTitle;
+
+      if (iframe && targetUrl && iframe.src !== targetUrl) {
+        iframe.src = targetUrl;
+      }
+
+      if (fallbackLink && targetUrl) {
+        fallbackLink.href = targetUrl;
+      }
+
+      if (heading && title) {
+        heading.textContent = title;
+      }
+
+      if (typeof modal.showModal === 'function') {
+        try {
+          modal.showModal();
+        } catch (_) {
+          modal.setAttribute('open', '');
+        }
+      } else {
+        modal.setAttribute('open', '');
+      }
+
+      document.body.classList.add(bodyClass);
+      modal.setAttribute('aria-hidden', 'false');
+
+      const focusTarget = modal.querySelector('[data-modal-close="storefront-modal"]');
+      focusTarget?.focus({ preventScroll: true });
+    };
+
+    if (!modal.dataset.storefrontBound) {
+      modal.addEventListener('cancel', (event) => {
+        event.preventDefault();
+        closeModal();
+      });
+
+      modal.addEventListener('close', () => {
+        document.body.classList.remove(bodyClass);
+        modal.setAttribute('aria-hidden', 'true');
+      });
+
+      modal.addEventListener('click', (event) => {
+        if (event.target === modal) {
+          closeModal();
+        }
+      });
+
+      modal.dataset.storefrontBound = 'true';
+    }
+
+    document
+      .querySelectorAll('[data-modal-target="storefront-modal"]')
+      .forEach((trigger) => {
+        if (trigger.dataset.modalBound === 'true') {
+          return;
+        }
+
+        trigger.dataset.modalBound = 'true';
+
+        trigger.addEventListener('click', (event) => {
+          event.preventDefault();
+          openModal(trigger);
+        });
+      });
+
+    modal
+      .querySelectorAll('[data-modal-close="storefront-modal"]')
+      .forEach((trigger) => {
+        if (trigger.dataset.modalBound === 'true') {
+          return;
+        }
+
+        trigger.dataset.modalBound = 'true';
+        trigger.addEventListener('click', (event) => {
+          event.preventDefault();
+          closeModal();
+        });
+      });
+  };
+
+  if (typeof window !== 'undefined') {
+    initStorefrontModal();
+    document.addEventListener('astro:after-swap', () => {
+      const modal = document.getElementById('storefront-modal');
+      if (modal?.open) {
+        try {
+          modal.close();
+        } catch (_) {
+          modal.removeAttribute('open');
+        }
+        modal.setAttribute('aria-hidden', 'true');
+      }
+      modal?.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('storefront-modal-open');
+      document
+        .querySelectorAll('[data-modal-target="storefront-modal"]')
+        .forEach((trigger) => {
+          delete trigger.dataset.modalBound;
+        });
+      modal
+        ?.querySelectorAll('[data-modal-close="storefront-modal"]')
+        .forEach((trigger) => {
+          delete trigger.dataset.modalBound;
+        });
+      initStorefrontModal();
+    });
+  }
+</script>
