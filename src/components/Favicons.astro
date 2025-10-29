@@ -1,10 +1,14 @@
 ---
 import favIconSvg from '~/assets/favicons/favicon.svg';
 import appleTouchIcon from '~/assets/favicons/apple-touch-icon.png';
+import icon192 from '~/assets/favicons/icon-192.png';
+import icon256 from '~/assets/favicons/icon-256.png';
 ---
 
 <link rel="icon" type="image/svg+xml" href={favIconSvg.src} />
 <link rel="shortcut icon" href="/favicon.ico" sizes="any" />
 <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-<link rel="icon" type="image/png" sizes="192x192" href={appleTouchIcon.src} />
+<link rel="apple-touch-icon" sizes="180x180" href={appleTouchIcon.src} />
+<link rel="icon" type="image/png" sizes="192x192" href={icon192.src} />
+<link rel="icon" type="image/png" sizes="256x256" href={icon256.src} />
+<link rel="manifest" href="/site.webmanifest" />

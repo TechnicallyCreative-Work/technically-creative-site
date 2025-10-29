@@ -12,6 +12,13 @@ import workflowImage from '~/assets/images/verticalcool.jpg';
 
 const metadata = {
   title: 'Services - Technically Creative',
+  description:
+    'Creative audio, project leadership, automation, and workshops built for artists, agencies, and in-house teams that need reliable delivery.',
+  openGraph: {
+    title: 'Creative services for teams that ship on time',
+    description:
+      'Explore mixing, sound design, project management, automation, and workshop offerings tailored to your deadlines.',
+  },
   ignoreTitleTemplate: true,
 };
 
@@ -29,11 +36,12 @@ const links = [...headerData.links, { text: 'Portfolio', href: '/portfolio' }];
   <Hero
     id="hero"
     title="Services"
-    tagline="From sound to systems"
-    actions={[{ variant: 'primary', text: 'Contact', href: '/contact' }]}
+    tagline="Creative delivery without the chaos"
+    actions={[{ variant: 'primary', text: 'Start a project', href: '/contact#form' }]}
   >
     <Fragment slot="subtitle">
-      I combine creative audio work with structured consulting so you get clarity, quality, and reliable delivery.
+      Pair award-winning audio craft with project leadership so every engagement stays organized, transparent, and on
+      schedule.
     </Fragment>
   </Hero>
 
@@ -45,7 +53,7 @@ const links = [...headerData.links, { text: 'Portfolio', href: '/portfolio' }];
       {
         title: 'Mixing & Mastering',
         description:
-          'Your tracks, polished and powerful. Singles start at $249 per song with EP and album bundles plus unlimited mix notes for 10 days.',
+          'Singles start at $249 with EP and album bundles. Expect organized sessions, a detailed mix report, and unlimited notes for 10 days.',
         icon: 'tabler:adjustments',
         callToAction: { text: 'Mixing workflow', href: '/services/mixing-mastering' },
       },
@@ -59,21 +67,21 @@ const links = [...headerData.links, { text: 'Portfolio', href: '/portfolio' }];
       {
         title: 'Music Technology Consulting',
         description:
-          'Studio audits, systems guidance, and creative coaching subscriptions (two or four sessions monthly) starting at $350 per month.',
+          'Studio audits, systems roadmaps, and coaching subscriptions start at $350 per month with async support between sessions.',
         icon: 'tabler:music',
         callToAction: { text: 'Consulting details', href: '/services/music-technology-consulting' },
       },
       {
         title: 'Project Management Consulting',
         description:
-          'Campaign planning, risk mapping, and stakeholder reporting. Retainers start at $95 per hour with sprint or launch packages.',
+          'Sprint planning intensives from $680, launch management packages, and fractional retainers for ongoing oversight.',
         icon: 'tabler:briefcase',
         callToAction: { text: 'Delivery playbook', href: '/services/project-management-consulting' },
       },
       {
         title: 'Workflow Automation for Creatives',
         description:
-          'ClickUp, Airtable, and n8n automation builds that reduce admin churn. Discovery-to-build roadmaps from $600.',
+          'ClickUp, Airtable, and n8n builds that automate intake, approvals, and reporting. Discovery-to-build roadmaps start at $600.',
         icon: 'tabler:settings-automation',
         callToAction: { text: 'Automation roadmap', href: '/services/workflow-automation' },
       },
@@ -95,12 +103,12 @@ const links = [...headerData.links, { text: 'Portfolio', href: '/portfolio' }];
     items={[
       {
         title: 'Discover',
-        description: 'We align on your goals, audience, and success metrics so every feature has a purpose.',
+        description: 'Align on audience, success metrics, and constraints so every deliverable has a measurable goal.',
       },
-      { title: 'Build', description: 'Incremental delivery with previews before anything ships to production.' },
+      { title: 'Build', description: 'Iterate in organized sprints with previews and check-ins before anything ships.' },
       {
         title: 'Care',
-        description: 'After launch, I monitor performance, train your team, and provide regular updates.',
+        description: 'Post-launch monitoring, training, and documentation keep the work maintainable for your team.',
       },
     ]}
     image={{
@@ -118,7 +126,7 @@ const links = [...headerData.links, { text: 'Portfolio', href: '/portfolio' }];
   <!-- CTA -->
   <CallToAction
     title="Ready to start?"
-    subtitle="Let's match the right service to your goals."
-    actions={[{ variant: 'primary', text: 'Get in touch', href: '/contact' }]}
+    subtitle="Share your goals, timeline, and audience so I can outline the right engagement."
+    actions={[{ variant: 'primary', text: 'Get in touch', href: '/contact#form' }]}
   />
 </Layout>

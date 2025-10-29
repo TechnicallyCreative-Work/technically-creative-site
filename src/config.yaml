@@ -9,7 +9,7 @@ metadata:
   title:
     default: 'Technically Creative'
     template: '%s - Technically Creative'
-  description: 'Websites, automations, and creative systems built the right way.'
+  description: 'Creative audio, project leadership, workflow automation, and workshops that keep your launches on schedule.'
   robots:
     index: true
     follow: true

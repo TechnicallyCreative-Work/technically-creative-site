@@ -10,6 +10,7 @@ import FAQs from '~/components/widgets/FAQs.astro';
 import Stats from '~/components/widgets/Stats.astro';
 import CallToAction from '~/components/widgets/CallToAction.astro';
 import { headerData } from '~/navigation';
+import stepsVisual from '~/assets/images/studio-hero-16x9-cyberpunk.png';
 
 const metadata = {
   title: 'Technically Creative - Audio / PM / Delivery',
@@ -84,8 +85,8 @@ const links = [...headerData.links, { text: 'Portfolio', href: '/portfolio' }];
       },
     ]}
     image={{
-      src: 'https://images.unsplash.com/photo-1616198814651-e71f960c3180?ixlib=rb-4.0.3&auto=format&fit=crop&w=987&q=80',
-      alt: 'Steps image',
+      src: stepsVisual,
+      alt: 'Dark stage silhouette outlined with blue hexagonal overlays',
     }}
   />
 
