@@ -1,10 +1,18 @@
 ---
 import brandBannerImage from '~/assets/images/tc-logo-banner.png';
 import brandBannerVideo from '~/assets/videos/Website (3840 x 1080 px) (Video).mp4';
+
+// Allow swapping the hero video via PUBLIC_BRAND_BANNER_VIDEO_URL; fall back to bundled asset.
+const brandBannerVideoSource = import.meta.env.PUBLIC_BRAND_BANNER_VIDEO_URL || brandBannerVideo;
+const brandBannerVideoSourceVertical =
+  import.meta.env.PUBLIC_BRAND_BANNER_VIDEO_URL_VERTICAL || brandBannerVideoSource;
+const videoId = 'brand-banner-video';
+const muteButtonId = 'brand-banner-mute-toggle';
 ---
 
 <div class="relative w-full overflow-hidden bg-black">
   <video
+    id={videoId}
     class="block w-full h-auto"
     autoplay
     muted
@@ -12,7 +20,8 @@ import brandBannerVideo from '~/assets/videos/Website (3840 x 1080 px) (Video).m
     playsinline
     poster={brandBannerImage.src}
   >
-    <source src={brandBannerVideo} type="video/mp4" />
+    <source media="(orientation: portrait)" src={brandBannerVideoSourceVertical} type="video/mp4" />
+    <source src={brandBannerVideoSource} type="video/mp4" />
     <img
       src={brandBannerImage.src}
       width={brandBannerImage.width ?? 3840}
@@ -22,4 +31,51 @@ import brandBannerVideo from '~/assets/videos/Website (3840 x 1080 px) (Video).m
       decoding="async"
     />
   </video>
+  <button
+    id={muteButtonId}
+    class="absolute bottom-4 right-4 z-10 rounded-full bg-black/70 px-4 py-2 text-sm font-semibold text-white shadow-lg border border-white/30 backdrop-blur-sm hover:bg-black/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 transition"
+    type="button"
+  >
+    Unmute
+  </button>
 </div>
+
+<script is:inline>
+  const initMuteToggle = () => {
+    const video = document.getElementById('brand-banner-video');
+    const muteToggle = document.getElementById('brand-banner-mute-toggle');
+
+    if (!video || !muteToggle) return;
+
+    const syncLabel = () => {
+      muteToggle.textContent = video.muted ? 'Unmute' : 'Mute';
+      muteToggle.setAttribute('aria-pressed', (!video.muted).toString());
+    };
+
+    syncLabel();
+
+    muteToggle.addEventListener('click', async () => {
+      const nextMuted = !video.muted;
+      video.muted = nextMuted;
+      if (nextMuted) {
+        video.setAttribute('muted', '');
+      } else {
+        // Ensure attribute is removed and volume is up when unmuting.
+        video.removeAttribute('muted');
+        video.volume = 1;
+        try {
+          await video.play();
+        } catch (err) {
+          console.error('Unable to play video after unmuting', err);
+        }
+      }
+      syncLabel();
+    });
+  };
+
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    initMuteToggle();
+  } else {
+    document.addEventListener('DOMContentLoaded', initMuteToggle, { once: true });
+  }
+</script>
