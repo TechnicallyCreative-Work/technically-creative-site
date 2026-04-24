@@ -11,6 +11,13 @@ import { Icon } from 'astro-icon/components';
 import { getPermalink } from '~/utils/permalinks';
 import { headerData } from '~/navigation';
 
+import voiceToLogImage from '~/assets/images/project-image-4.png';
+import abletonSetupImage from '~/assets/images/desk3.jpg';
+import clickupLoggerImage from '~/assets/images/project-image-7.png';
+import aiLoopingImage from '~/assets/images/WideConsoleStudioShotAiEdit.png';
+import socialAutomationImage from '~/assets/images/linkedinPost1.jpg';
+import caveSoundscapeImage from '~/assets/images/project-image-13.jpg';
+
 const metadata = {
   title: 'Portfolio - Technically Creative LLC',
   description: 'Selected audio, sound design, and project management work from Technically Creative LLC.',
@@ -38,14 +45,25 @@ const categories = [
         },
       },
       {
+        label: 'Ableton Performance Template',
+        title: 'Optimized Ableton Workflow & Controller Setup',
+        summary:
+          'Productized service that maps Push, Launchpad, or Stream Deck to a lean Ableton template—session scenes, macro racks, and follow actions pre-wired so producers can focus on performance instead of clicking menus.',
+        media: {
+          type: 'image',
+          src: abletonSetupImage.src,
+          alt: 'Studio desk setup configured for Ableton Live performance',
+        },
+      },
+      {
         label: 'Workflow Automation System',
         title: 'Voice-to-Log Mix Notes',
         summary:
-          'Live demo: voice memos from Telegram funnel into n8n, transcribe via AI, and land in a Google Sheet that a bot can search for mix notes and lessons learned.',
+          'Voice memos from Telegram flow through n8n, transcribe via AI, and land in a Google Sheet that a bot can search for mix notes and lessons learned—so session insights never get lost in a voice memo app.',
         media: {
           type: 'image',
-          src: 'https://images.unsplash.com/photo-1591696205602-2f950c417cb9?auto=format&fit=crop&w=980&q=80',
-          alt: 'Automation workflow diagram',
+          src: voiceToLogImage.src,
+          alt: 'Voice memo and transcript pipeline visualization',
         },
       },
     ],
@@ -58,20 +76,31 @@ const categories = [
     serviceHref: '/services/sound-design-foley',
     projects: [
       {
-        label: 'Trailer Sound Design',
-        title: 'Trailer Sound Design',
+        label: 'Trailer Sound Redesign',
+        title: '"Aliens" 30th Anniversary Trailer',
         summary:
-          'Cinematic trailer mix with custom-designed impacts, risers, and atmospheres layered from my foley library.',
+          'Full sound redesign of the Aliens 30th anniversary trailer—replaced every impact, riser, whoosh, and atmosphere with custom-designed layers from my foley and synthesis library.',
         media: {
           type: 'youtube',
           src: 'https://www.youtube-nocookie.com/embed/7z41UJqyl8s',
         },
       },
       {
-        label: 'Animation Sound Design',
-        title: 'Animated Short Audio Pass',
+        label: 'Cinematic Environment',
+        title: 'Immersive Cave Water Soundscape',
         summary:
-          'Episode samples from a short animation series where I built SFX layers, ambiences, and final mix.',
+          'Layered dripping water, reverberant stone ambience, and subsonic rumbles into a loopable cinematic environment designed for games, VR, and film scoring beds.',
+        media: {
+          type: 'image',
+          src: caveSoundscapeImage.src,
+          alt: 'Cinematic cave environment concept art',
+        },
+      },
+      {
+        label: 'Animation Sound Design',
+        title: 'Sound Design for Animation — Graduate Portfolio',
+        summary:
+          'Episode samples from a short animation series where I built SFX layers, ambiences, and the final mix—part of my Music Technology graduate portfolio.',
         media: {
           type: 'youtube',
           src: 'https://www.youtube-nocookie.com/embed/videoseries?list=PLFNDDJOPd_iqjxRyrHJKl8duLPOXCq8cN',
@@ -88,25 +117,36 @@ const categories = [
     serviceHref: '/services/workflow-automation',
     projects: [
       {
-        label: 'Project Automation',
+        label: 'ClickUp Workspace Design',
         title: 'ClickUp + n8n Activity Logger',
         summary:
-          'Shows how every ClickUp task update flows through n8n into a structured database so retrospectives and lessons learned stay searchable.',
+          'ClickUp workspace wired to n8n so every task update streams into a structured Google Sheet—turning day-to-day activity into a searchable retrospective database for lessons learned and project health reporting.',
         media: {
           type: 'image',
-          src: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=980&q=80',
-          alt: 'Team reviewing automation dashboard on laptops',
+          src: clickupLoggerImage.src,
+          alt: 'ClickUp workspace and automation pipeline diagram',
+        },
+      },
+      {
+        label: 'AI + Video Workflow',
+        title: 'AI-Looping Video Workflow (Ed Espresso)',
+        summary:
+          'Repeatable voice-first video workflow built for a paid Upwork client: DaVinci Resolve template with a Fusion loop composition, Fairlight sidechain-ducking preset, and AI image/video generation steps—so short-form content ships consistently without rebuilding the project each time.',
+        media: {
+          type: 'image',
+          src: aiLoopingImage.src,
+          alt: 'Video editing workstation configured for AI-assisted workflow',
         },
       },
       {
         label: 'Content Automation',
-        title: 'LinkedIn Posting Pipeline',
+        title: 'Weekly Social Media Automation',
         summary:
-          'Gemini and ChatGPT run engineered prompts to draft and stage LinkedIn content; I keep a human in the loop for final polish and manual posting so quality stays tight.',
+          'Gemini and ChatGPT run engineered prompts to draft and stage a weekly LinkedIn content queue; I keep a human in the loop for final polish and manual posting so quality stays tight and the voice stays mine.',
         media: {
           type: 'image',
-          src: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=980&q=80',
-          alt: 'Automation interface preparing social media posts',
+          src: socialAutomationImage.src,
+          alt: 'LinkedIn post graphic from a weekly automation pipeline',
         },
       },
     ],
@@ -130,9 +170,9 @@ const categories = [
       },
       {
         label: 'Audio',
-        title: 'Audio Production',
+        title: 'Argent Eruption — RVXX',
         summary:
-          'Stream the Argent Eruption project directly—produced, mixed, and mastered for RVXX.',
+          'Stream the Argent Eruption project directly—full-scale electronic production, sound design, mix, and master for RVXX.',
         media: {
           type: 'raw',
           html: `<iframe width="100%" height="450" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2062960161&color=%2314140c&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe><div style="font-size: 10px; color: #cccccc; line-break: anywhere; word-break: normal; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-family: Interstate, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Garuda, Verdana, Tahoma, sans-serif; font-weight: 100;"><a href="https://soundcloud.com/rvxx-252541516" title="RVXX" target="_blank" style="color: #cccccc; text-decoration: none;">RVXX</a> - <a href="https://soundcloud.com/rvxx-252541516/sets/argent-eruption" title="Argent Eruption" target="_blank" style="color: #cccccc; text-decoration: none;">Argent Eruption</a></div>`,
