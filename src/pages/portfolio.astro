@@ -16,7 +16,9 @@ import abletonSetupImage from '~/assets/images/desk3.jpg';
 import clickupLoggerImage from '~/assets/images/project-image-7.png';
 import aiLoopingImage from '~/assets/images/WideConsoleStudioShotAiEdit.png';
 import socialAutomationImage from '~/assets/images/linkedinPost1.jpg';
-import caveSoundscapeImage from '~/assets/images/project-image-13.jpg';
+import caveSoundscapeImage from '~/assets/images/cave-river-soundscape.png';
+import consoleWideImage from '~/assets/images/WideConsoleStudioShotAiEdit.png';
+import soundLogoImage from '~/assets/images/sound-logo-ethno-indigenous.png';
 
 const metadata = {
   title: 'Portfolio - Technically Creative LLC',
@@ -77,7 +79,7 @@ const categories = [
     projects: [
       {
         label: 'Trailer Sound Redesign',
-        title: '"Aliens" 30th Anniversary Trailer',
+        title: "'Aliens' 30th Anniversary Trailer Sound Redesign",
         summary:
           'Full sound redesign of the Aliens 30th anniversary trailer—replaced every impact, riser, whoosh, and atmosphere with custom-designed layers from my foley and synthesis library.',
         media: {
@@ -98,12 +100,23 @@ const categories = [
       },
       {
         label: 'Animation Sound Design',
-        title: 'Sound Design for Animation — Graduate Portfolio',
+        title: 'Sound Design for Animation | Graduate Portfolio Project',
         summary:
           'Episode samples from a short animation series where I built SFX layers, ambiences, and the final mix—part of my Music Technology graduate portfolio.',
         media: {
           type: 'youtube',
-          src: 'https://www.youtube-nocookie.com/embed/videoseries?list=PLFNDDJOPd_iqjxRyrHJKl8duLPOXCq8cN',
+          src: 'https://www.youtube-nocookie.com/embed/V0qp8YpEAwI',
+        },
+      },
+      {
+        label: 'Brand Sound Design',
+        title: 'Create a Unique Sound Logo and Video Sound for Ethno Indigenous Brand',
+        summary:
+          'Custom sound logo and synchronized video audio for an ethno indigenous brand—balancing cultural authenticity with modern production values. Delivered on Upwork: 5★ review, "consistently delivers quality work and even went above and beyond."',
+        media: {
+          type: 'image',
+          src: soundLogoImage.src,
+          alt: 'Sound logo and brand audio design for ethno indigenous brand',
         },
       },
     ],
@@ -117,32 +130,41 @@ const categories = [
     serviceHref: '/services/workflow-automation',
     projects: [
       {
-        label: 'ClickUp Workspace Design',
-        title: 'ClickUp + n8n Activity Logger',
+        label: 'n8n Automation',
+        title: 'n8n Automation Demo — Content Review & Approval Pipeline',
         summary:
-          'ClickUp workspace wired to n8n so every task update streams into a structured Google Sheet—turning day-to-day activity into a searchable retrospective database for lessons learned and project health reporting.',
+          'End-to-end content review and approval workflow built in n8n—routes submissions through automated checks, assigns reviewers, tracks approval status, and logs every decision so nothing falls through the cracks.',
         media: {
-          type: 'image',
-          src: clickupLoggerImage.src,
-          alt: 'ClickUp workspace and automation pipeline diagram',
+          type: 'youtube',
+          src: 'https://www.youtube-nocookie.com/embed/XFaQ-qb6YjE',
+        },
+      },
+      {
+        label: 'ClickUp Workspace Design',
+        title: 'ClickUp Workspace Design — Thematic Weekly Execution System',
+        summary:
+          'ClickUp workspace structured around a thematic weekly execution model—wired to n8n so every task update streams into a structured Google Sheet, turning day-to-day activity into a searchable retrospective database for lessons learned and project health reporting.',
+        media: {
+          type: 'youtube',
+          src: 'https://www.youtube-nocookie.com/embed/o7ZpFyb7w1o',
         },
       },
       {
         label: 'AI + Video Workflow',
-        title: 'AI-Looping Video Workflow (Ed Espresso)',
+        title: 'Design a Simple Video + Audio Workflow (Loops + Voice Content)',
         summary:
-          'Repeatable voice-first video workflow built for a paid Upwork client: DaVinci Resolve template with a Fusion loop composition, Fairlight sidechain-ducking preset, and AI image/video generation steps—so short-form content ships consistently without rebuilding the project each time.',
+          'Repeatable voice-first video workflow built for a paid Upwork client ($250, 5★): DaVinci Resolve template with a Fusion loop composition, Fairlight sidechain-ducking preset, and AI image/video generation steps—short-form content ships consistently without rebuilding the project each time.',
         media: {
           type: 'image',
-          src: aiLoopingImage.src,
+          src: consoleWideImage.src,
           alt: 'Video editing workstation configured for AI-assisted workflow',
         },
       },
       {
         label: 'Content Automation',
-        title: 'Weekly Social Media Automation',
+        title: 'Weekly Social Media Review & Approval Automation System',
         summary:
-          'Gemini and ChatGPT run engineered prompts to draft and stage a weekly LinkedIn content queue; I keep a human in the loop for final polish and manual posting so quality stays tight and the voice stays mine.',
+          'Gemini and ChatGPT run engineered prompts to draft and stage a weekly LinkedIn content queue through a review and approval gate; human in the loop for final polish and manual posting so quality stays tight and the voice stays mine.',
         media: {
           type: 'image',
           src: socialAutomationImage.src,
@@ -170,7 +192,7 @@ const categories = [
       },
       {
         label: 'Audio',
-        title: 'Argent Eruption — RVXX',
+        title: "Full-Scale Electronic Production & Sound Design – \"RVXX\"",
         summary:
           'Stream the Argent Eruption project directly—full-scale electronic production, sound design, mix, and master for RVXX.',
         media: {
