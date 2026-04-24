@@ -30,8 +30,6 @@ export const responsiveTablesRehypePlugin: RehypePlugin = () => {
           },
           children: [child],
         };
-
-        i++;
       }
     }
   };
