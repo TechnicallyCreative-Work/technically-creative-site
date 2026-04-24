@@ -15,7 +15,6 @@ import voiceToLogImage from '~/assets/images/project-image-4.png';
 import abletonSetupImage from '~/assets/images/desk3.jpg';
 import clickupLoggerImage from '~/assets/images/project-image-7.png';
 import aiLoopingImage from '~/assets/images/WideConsoleStudioShotAiEdit.png';
-import socialAutomationImage from '~/assets/images/linkedinPost1.jpg';
 import caveSoundscapeImage from '~/assets/images/cave-river-soundscape.png';
 import consoleWideImage from '~/assets/images/WideConsoleStudioShotAiEdit.png';
 import soundLogoImage from '~/assets/images/sound-logo-ethno-indigenous.png';
@@ -154,21 +153,11 @@ const categories = [
         title: 'Design a Simple Video + Audio Workflow (Loops + Voice Content)',
         summary:
           'Repeatable voice-first video workflow built for a paid Upwork client ($250, 5★): DaVinci Resolve template with a Fusion loop composition, Fairlight sidechain-ducking preset, and AI image/video generation steps—short-form content ships consistently without rebuilding the project each time.',
+        href: 'https://www.upwork.com/freelancers/techcre8',
         media: {
           type: 'image',
           src: consoleWideImage.src,
           alt: 'Video editing workstation configured for AI-assisted workflow',
-        },
-      },
-      {
-        label: 'Content Automation',
-        title: 'Weekly Social Media Review & Approval Automation System',
-        summary:
-          'Gemini and ChatGPT run engineered prompts to draft and stage a weekly LinkedIn content queue through a review and approval gate; human in the loop for final polish and manual posting so quality stays tight and the voice stays mine.',
-        media: {
-          type: 'image',
-          src: socialAutomationImage.src,
-          alt: 'LinkedIn post graphic from a weekly automation pipeline',
         },
       },
     ],
@@ -236,7 +225,7 @@ const categories = [
       <p class="mt-3 max-w-3xl text-lg text-muted dark:text-slate-300">{description}</p>
 
       <div class="mt-8 flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4 md:grid md:grid-cols-2 md:gap-6 md:overflow-visible md:pb-0">
-        {projects.map(({ title: projectTitle, summary, media, label }) => (
+        {projects.map(({ title: projectTitle, summary, media, label, href }) => (
           <article class="min-w-[280px] snap-center rounded-2xl border border-dashed border-primary/30 bg-white/70 px-6 py-8 shadow-sm transition hover:border-primary/60 dark:bg-slate-900/40 md:min-w-0">
             <div class="text-sm font-semibold uppercase tracking-wider text-primary">
               {label ?? 'Case Study'}
@@ -277,6 +266,21 @@ const categories = [
               media?.type === 'image' && (
                 <div class="mt-4 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
                   <img class="h-48 w-full object-cover" src={media.src} alt={media.alt ?? projectTitle} />
+                </div>
+              )
+            }
+            {
+              href && (
+                <div class="mt-4">
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
+                  >
+                    View on Upwork
+                    <Icon name="tabler:external-link" class="h-4 w-4" />
+                  </a>
                 </div>
               )
             }
