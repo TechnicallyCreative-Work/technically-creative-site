@@ -36,6 +36,22 @@ export const headerData = {
       ],
     },
     {
+      text: 'Portfolio',
+      links: [
+        { text: 'Music & Sound Design', href: getPermalink('/portfolio#music-sound-design') },
+        { text: 'Sound & Audio Engineering', href: getPermalink('/portfolio#sound-audio-engineering') },
+        { text: 'Ableton Training', href: getPermalink('/portfolio#ableton-training') },
+        { text: 'Graphic Design & Visual Art', href: getPermalink('/portfolio#graphic-design') },
+        { text: 'Automation', href: getPermalink('/portfolio#automation') },
+        { text: 'Project Management', href: getPermalink('/portfolio#project-management') },
+        { text: 'Video Editing', href: getPermalink('/portfolio#video-editing') },
+        { text: 'Gear Consultation', href: getPermalink('/portfolio#gear-consultation') },
+        { text: 'Performance / Live Sound', href: getPermalink('/portfolio#performance-live-sound') },
+        { text: 'Technology Efficiency', href: getPermalink('/portfolio#technology-efficiency') },
+        { text: 'Signal & Space', href: getPermalink('/portfolio#signal-space') },
+      ],
+    },
+    {
       text: 'About',
       links: [
         {
@@ -53,11 +69,21 @@ export const headerData = {
       ],
     },
     {
-      text: 'Store',
-      href: 'https://store.technicallycreative.work',
-      modalId: 'storefront-modal',
-      modalTitle: 'Technically Creative Store',
-      modalUrl: 'https://store.technicallycreative.work',
+      text: 'Products',
+      links: [
+        { text: 'Ableton Training', href: getPermalink('/store#ableton-training') },
+        { text: 'Nature Series Prints', href: getPermalink('/store#nature-series') },
+        { text: 'Dark & Fan Art', href: getPermalink('/store#dark-art') },
+        { text: 'Browse All on Gumroad', href: 'https://techcre8.gumroad.com' },
+      ],
+    },
+    {
+      text: 'Services',
+      links: [
+        { text: 'Graphic Design & Commissions', href: getPermalink('/store#graphic-design') },
+        { text: 'Online Consulting', href: getPermalink('/store#services') },
+        { text: 'Indianapolis Local Services', href: getPermalink('/store#local-services') },
+      ],
     },
   ],
   actions: [{ text: 'Start a Project', href: getPermalink('/contact') }],

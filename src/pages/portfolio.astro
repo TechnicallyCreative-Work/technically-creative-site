@@ -11,74 +11,165 @@ import { Icon } from 'astro-icon/components';
 import { getPermalink } from '~/utils/permalinks';
 import { headerData } from '~/navigation';
 
-import voiceToLogImage from '~/assets/images/project-image-4.png';
 import abletonSetupImage from '~/assets/images/desk3.jpg';
 import clickupLoggerImage from '~/assets/images/project-image-7.png';
-import aiLoopingImage from '~/assets/images/WideConsoleStudioShotAiEdit.png';
-import caveSoundscapeImage from '~/assets/images/cave-river-soundscape.png';
 import consoleWideImage from '~/assets/images/WideConsoleStudioShotAiEdit.png';
+import caveSoundscapeImage from '~/assets/images/cave-river-soundscape.png';
 import soundLogoImage from '~/assets/images/sound-logo-ethno-indigenous.png';
+import charvelImage from '~/assets/images/Charvel-ProMod-SSS.jpg';
+import desk1Image from '~/assets/images/desk1.jpg';
+import desk2Image from '~/assets/images/desk2.jpg';
+
+import artXenomorph from '~/assets/images/store-xenomorph.png';
+import artHorrorOwl from '~/assets/images/store-horrorowl.png';
+import artDredd from '~/assets/images/store-dredd.png';
+import artNatureSeries from '~/assets/images/store-nature-series.png';
+import artCyberHare from '~/assets/images/store-cyberhare.png';
+import artprintsGallery from '~/assets/images/artprints-gallery.jpg';
+
+import brandTcLogo from '~/assets/images/brand-tc-logo.png';
+import brandTcWallpaperGd from '~/assets/images/brand-tc-wallpaper-gd.png';
+import brandTcYoutubeBanner from '~/assets/images/brand-tc-youtube-banner.png';
+import brandRvxxLogo from '~/assets/images/brand-rvxx-logo.png';
+import brandRvxxArgent from '~/assets/images/brand-rvxx-argent.jpg';
+import brandRvxxArgent2 from '~/assets/images/brand-rvxx-argent2.jpg';
+import brandVantablakAlbum from '~/assets/images/brand-vantablak-album.jpg';
+import galleryVbLive01 from '~/assets/images/gallery-vantablak-live-01.jpg';
+import galleryVbLive02 from '~/assets/images/gallery-vantablak-live-02.jpg';
+import galleryVbLive03 from '~/assets/images/gallery-vantablak-live-03.jpg';
 
 const metadata = {
   title: 'Portfolio - Technically Creative LLC',
-  description: 'Selected audio, sound design, and project management work from Technically Creative LLC.',
+  description: 'Service-aligned work across music production, sound engineering, Ableton training, automation, and more from Technically Creative LLC.',
 };
 
-const links = [...headerData.links, { text: 'Portfolio', href: '/portfolio' }];
+const links = headerData.links;
 
-const categories = [
+interface MediaObject {
+  type: string;
+  src?: string;
+  alt?: string;
+  html?: string;
+}
+
+interface Project {
+  label?: string;
+  title: string;
+  status?: string;
+  summary: string;
+  media?: MediaObject | null;
+  href?: string;
+  review?: {
+    quote: string;
+    rating: number;
+    platform?: string;
+  };
+}
+
+interface Category {
+  id: string;
+  title: string;
+  icon: string;
+  description: string;
+  serviceHref: string;
+  heroVideo?: string;
+  projects: Project[];
+}
+
+const statusStyles: Record<string, string> = {
+  completed: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300',
+  'in-progress': 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
+  'on-hold': 'bg-slate-100 text-slate-600 dark:bg-slate-700/60 dark:text-slate-400',
+  queued: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300',
+};
+
+const statusLabels: Record<string, string> = {
+  completed: 'Completed',
+  'in-progress': 'In Progress',
+  'on-hold': 'On Hold',
+  queued: 'Queued',
+};
+
+const categories: Category[] = [
   {
-    id: 'music-technology',
-    title: 'Music Technology',
-    icon: 'tabler:cpu',
-    description:
-      'Max patches, hybrid DAW templates, and automation systems that blend art with reliable delivery.',
-    serviceHref: '/services/music-technology-consulting',
+    id: 'music-sound-design',
+    title: 'Music & Sound Design Production',
+    icon: 'tabler:music',
+    description: 'Full-cycle music production—songwriting, arrangement, reconstruction, and release delivery.',
+    serviceHref: '/services/mixing-mastering',
     projects: [
       {
-        label: 'Max for Live Instrument',
-        title: 'Chiptune Instrument Demo',
+        label: 'Song Reconstruction',
+        title: 'Settle Down Productions — Song Reconstruction',
+        status: 'in-progress',
         summary:
-          'Walkthrough of a retro-inspired Max instrument with wavetable morphing, onboard FX, and automation-ready macros.',
+          'Full audio reconstruction project for Settle Down Productions via Upwork—rebuilding stems, re-arranging structure, and delivering a polished mix-ready session.',
         media: {
-          type: 'youtube',
-          src: 'https://www.youtube-nocookie.com/embed/ScMzIvxBSi4',
+          type: 'image',
+          src: consoleWideImage.src,
+          alt: 'Studio console for song reconstruction work',
         },
       },
       {
-        label: 'Ableton Performance Template',
-        title: 'Optimized Ableton Workflow & Controller Setup',
+        label: 'Single Release',
+        title: 'RVXX Back Single Release',
+        status: 'in-progress',
         summary:
-          'Productized service that maps Push, Launchpad, or Stream Deck to a lean Ableton template—session scenes, macro racks, and follow actions pre-wired so producers can focus on performance instead of clicking menus.',
+          'Returning single for the RVXX project—production, mix, and release coordination for a comeback drop.',
+        media: {
+          type: 'raw',
+          html: `<iframe width="100%" height="450" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2062960161&color=%2314140c&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe><div style="font-size: 10px; color: #cccccc; line-break: anywhere; word-break: normal; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-family: Interstate, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Garuda, Verdana, Tahoma, sans-serif; font-weight: 100;"><a href="https://soundcloud.com/rvxx-252541516" title="RVXX" target="_blank" style="color: #cccccc; text-decoration: none;">RVXX</a> - <a href="https://soundcloud.com/rvxx-252541516/sets/argent-eruption" title="Argent Eruption" target="_blank" style="color: #cccccc; text-decoration: none;">Argent Eruption</a></div>`,
+        },
+      },
+      {
+        label: 'Digital Art Collab',
+        title: 'All is Well in the Cosmos',
+        status: 'completed',
+        summary:
+          'A collaborative digital art and music project with friends and family—original music paired with visual artwork in a cohesive release.',
+        media: {
+          type: 'image',
+          src: consoleWideImage.src,
+          alt: 'All is Well in the Cosmos digital art collaboration',
+        },
+      },
+      {
+        label: 'Ableton Performance',
+        title: 'Ableton Pop Song Performance Set',
+        status: 'in-progress',
+        summary:
+          'Stem separation workflow and Ableton Live performance template build for a client via Upwork—3-part video review series with 2 of 3 reviews complete.',
         media: {
           type: 'image',
           src: abletonSetupImage.src,
-          alt: 'Studio desk setup configured for Ableton Live performance',
+          alt: 'Stem separation and Ableton Live performance template build',
         },
       },
       {
-        label: 'Workflow Automation System',
-        title: 'Voice-to-Log Mix Notes',
+        label: 'Upwork — Performance Set',
+        title: 'Espresso Ableton Performance Set',
+        status: 'in-progress',
         summary:
-          'Voice memos from Telegram flow through n8n, transcribe via AI, and land in a Google Sheet that a bot can search for mix notes and lessons learned—so session insights never get lost in a voice memo app.',
+          'Full Ableton performance set build for a client via Upwork—tempo-synced scenes, controller mapping, and a cohesive live set structure ready for the stage.',
         media: {
           type: 'image',
-          src: voiceToLogImage.src,
-          alt: 'Voice memo and transcript pipeline visualization',
+          src: abletonSetupImage.src,
+          alt: 'Ableton Live performance set configuration',
         },
       },
     ],
   },
   {
-    id: 'sound-design-foley',
-    title: 'Sound Design & Foley',
+    id: 'sound-audio-engineering',
+    title: 'Sound & Audio Engineering',
     icon: 'tabler:speakerphone',
-    description: 'Trailer, film, and interactive soundscapes with practical and synthetic Foley layers.',
+    description: 'Trailer, film, interactive soundscapes, and brand audio—practical Foley, synthesis, and full post-production mixes.',
     serviceHref: '/services/sound-design-foley',
     projects: [
       {
         label: 'Trailer Sound Redesign',
         title: "'Aliens' 30th Anniversary Trailer Sound Redesign",
+        status: 'completed',
         summary:
           'Full sound redesign of the Aliens 30th anniversary trailer—replaced every impact, riser, whoosh, and atmosphere with custom-designed layers from my foley and synthesis library.',
         media: {
@@ -89,6 +180,7 @@ const categories = [
       {
         label: 'Cinematic Environment',
         title: 'Immersive Cave Water Soundscape',
+        status: 'completed',
         summary:
           'Layered dripping water, reverberant stone ambience, and subsonic rumbles into a loopable cinematic environment designed for games, VR, and film scoring beds.',
         media: {
@@ -99,7 +191,8 @@ const categories = [
       },
       {
         label: 'Animation Sound Design',
-        title: 'Sound Design for Animation | Graduate Portfolio Project',
+        title: 'Sound Design for Animation | Graduate Portfolio',
+        status: 'completed',
         summary:
           'Episode samples from a short animation series where I built SFX layers, ambiences, and the final mix—part of my Music Technology graduate portfolio.',
         media: {
@@ -109,70 +202,129 @@ const categories = [
       },
       {
         label: 'Brand Sound Design',
-        title: 'Create a Unique Sound Logo and Video Sound for Ethno Indigenous Brand',
+        title: 'Sound Logo & Video Audio — Ethno Indigenous Brand',
+        status: 'completed',
         summary:
-          'Custom sound logo and synchronized video audio for an ethno indigenous brand—balancing cultural authenticity with modern production values. Delivered on Upwork: 5★ review, "consistently delivers quality work and even went above and beyond."',
+          'Custom sound logo and synchronized video audio for an ethno indigenous brand—balancing cultural authenticity with modern production values.',
         href: 'https://www.upwork.com/freelancers/techcre8',
         media: {
           type: 'image',
           src: soundLogoImage.src,
-          alt: 'Sound logo and brand audio design for ethno indigenous brand',
+          alt: 'Sound logo and brand audio for ethno indigenous brand',
+        },
+        review: {
+          quote: 'Kenny is a dedicated team player and demonstrates a high level of professionalism. He consistently delivers quality work and even went above and beyond by providing helpful documents I could use. As someone new to this, I really appreciate his support and patience. I am genuinely impressed by his effectiveness and kindness.',
+          rating: 5,
+          platform: 'Upwork',
         },
       },
     ],
   },
   {
-    id: 'project-management-automation-ai',
-    title: 'Project Management, Automation & AI',
-    icon: 'tabler:robot',
-    description:
-      'Roadmaps, reporting, and AI-assisted automations that keep creative work shipping without chaos.',
-    serviceHref: '/services/workflow-automation',
+    id: 'ableton-training',
+    title: 'Ableton Training',
+    icon: 'tabler:device-laptop',
+    description: 'Structured in-person and digital training sessions—from first beat to advanced performance setups.',
+    serviceHref: '/services/music-technology-consulting',
+    heroVideo: 'https://www.youtube.com/embed/fr12onH_sFc?si=3Qb9B6AO_Prc0Br6',
     projects: [
       {
-        label: 'n8n Automation',
-        title: 'n8n Automation Demo — Content Review & Approval Pipeline',
+        label: 'ABT Session 01',
+        title: 'Ableton Basics: Orientation & First Beat',
+        status: 'completed',
         summary:
-          'End-to-end content review and approval workflow built in n8n—routes submissions through automated checks, assigns reviewers, tracks approval status, and logs every decision so nothing falls through the cracks.',
-        media: {
-          type: 'youtube',
-          src: 'https://www.youtube-nocookie.com/embed/XFaQ-qb6YjE',
-        },
-      },
-      {
-        label: 'ClickUp Workspace Design',
-        title: 'ClickUp Workspace Design — Thematic Weekly Execution System',
-        summary:
-          'ClickUp workspace structured around a thematic weekly execution model—wired to n8n so every task update streams into a structured Google Sheet, turning day-to-day activity into a searchable retrospective database for lessons learned and project health reporting.',
-        media: {
-          type: 'youtube',
-          src: 'https://www.youtube-nocookie.com/embed/o7ZpFyb7w1o',
-        },
-      },
-      {
-        label: 'AI + Video Workflow',
-        title: 'Design a Simple Video + Audio Workflow (Loops + Voice Content)',
-        summary:
-          'Repeatable voice-first video workflow built for a paid Upwork client ($250, 5★): DaVinci Resolve template with a Fusion loop composition, Fairlight sidechain-ducking preset, and AI image/video generation steps—short-form content ships consistently without rebuilding the project each time.',
-        href: 'https://www.upwork.com/freelancers/techcre8',
+          'First session in the Ableton Basics Training series—covering the interface, session vs. arrangement view, and building a first beat from scratch. Delivered in-person and launched on Gumroad.',
         media: {
           type: 'image',
-          src: consoleWideImage.src,
-          alt: 'Video editing workstation configured for AI-assisted workflow',
+          src: abletonSetupImage.src,
+          alt: 'Ableton Live training session desk setup',
         },
+      },
+      {
+        label: 'ABT Sessions 02–06',
+        title: 'Ableton Basics Training — Sessions 02–06',
+        status: 'queued',
+        summary:
+          'Upcoming sessions covering audio recording, MIDI deep-dive, effects processing, mixing fundamentals, and live performance setup. Enrollments open when sessions launch.',
+        media: null,
       },
     ],
   },
   {
-    id: 'music-production',
-    title: 'Music Production',
-    icon: 'tabler:music',
-    description: 'Full-cycle production—songwriting, arrangement, vocal tracking, edit, and mix/playback delivery.',
+    id: 'automation',
+    title: 'Automation',
+    icon: 'tabler:robot',
+    description: 'n8n and API-based automations that eliminate repetitive tasks and connect your tools without manual handoffs.',
+    serviceHref: '/services/workflow-automation',
+    heroVideo: 'https://www.youtube.com/embed/XFaQ-qb6YjE?si=IXv4fIqQcQ1ZTFuT',
+    projects: [
+      {
+        label: 'Upwork — ClickUp Setup',
+        title: 'ClickUp SaaS Agile Workflow & Time Tracking Setup',
+        status: 'in-progress',
+        summary:
+          'Full ClickUp workspace build for a SaaS client—Agile sprint structure, time tracking integrations, and automated reporting dashboards so the team ships faster without losing visibility.',
+        media: {
+          type: 'image',
+          src: clickupLoggerImage.src,
+          alt: 'ClickUp agile workflow and time tracking setup',
+        },
+      },
+      {
+        label: 'n8n Automation',
+        title: 'n8n Content Review & Approval Pipeline',
+        status: 'completed',
+        summary:
+          'End-to-end content review and approval workflow built in n8n—routes submissions through automated checks, assigns reviewers, tracks approval status, and logs every decision.',
+        media: null,
+      },
+    ],
+  },
+  {
+    id: 'project-management',
+    title: 'Project Management / ClickUp PM',
+    icon: 'tabler:clipboard-list',
+    description: 'Workspace design, onboarding, and ongoing ClickUp consulting to keep creative and technical work on track.',
+    serviceHref: '/services/project-management-consulting',
+    heroVideo: 'https://www.youtube.com/embed/o7ZpFyb7w1o?si=TNReJ1gwSREfM_qT',
+    projects: [
+      {
+        label: 'Consultation',
+        title: 'QC Cortex Consultation — Quad Cortex Deep Dive',
+        status: 'completed',
+        summary:
+          'Intensive one-session consultation covering Quad Cortex signal chain design, preset organization, and live performance routing for Jack Caragol.',
+        media: null,
+      },
+      {
+        label: 'Ongoing Consulting',
+        title: 'QC Ongoing Consultation — Jack Caragol',
+        status: 'completed',
+        summary:
+          'Continued advisory sessions on Quad Cortex workflow optimization—patch management, studio vs. live signal separation, and integration with recording setup.',
+        media: null,
+      },
+      {
+        label: 'Productivity Setup',
+        title: 'Productivity Software Setup & Google Workspace Integration',
+        status: 'completed',
+        summary:
+          'Full productivity stack implementation—ClickUp, Google Workspace, and calendar/task sync configured end-to-end so creative and business work stays in one cohesive system.',
+        media: null,
+      },
+    ],
+  },
+  {
+    id: 'video-editing',
+    title: 'Video Editing',
+    icon: 'tabler:video',
+    description: 'Post-production video editing—music videos, social content, and AI-assisted DaVinci Resolve workflows.',
     serviceHref: '/services/mixing-mastering',
     projects: [
       {
-        label: 'Video',
-        title: 'Music Videos',
+        label: 'Music Video',
+        title: 'Music Videos — Pre-Production to Post Mix',
+        status: 'completed',
         summary:
           'Selected live-action videos where I handled pre-production, on-set audio direction, and post-production mix.',
         media: {
@@ -181,14 +333,271 @@ const categories = [
         },
       },
       {
-        label: 'Audio',
-        title: "Full-Scale Electronic Production & Sound Design – \"RVXX\"",
+        label: 'AI + Video Workflow',
+        title: 'Voice + Loop Video Workflow — DaVinci Resolve',
+        status: 'completed',
         summary:
-          'Stream the Argent Eruption project directly—full-scale electronic production, sound design, mix, and master for RVXX.',
+          'Repeatable voice-first video workflow built for a paid Upwork client: DaVinci Resolve template with a Fusion loop composition, Fairlight sidechain-ducking preset, and AI image/video generation steps.',
+        href: 'https://www.upwork.com/freelancers/techcre8',
         media: {
-          type: 'raw',
-          html: `<iframe width="100%" height="450" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2062960161&color=%2314140c&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe><div style="font-size: 10px; color: #cccccc; line-break: anywhere; word-break: normal; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-family: Interstate, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Garuda, Verdana, Tahoma, sans-serif; font-weight: 100;"><a href="https://soundcloud.com/rvxx-252541516" title="RVXX" target="_blank" style="color: #cccccc; text-decoration: none;">RVXX</a> - <a href="https://soundcloud.com/rvxx-252541516/sets/argent-eruption" title="Argent Eruption" target="_blank" style="color: #cccccc; text-decoration: none;">Argent Eruption</a></div>`,
+          type: 'image',
+          src: consoleWideImage.src,
+          alt: 'Video editing workstation configured for AI-assisted workflow',
         },
+        review: {
+          quote: 'Kenny went above and beyond to meet the needs of our project. He was very timely in his responses, offered extra support outside of the scope of the advertised job and was completely professional and supportive through the whole thing. If you are looking for a real professional Kenny is your man!',
+          rating: 5,
+          platform: 'Upwork',
+        },
+      },
+    ],
+  },
+  {
+    id: 'gear-consultation',
+    title: 'Gear Consultation',
+    icon: 'tabler:guitar-pick',
+    description: "Guitar selection, instrument evaluation, and pedalboard design—hands-on consultations that end with gear you'll actually use.",
+    serviceHref: '/services/music-technology-consulting',
+    projects: [
+      {
+        label: 'Instrument Setups',
+        title: 'IBanez, Charvel, Bass Guitar & Guitar Setup Consultations',
+        status: 'completed',
+        summary:
+          'Closed-out instrument setup and selection consultations—IBanez and Charvel evaluation, bass guitar setup, and general guitar configuration for players at different levels.',
+        media: {
+          type: 'image',
+          src: charvelImage.src,
+          alt: 'Charvel Pro-Mod guitar setup consultation',
+        },
+      },
+      {
+        label: 'Pedalboard Design',
+        title: 'Pedalboard Updates & Redesign',
+        status: 'on-hold',
+        summary:
+          'In-depth pedalboard signal chain redesign—evaluating current pedal order, power supply configuration, and adding/replacing units for a cleaner live and studio tone.',
+        media: null,
+      },
+    ],
+  },
+  {
+    id: 'performance-live-sound',
+    title: 'Performance / Live Sound Event',
+    icon: 'tabler:microphone-2',
+    description: 'Live event audio and electronic performance sets—PA setup, front-of-house mixing, and Ableton live rigs built for the stage.',
+    serviceHref: '/services/music-technology-consulting',
+    projects: [
+      {
+        label: 'Event Audio',
+        title: 'Naptones Awards Sound Check',
+        status: 'completed',
+        summary:
+          'Full system check and audio delivery for the Naptones Awards ceremony—ensuring broadcast-quality sound for a live event audience.',
+        media: {
+          type: 'image',
+          src: desk1Image.src,
+          alt: 'Live event audio setup and sound check',
+        },
+        review: {
+          quote: 'Kenny did an excellent job working with the multiple bands and musicians during soundcheck. He was timely, personable and professional. He worked with the resources provided and was quick to adapt.',
+          rating: 5,
+          platform: 'Upwork',
+        },
+      },
+      {
+        label: 'Live Performance — Vantablak',
+        title: 'Vantablak @ Melody Inn — Live Sound & Performance',
+        status: 'completed',
+        summary:
+          'Handled live sound engineering and electronic performance for Vantablak at the Melody Inn, Indianapolis (May 7, 2023). Produced and operated the backing video visuals for the full set.',
+        media: { type: 'image', src: galleryVbLive02.src, alt: 'Vantablak performing at Melody Inn Indianapolis' },
+      },
+      {
+        label: 'Community — Pro Bono',
+        title: 'Community Karaoke Night — Non-Profit for Disabled Adults',
+        status: 'completed',
+        summary:
+          'Volunteered full PA setup and live sound operation for a non-profit serving disabled adults—giving the community a karaoke night. Also performed a short set. October 2025.',
+        media: null,
+      },
+      {
+        label: 'Community — Pro Bono',
+        title: 'Christmas Party Karaoke — Non-Profit for Disabled Adults',
+        status: 'completed',
+        summary:
+          'Returned to provide full sound setup for the same non-profit\'s Christmas party karaoke event. December 2025. Annual commitment—doing it again in 2026.',
+        media: null,
+      },
+    ],
+  },
+  {
+    id: 'technology-efficiency',
+    title: 'Technology Efficiency',
+    icon: 'tabler:settings-2',
+    description: 'Storage solutions, system rebuilds, and software/license management that keep your creative tools running at full speed.',
+    serviceHref: '/services/workflow-automation',
+    projects: [
+      {
+        label: 'Storage Solution',
+        title: 'Sustainable Creative Tech Storage',
+        status: 'completed',
+        summary:
+          'End-to-end creative storage design—library structure, backup strategy, and hardware configuration so project files, samples, and stems are always accessible and protected.',
+        media: {
+          type: 'image',
+          src: desk2Image.src,
+          alt: 'Sustainable creative technology storage setup',
+        },
+      },
+      {
+        label: 'System Rebuild',
+        title: 'Win Reinstall Prep — Full Software & License Re-Deploy',
+        status: 'completed',
+        summary:
+          'Complete Windows reinstall preparation and execution—full software inventory, license key recovery, and post-rebuild re-deployment checklist so nothing is lost during the refresh.',
+        media: {
+          type: 'image',
+          src: clickupLoggerImage.src,
+          alt: 'Windows system reinstall and software license re-deployment',
+        },
+      },
+    ],
+  },
+  {
+    id: 'signal-space',
+    title: 'Signal & Space',
+    icon: 'tabler:home-check',
+    description: 'Studio audit service—signal path review, room treatment assessment, and an actionable upgrade roadmap for your creative space.',
+    serviceHref: '/services/sound-design-foley',
+    projects: [],
+  },
+  {
+    id: 'graphic-design',
+    title: 'Graphic Design & Visual Art',
+    icon: 'tabler:palette',
+    description: 'Brand identity, album artwork, platform graphics, original illustration, ink & watercolor prints, and fan art — full-service visual work across music, tech, and creative brands.',
+    serviceHref: '/store#graphic-design',
+    projects: [
+      // --- Brand Identity ---
+      {
+        label: 'Brand Identity',
+        title: 'Technically Creative LLC — Full Brand System',
+        status: 'completed',
+        summary:
+          'Complete visual identity for Technically Creative LLC — wordmark logo, monochrome variant, desktop wallpapers for each service area (audio production, graphic design, automation, video, clickup admin), YouTube banner, Facebook cover, Instagram story template, RedBubble store cover, and a custom Max 4 Live device background.',
+        media: { type: 'image', src: brandTcLogo.src, alt: 'Technically Creative LLC logo' },
+      },
+      {
+        label: 'Platform Graphics',
+        title: 'TC Multi-Platform Banners & Covers',
+        status: 'completed',
+        summary:
+          'Sized and branded social platform graphics for Technically Creative — YouTube banner, Facebook cover, RedBubble storefront cover, and Instagram story template, all aligned to the TC visual identity.',
+        media: { type: 'image', src: brandTcYoutubeBanner.src, alt: 'Technically Creative YouTube banner' },
+      },
+      {
+        label: 'Branded Wallpapers',
+        title: 'TC Service-Area Desktop Wallpaper Series',
+        status: 'completed',
+        summary:
+          'Custom dual-monitor branded wallpapers (3840×1080) for each TC service area — Audio Production, Graphic Design, Automation, Video Production, ClickUp Admin, and Home. Also includes a Max 4 Live plugin background for the ChipTune M4L device.',
+        media: { type: 'image', src: brandTcWallpaperGd.src, alt: 'TC Graphic Design desktop wallpaper' },
+      },
+      // --- RVXX ---
+      {
+        label: 'Band Branding — RVXX',
+        title: 'RVXX — Argent Metal Visual Identity',
+        status: 'completed',
+        summary:
+          'Logo and visual identity for RVXX — a solo project whose debut album is Argent Metal. Includes the "Otherworldly Logo with Glowing Accents" mark and Argent Metal style lettering concepts featuring jagged, carved steel letters with beveled edges.',
+        media: { type: 'image', src: brandRvxxLogo.src, alt: 'RVXX otherworldly logo with glowing accents' },
+      },
+      {
+        label: 'Album Artwork — RVXX',
+        title: 'RVXX — Argent Metal Artwork & Concepts',
+        status: 'completed',
+        summary:
+          'Album art direction and title treatment for RVXX\'s debut Argent Metal record — graphic style explorations for the carved metallic lettering aesthetic that defines the project\'s visual language.',
+        media: { type: 'image', src: brandRvxxArgent.src, alt: 'RVXX Argent Metal carved steel lettering concept' },
+      },
+      {
+        label: 'Album Artwork — RVXX Alt Concept',
+        title: 'RVXX — Argent Metal Lettering Variant',
+        status: 'completed',
+        summary:
+          'Second Argent Metal title treatment — alternate weight and edge geometry for the carved steel lettering, exploring different visual impact at album scale.',
+        media: { type: 'image', src: brandRvxxArgent2.src, alt: 'RVXX Argent Metal lettering variant 2' },
+      },
+      // --- Vantablak ---
+      {
+        label: 'Band Branding — Vantablak',
+        title: 'Vantablak — Industrial Band Identity & Album Art',
+        status: 'completed',
+        summary:
+          'Visual branding for Vantablak — a two-piece industrial band drawing from Nine Inch Nails and Depeche Mode. Includes the high-res album artwork, logo glitch animation for live performance, and backing visuals for the Melody Inn show (May 2023).',
+        media: { type: 'image', src: brandVantablakAlbum.src, alt: 'Vantablak high-res album artwork' },
+      },
+      {
+        label: 'Live Visuals — Vantablak',
+        title: 'Vantablak @ Melody Inn — Live Show Photography',
+        status: 'completed',
+        summary:
+          'Live performance photography from the Vantablak show at Melody Inn, Indianapolis (May 7, 2023). Show included original backing video production and live sound.',
+        media: { type: 'image', src: galleryVbLive01.src, alt: 'Vantablak live at Melody Inn' },
+      },
+      // --- Original Art / Prints ---
+      {
+        label: 'Digital Illustration',
+        title: 'XENOMORPH — Dark Sci-Fi Study',
+        status: 'completed',
+        summary:
+          'Original dark sci-fi digital illustration — detailed atmospheric rendering in an ink-style technique. Available as a digital print on Gumroad.',
+        media: { type: 'image', src: artXenomorph.src, alt: 'XENOMORPH dark sci-fi digital print' },
+        href: 'https://techcre8.gumroad.com/l/xeno',
+      },
+      {
+        label: 'Ink & Watercolor',
+        title: "Hoo's Watching — Biomechanical Owl",
+        status: 'completed',
+        summary:
+          'Original ink and watercolor illustration of a biomechanical owl — fusing organic form with mechanical detail. Available as a digital print.',
+        media: { type: 'image', src: artHorrorOwl.src, alt: "Hoo's Watching biomechanical owl ink and watercolor" },
+        href: 'https://techcre8.gumroad.com/l/CyberOwl',
+      },
+      {
+        label: 'Fan Art',
+        title: 'Dredd — Dark Sci-Fi Fan Art',
+        status: 'completed',
+        summary:
+          'Judge Dredd fan art rendered in a dark, high-contrast atmospheric style. Original illustration available as a digital print.',
+        media: { type: 'image', src: artDredd.src, alt: 'Dredd dark sci-fi fan art digital print' },
+        href: 'https://techcre8.gumroad.com/l/DREDD-Dark',
+      },
+      {
+        label: 'Nature Series',
+        title: 'Nature Series — Praying Mantis, Moth & Frog',
+        status: 'completed',
+        summary:
+          'Three-piece original art print series exploring nature subjects. Available individually ($8 each) or as a bundle ($20) on Gumroad.',
+        media: { type: 'image', src: artNatureSeries.src, alt: 'Nature series art prints — Mantis, Moth, Frog' },
+        href: 'https://techcre8.gumroad.com/l/natureseriesbundle',
+      },
+      {
+        label: 'Digital Art Commission',
+        title: 'All Is Well With The Cosmos — Custom Commission',
+        status: 'completed',
+        summary:
+          'Custom digital art commission for Upwork client — original artwork themed around the Deltron 3030 universe. Delivered as high-res digital files.',
+        media: { type: 'image', src: artprintsGallery.src, alt: 'All Is Well With The Cosmos digital art commission' },
+      },
+      {
+        label: 'Work in Progress',
+        title: 'CyberHare — Bio-Mechanical Series',
+        status: 'in-progress',
+        summary:
+          'In-progress bio-mechanical illustration — part of an expanding original series exploring creatures reimagined through a mechanical lens.',
+        media: { type: 'image', src: artCyberHare.src, alt: 'CyberHare bio-mechanical illustration in progress' },
       },
     ],
   },
@@ -211,11 +620,11 @@ const categories = [
     actions={[{ variant: 'primary', text: 'Start a project', href: getPermalink('/contact#form') }]}
   >
     <Fragment slot="subtitle">
-      Each section below mirrors a core service. As new projects launch, I’ll slot in case studies, stems, and behind-the-scenes workflows for that service family.
+      Each section mirrors a core service. Projects are tagged by status—completed, in progress, on hold, or queued—so you can see exactly where things stand.
     </Fragment>
   </Hero>
 
-  {categories.map(({ id, title, description, icon, serviceHref, projects }) => (
+  {categories.map(({ id, title, description, icon, serviceHref, heroVideo, projects }) => (
     <WidgetWrapper id={id} containerClass="max-w-6xl mx-auto py-12 md:py-16">
       <div class="flex items-center gap-3 text-primary">
         <Icon name={icon} class="h-8 w-8" />
@@ -225,17 +634,47 @@ const categories = [
       </div>
       <p class="mt-3 max-w-3xl text-lg text-muted dark:text-slate-300">{description}</p>
 
-      <div class="mt-8 flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4 md:grid md:grid-cols-2 md:gap-6 md:overflow-visible md:pb-0">
-        {projects.map(({ title: projectTitle, summary, media, label, href }) => (
-          <article class="min-w-[280px] snap-center rounded-2xl border border-dashed border-primary/30 bg-white/70 px-6 py-8 shadow-sm transition hover:border-primary/60 dark:bg-slate-900/40 md:min-w-0">
-            <div class="text-sm font-semibold uppercase tracking-wider text-primary">
-              {label ?? 'Case Study'}
-            </div>
-            <h3 class="mt-3 text-xl font-semibold text-slate-900 dark:text-white">{projectTitle}</h3>
-            <p class="mt-2 text-muted dark:text-slate-400">{summary}</p>
+      {heroVideo && (
+        <div class="mt-6 overflow-hidden rounded-2xl shadow-lg aspect-video w-full max-w-3xl">
+          <iframe
+            width="100%"
+            height="100%"
+            src={heroVideo}
+            title={`${title} — Technically Creative`}
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+            class="w-full h-full"
+          ></iframe>
+        </div>
+      )}
 
-            {
-              media?.type === 'youtube' && (
+      {projects.length === 0 ? (
+        <div class="mt-8 rounded-2xl border border-dashed border-primary/30 bg-white/70 px-6 py-10 text-center dark:bg-slate-900/40">
+          <p class="text-muted dark:text-slate-400">Case studies coming soon — this service is actively offered.</p>
+          <div class="mt-4">
+            <Button variant="link" href={getPermalink('/contact#form')} icon="tabler:arrow-right" text="Inquire about this service" />
+          </div>
+        </div>
+      ) : (
+        <div class="mt-8 flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4 md:grid md:grid-cols-2 md:gap-6 md:overflow-visible md:pb-0">
+          {projects.map(({ title: projectTitle, summary, media, label, href, status, review }) => (
+            <article class="min-w-[280px] snap-center rounded-2xl border border-dashed border-primary/30 bg-white/70 px-6 py-8 shadow-sm transition hover:border-primary/60 dark:bg-slate-900/40 md:min-w-0">
+              <div class="flex items-center justify-between gap-2">
+                <div class="text-sm font-semibold uppercase tracking-wider text-primary">
+                  {label ?? 'Case Study'}
+                </div>
+                {status && (
+                  <span class={`rounded-full px-2.5 py-0.5 text-xs font-medium ${statusStyles[status] ?? ''}`}>
+                    {statusLabels[status] ?? status}
+                  </span>
+                )}
+              </div>
+              <h3 class="mt-3 text-xl font-semibold text-slate-900 dark:text-white">{projectTitle}</h3>
+              <p class="mt-2 text-muted dark:text-slate-400">{summary}</p>
+
+              {media?.type === 'youtube' && (
                 <div class="mt-4 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
                   <iframe
                     class="h-48 w-full"
@@ -247,31 +686,31 @@ const categories = [
                     allowfullscreen
                   ></iframe>
                 </div>
-              )
-            }
-            {
-              media?.type === 'soundcloud' && (
-                <div class="mt-4 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
-                  <iframe
-                    class="h-44 w-full"
-                    scrolling="no"
-                    frameborder="no"
-                    allow="autoplay"
-                    src={media.src}
-                    title={`${projectTitle} audio`}
-                  ></iframe>
-                </div>
-              )
-            }
-            {
-              media?.type === 'image' && (
+              )}
+              {media?.type === 'image' && (
                 <div class="mt-4 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
                   <img class="h-48 w-full object-cover" src={media.src} alt={media.alt ?? projectTitle} />
                 </div>
-              )
-            }
-            {
-              href && (
+              )}
+              {media?.type === 'raw' && (
+                <div class="mt-4 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
+                  <Fragment set:html={media.html} />
+                </div>
+              )}
+              {review && (
+                <blockquote class="mt-5 rounded-xl border border-amber-200/60 bg-amber-50/60 px-4 py-3 dark:border-amber-700/40 dark:bg-amber-900/10">
+                  <div class="mb-1.5 flex items-center gap-1">
+                    {Array.from({ length: review.rating }).map(() => (
+                      <Icon name="tabler:star-filled" class="h-3.5 w-3.5 text-amber-400" />
+                    ))}
+                    {review.platform && (
+                      <span class="ml-1.5 text-xs font-medium text-slate-400 dark:text-slate-500">{review.platform}</span>
+                    )}
+                  </div>
+                  <p class="text-sm italic leading-relaxed text-slate-700 dark:text-slate-300">"{review.quote}"</p>
+                </blockquote>
+              )}
+              {href && (
                 <div class="mt-4">
                   <a
                     href={href}
@@ -283,18 +722,11 @@ const categories = [
                     <Icon name="tabler:external-link" class="h-4 w-4" />
                   </a>
                 </div>
-              )
-            }
-            {
-              media?.type === 'raw' && (
-                <div class="mt-4 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
-                  <Fragment set:html={media.html} />
-                </div>
-              )
-            }
-          </article>
-        ))}
-      </div>
+              )}
+            </article>
+          ))}
+        </div>
+      )}
 
       <div class="mt-6">
         <Button variant="link" href={getPermalink(serviceHref)} icon="tabler:arrow-right" text="View matching service" />
@@ -304,7 +736,7 @@ const categories = [
 
   <CallToAction
     title="Have a project in mind?"
-    subtitle="Tell me what you need—mixing, sound design, workflow cleanup—and I'll reply within one business day."
+    subtitle="Tell me what you need—mixing, sound design, workflow cleanup, or training—and I'll reply within one business day."
     actions={[{ variant: 'primary', text: 'Start a project', href: getPermalink('/contact#form') }]}
   />
 </Layout>

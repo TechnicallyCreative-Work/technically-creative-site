@@ -5,9 +5,11 @@ import Hero from '~/components/widgets/Hero.astro';
 import BrandBanner from '~/components/widgets/BrandBanner.astro';
 import ContactUs from '~/components/widgets/Contact.astro';
 import Features2 from '~/components/widgets/Features2.astro';
+import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
+import { Icon } from 'astro-icon/components';
 import { headerData } from '~/navigation';
 
-const links = [...headerData.links, { text: 'Portfolio', href: '/portfolio' }];
+const links = headerData.links;
 
 const metadata = {
   title: 'Contact',
@@ -163,6 +165,115 @@ const hubspotForm = {
       },
     ]}
   />
+
+  <WidgetWrapper id="platforms" containerClass="max-w-4xl mx-auto py-12 md:py-16">
+    <div class="text-center">
+      <p class="text-sm font-semibold uppercase tracking-widest text-primary">Already using a platform?</p>
+      <h2 class="mt-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
+        Find me directly on these platforms
+      </h2>
+      <p class="mt-3 text-muted dark:text-slate-400">
+        Hire through the platform you already use — contracts, reviews, and payments handled natively.
+      </p>
+    </div>
+
+    <div class="mt-10 grid gap-6 sm:grid-cols-3">
+
+      <!-- Upwork -->
+      <div class="flex flex-col overflow-hidden rounded-2xl border border-dashed border-primary/30 bg-white/70 dark:bg-slate-900/40">
+        <div class="flex items-center gap-3 border-b border-primary/10 px-6 py-4">
+          <Icon name="tabler:briefcase" class="h-6 w-6 text-[#14a800]" />
+          <span class="text-lg font-bold text-slate-900 dark:text-white">Upwork</span>
+        </div>
+        <div class="flex flex-1 flex-col px-6 py-5">
+          <p class="text-sm text-muted dark:text-slate-400">
+            Full work history, client reviews, and project catalog. Best for contracts, hourly work, and milestone-based projects.
+          </p>
+          <div class="mt-4 flex-1 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
+            <iframe
+              src="https://www.upwork.com/freelancers/techcre8?embed=true"
+              title="Upwork Profile — Technically Creative"
+              class="h-64 w-full border-0"
+              loading="lazy"
+              sandbox="allow-scripts allow-same-origin allow-popups"
+            ></iframe>
+          </div>
+          <a
+            href="https://www.upwork.com/freelancers/techcre8"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-4 inline-flex items-center justify-center gap-2 rounded-lg bg-[#14a800] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#0f8700]"
+          >
+            View Upwork Profile
+            <Icon name="tabler:external-link" class="h-4 w-4" />
+          </a>
+        </div>
+      </div>
+
+      <!-- Contra -->
+      <div class="flex flex-col overflow-hidden rounded-2xl border border-dashed border-primary/30 bg-white/70 dark:bg-slate-900/40">
+        <div class="flex items-center gap-3 border-b border-primary/10 px-6 py-4">
+          <Icon name="tabler:bolt" class="h-6 w-6 text-primary" />
+          <span class="text-lg font-bold text-slate-900 dark:text-white">Contra</span>
+        </div>
+        <div class="flex flex-1 flex-col px-6 py-5">
+          <p class="text-sm text-muted dark:text-slate-400">
+            Commission-free freelance platform. Great for independent project work with no platform fees taken from your payment.
+          </p>
+          <div class="mt-4 flex-1 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
+            <iframe
+              src="https://contra.com/techcre8?embed=true"
+              title="Contra Profile — Technically Creative"
+              class="h-64 w-full border-0"
+              loading="lazy"
+              sandbox="allow-scripts allow-same-origin allow-popups"
+            ></iframe>
+          </div>
+          <a
+            href="https://contra.com/techcre8"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-4 inline-flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white"
+          >
+            View Contra Profile
+            <Icon name="tabler:external-link" class="h-4 w-4" />
+          </a>
+        </div>
+      </div>
+
+      <!-- Gumroad -->
+      <div class="flex flex-col overflow-hidden rounded-2xl border border-dashed border-primary/30 bg-white/70 dark:bg-slate-900/40">
+        <div class="flex items-center gap-3 border-b border-primary/10 px-6 py-4">
+          <Icon name="tabler:shopping-bag" class="h-6 w-6 text-[#ff90e8]" />
+          <span class="text-lg font-bold text-slate-900 dark:text-white">Gumroad</span>
+        </div>
+        <div class="flex flex-1 flex-col px-6 py-5">
+          <p class="text-sm text-muted dark:text-slate-400">
+            Digital products — Ableton training modules, art prints, and downloadable resources available for instant purchase.
+          </p>
+          <div class="mt-4 flex-1 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
+            <iframe
+              src="https://techcre8.gumroad.com?embed=true"
+              title="Gumroad Store — Technically Creative"
+              class="h-64 w-full border-0"
+              loading="lazy"
+              sandbox="allow-scripts allow-same-origin allow-popups"
+            ></iframe>
+          </div>
+          <a
+            href="https://techcre8.gumroad.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-4 inline-flex items-center justify-center gap-2 rounded-lg bg-[#ff90e8] px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-[#ff70e0]"
+          >
+            Visit Gumroad Store
+            <Icon name="tabler:external-link" class="h-4 w-4" />
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </WidgetWrapper>
 </Layout>
 
 
