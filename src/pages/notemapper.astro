@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <!-- aka "Notemapper" -->
-<!-- saved from url=(0057)file:///C:/Users/kendu/Downloads/TechCre8_MIDI_Tab_2.html -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -165,7 +164,7 @@ table.fb td.slabel{font-family:'Space Mono',monospace;font-size:10px;color:var(-
     <div class="api-saved" id="apiSaved" style="display: block;">✓ Key saved — ready to use</div>
   </div>
 
-  <div class="upload-zone" id="dropZone" onclick="document.getElementById(&#39;midiInput&#39;).click()" ondragover="onDrag(event)" ondragleave="onDragLeave()" ondrop="onDrop(event)">
+  <div class="upload-zone" id="dropZone" onclick="document.getElementById('midiInput').click()" ondragover="onDrag(event)" ondragleave="onDragLeave()" ondrop="onDrop(event)">
     <div class="uz-icon">🎹</div>
     <h2>Drop your .mid file here</h2>
     <p>Ableton: right-click MIDI clip → Export MIDI Clip → drag here · or click to browse</p>
@@ -207,7 +206,7 @@ table.fb td.slabel{font-family:'Space Mono',monospace;font-size:10px;color:var(-
   <!-- BPM + KEY BAR -->
   <div class="meta-bar">
     <div class="cg" style="flex-direction:column;align-items:flex-start;gap:4px;">
-      <label style="font-family:&#39;Rajdhani&#39;,sans-serif;font-size:11px;font-weight:600;color:var(--cyan);letter-spacing:1px;text-transform:uppercase;">BPM</label>
+      <label style="font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;color:var(--cyan);letter-spacing:1px;text-transform:uppercase;">BPM</label>
       <div style="display:flex;align-items:center;gap:8px;">
         <input type="number" id="bpmInput" min="20" max="300" value="120" style="width:80px;" oninput="onBpmOverride()">
         <div>
@@ -217,7 +216,7 @@ table.fb td.slabel{font-family:'Space Mono',monospace;font-size:10px;color:var(-
     </div>
     <div style="width:1px;height:48px;background:var(--border);margin:0 6px;"></div>
     <div class="cg" style="flex-direction:column;align-items:flex-start;gap:4px;">
-      <label style="font-family:&#39;Rajdhani&#39;,sans-serif;font-size:11px;font-weight:600;color:var(--mag);letter-spacing:1px;text-transform:uppercase;">Key</label>
+      <label style="font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;color:var(--mag);letter-spacing:1px;text-transform:uppercase;">Key</label>
       <div style="display:flex;align-items:center;gap:8px;">
         <select id="keyOverride" onchange="onKeyOverride()" style="border-color:var(--mborder);">
           <option value="auto">Auto-detect</option>
@@ -278,9 +277,9 @@ table.fb td.slabel{font-family:'Space Mono',monospace;font-size:10px;color:var(-
 
     <div class="section-head" style="margin-top:18px;">View</div>
     <div class="toggle-row">
-      <button class="tbtn active" id="btnTab" onclick="setView(&#39;tab&#39;)">ASCII Tab</button>
-      <button class="tbtn" id="btnFb" onclick="setView(&#39;fretboard&#39;)">Fretboard</button>
-      <button class="tbtn" id="btnFing" onclick="setView(&#39;fingering&#39;)">Fingering</button>
+      <button class="tbtn active" id="btnTab" onclick="setView('tab')">ASCII Tab</button>
+      <button class="tbtn" id="btnFb" onclick="setView('fretboard')">Fretboard</button>
+      <button class="tbtn" id="btnFing" onclick="setView('fingering')">Fingering</button>
     </div>
 
     <div id="viewTab">
@@ -292,7 +291,7 @@ table.fb td.slabel{font-family:'Space Mono',monospace;font-size:10px;color:var(-
         <div class="rl-item"><span>—</span> sustained</div>
       </div>
       <div class="tab-toolbar">
-        <div style="font-family:&#39;Space Mono&#39;,monospace;font-size:11px;color:var(--tdim);">
+        <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--tdim);">
           Strings: <span style="color:#b5d4f4">e</span> <span style="color:#cecbf6">B</span> <span style="color:#fac775">G</span> <span style="color:#f5c4b3">D</span> <span style="color:#9fe1cb">A</span> <span style="color:#f4c0d1">E</span>
         </div>
         <button class="ebtn ebtn-copy" id="copyTabBtn" onclick="copyTab()" style="flex:none;min-width:auto;padding:7px 14px;">⎘ Copy Tab</button>
@@ -338,8 +337,8 @@ table.fb td.slabel{font-family:'Space Mono',monospace;font-size:10px;color:var(-
   <span>Fusing creative artistry with disciplined project execution.</span>
 </div>
 
-<script src="./TechCre8 — MIDI to Tab_files/Midi.js"></script>
-<script>
+<script is:inline src="/notemapper/Midi.js"></script>
+<script is:inline>
 const NN=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
 const SHARPS=new Set(['C#','D#','F#','G#','A#']);
 const TUNINGS={standard:[40,45,50,55,59,64],dropD:[38,45,50,55,59,64],dadgad:[38,45,50,55,57,62],openE:[40,47,52,56,59,64]};
