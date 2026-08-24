@@ -2,12 +2,10 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug Extension",
-      "type": "node",
+      "command": "./node_modules/.bin/astro dev",
+      "name": "Development server",
       "request": "launch",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["start"],
-      "skipFiles": ["<node_internals>/**"]
+      "type": "node-terminal"
     }
   ]
 }
