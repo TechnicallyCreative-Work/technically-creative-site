@@ -5,30 +5,37 @@ export const headerData = {
     {
       text: 'Home',
       href: getPermalink('/'),
+      icon: 'tabler:home',
     },
     {
       text: 'Services',
       href: getPermalink('/services'),
+      icon: 'tabler:briefcase',
     },
     {
       text: 'Portfolio',
       href: getPermalink('/portfolio'),
+      icon: 'tabler:layout-grid',
     },
     {
       text: 'Tools',
       href: getPermalink('/notemapper'),
+      icon: 'tabler:tool',
     },
     {
       text: 'About',
       href: getPermalink('/about'),
+      icon: 'tabler:info-circle',
     },
     {
       text: 'Products',
       href: getPermalink('/store'),
+      icon: 'tabler:shopping-bag',
     },
     {
       text: 'Local Services',
       href: getPermalink('/store'),
+      icon: 'tabler:map-pin',
     },
   ],
   actions: [{ text: 'Start a Project', href: getPermalink('/contact') }],
