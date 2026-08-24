@@ -1,0 +1,7 @@
+{
+    "name": "techcre8-ex1",
+    "author": "techcre8",
+    "entry": "dist/extension.js",
+    "version": "1.0.0",
+    "minimumApiVersion": "1.0.0"
+}

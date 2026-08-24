@@ -1,13 +1,13 @@
 {
-  "extends": "astro/tsconfigs/base",
   "compilerOptions": {
-    "strictNullChecks": true,
-    "allowJs": true,
-    "baseUrl": ".",
-    "paths": {
-      "~/*": ["src/*"]
-    }
+    "module": "nodenext",
+    "target": "esnext",
+    "moduleResolution": "nodenext",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "esModuleInterop": true,
+    "types": ["node"]
   },
-  "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist/"]
+  "include": ["src/**/*"]
 }
