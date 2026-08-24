@@ -52,6 +52,10 @@ export const headerData = {
       ],
     },
     {
+      text: 'Tools',
+      links: [{ text: 'NoteMapper (MIDI to Tab)', href: getPermalink('/notemapper') }],
+    },
+    {
       text: 'About',
       links: [
         {

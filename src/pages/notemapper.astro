@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<!-- aka "Notemapper" -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TechCre8 — MIDI to Tab</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Exo+2:wght@300;400;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --navy:#070c18;--navy2:#0d1526;--navy3:#131f38;--navy4:#1a2840;
+  --cyan:#00e5ff;--cdim:rgba(0,229,255,0.12);--cborder:rgba(0,229,255,0.22);
+  --mag:#e040fb;--mdim:rgba(224,64,251,0.12);--mborder:rgba(224,64,251,0.25);
+  --green:#39ff14;--gdim:rgba(57,255,20,0.1);
+  --amber:#ffaa00;--adim:rgba(255,170,0,0.12);
+  --text:#c8d8f0;--tdim:#5a7a9a;--tmid:#8aa0bc;
+  --border:rgba(0,229,255,0.15);
+}
+html,body{min-height:100%;background:var(--navy);color:var(--text);font-family:'Exo 2',sans-serif;}
+body{padding:0;margin:0;}
+.topbar{background:var(--navy2);border-bottom:1px solid var(--cborder);padding:14px 28px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100;}
+.logo{width:40px;height:40px;border:1.5px solid var(--cyan);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:var(--cyan);flex-shrink:0;}
+.topbar-title h1{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--cyan);letter-spacing:3px;text-transform:uppercase;}
+.topbar-title p{font-size:10px;color:var(--tdim);font-family:'Space Mono',monospace;margin-top:1px;}
+.topbar-links{margin-left:auto;display:flex;gap:10px;align-items:center;}
+.topbar-links a{font-family:'Space Mono',monospace;font-size:10px;color:var(--tdim);text-decoration:none;padding:5px 10px;border:0.5px solid var(--border);border-radius:5px;transition:all .2s;}
+.topbar-links a:hover{color:var(--cyan);border-color:var(--cyan);}
+.main{max-width:1100px;margin:0 auto;padding:28px 24px 60px;}
+.upload-zone{border:1.5px dashed var(--cborder);border-radius:12px;padding:36px 24px;text-align:center;cursor:pointer;transition:all .2s;background:var(--cdim);margin-bottom:16px;}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--cyan);background:rgba(0,229,255,0.18);}
+.uz-icon{font-size:36px;margin-bottom:10px;}
+.upload-zone h2{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:600;color:var(--text);}
+.upload-zone p{font-size:12px;color:var(--tdim);font-family:'Space Mono',monospace;margin-top:6px;}
+#midiInput{display:none;}
+.file-badge{display:flex;align-items:center;gap:10px;background:var(--gdim);border:0.5px solid rgba(57,255,20,0.3);border-radius:8px;padding:10px 16px;margin-bottom:14px;}
+.file-badge span{font-family:'Space Mono',monospace;font-size:12px;color:var(--green);}
+.file-badge .rm{margin-left:auto;cursor:pointer;color:var(--tdim);font-size:13px;padding:2px 8px;border:0.5px solid var(--border);border-radius:4px;}
+.file-badge .rm:hover{color:var(--mag);border-color:var(--mag);}
+.controls-bar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;background:var(--navy2);border:0.5px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:14px;}
+.cg{display:flex;align-items:center;gap:7px;}
+.cg label{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;color:var(--tdim);letter-spacing:1px;text-transform:uppercase;white-space:nowrap;}
+select{background:var(--navy3);border:0.5px solid var(--border);border-radius:6px;color:var(--text);font-family:'Space Mono',monospace;font-size:11px;padding:7px 12px;outline:none;cursor:pointer;transition:border-color .2s;}
+select:focus{border-color:var(--cyan);}
+input[type=number],input[type=text],input[type=password]{background:var(--navy3);border:0.5px solid var(--border);border-radius:6px;color:var(--text);font-family:'Space Mono',monospace;font-size:11px;padding:7px 12px;outline:none;transition:border-color .2s;}
+input[type=number]:focus,input[type=text]:focus,input[type=password]:focus{border-color:var(--cyan);}
+
+/* BPM + KEY BAR */
+.meta-bar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;background:var(--navy2);border:0.5px solid var(--mborder);border-radius:10px;padding:14px 18px;margin-bottom:14px;}
+.meta-bar .cg label{color:var(--mag);}
+.meta-detected{font-family:'Space Mono',monospace;font-size:9px;color:var(--tdim);margin-top:3px;}
+.meta-detected span{color:var(--green);}
+.key-display{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--mag);min-width:60px;}
+.bpm-display{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--cyan);min-width:60px;}
+.override-badge{font-family:'Space Mono',monospace;font-size:9px;color:var(--amber);margin-left:6px;}
+
+.btn-go{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:13px 28px;border-radius:8px;cursor:pointer;border:none;transition:all .2s;width:100%;background:var(--cyan);color:var(--navy);margin-bottom:4px;}
+.btn-go:hover{background:#33ecff;}
+.btn-go:disabled{background:var(--navy3);color:var(--tdim);cursor:not-allowed;}
+.toggle-row{display:flex;gap:0;border:0.5px solid var(--cborder);border-radius:8px;overflow:hidden;width:fit-content;margin-bottom:16px;}
+.tbtn{padding:9px 20px;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;border:none;background:transparent;color:var(--tdim);transition:all .2s;}
+.tbtn.active{background:var(--cyan);color:var(--navy);}
+.tbtn:not(.active):hover{background:var(--cdim);color:var(--text);}
+.loading{text-align:center;padding:40px;display:none;}
+.loading p{font-family:'Space Mono',monospace;font-size:12px;color:var(--cyan);margin-top:12px;letter-spacing:2px;}
+.spinner{width:36px;height:36px;border:2px solid var(--border);border-top-color:var(--cyan);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.result{display:none;margin-top:4px;}
+.section-head{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;color:var(--tdim);letter-spacing:2px;text-transform:uppercase;margin:20px 0 10px;display:flex;align-items:center;gap:10px;}
+.section-head::after{content:'';flex:1;height:0.5px;background:var(--border);}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:12px;margin-bottom:20px;}
+.stat{background:var(--navy2);border:0.5px solid var(--border);border-radius:10px;padding:12px 16px;}
+.stat .sv{font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:700;color:var(--cyan);}
+.stat .sv.mag{color:var(--mag);}
+.stat .sv.amber{color:var(--amber);}
+.stat .sl{font-family:'Space Mono',monospace;font-size:9px;color:var(--tdim);margin-top:2px;text-transform:uppercase;letter-spacing:1px;}
+.track-select{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+.trbtn{padding:6px 14px;border-radius:6px;font-family:'Space Mono',monospace;font-size:10px;cursor:pointer;border:0.5px solid var(--border);background:var(--navy3);color:var(--tdim);transition:all .15s;}
+.trbtn.active{border-color:var(--cyan);color:var(--cyan);background:var(--cdim);}
+.note-chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:6px;}
+.chip{padding:4px 12px;border-radius:20px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;border:1px solid;}
+.chip-n{border-color:var(--cyan);color:var(--cyan);background:var(--cdim);}
+.chip-s{border-color:var(--mag);color:var(--mag);background:var(--mdim);}
+.rhythm-legend{background:var(--navy3);border:0.5px solid var(--border);border-radius:8px;padding:10px 16px;margin-bottom:10px;display:flex;flex-wrap:wrap;gap:14px;}
+.rl-item{font-family:'Space Mono',monospace;font-size:10px;color:var(--tmid);}
+.rl-item span{color:var(--cyan);}
+.tab-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:8px;}
+.tab-wrap{overflow-x:auto;}
+.tab-block{font-family:'Space Mono',monospace;font-size:13px;line-height:1.9;background:var(--navy2);border:0.5px solid var(--border);border-radius:10px;padding:18px 20px;white-space:pre;color:var(--text);}
+.fb-wrap{overflow-x:auto;}
+table.fb{border-collapse:collapse;min-width:600px;}
+table.fb th{font-family:'Space Mono',monospace;font-size:9px;color:var(--tdim);padding:4px 0;text-align:center;border-bottom:0.5px solid var(--border);width:38px;}
+table.fb th.slabel{width:80px;text-align:right;padding-right:10px;}
+table.fb td{width:38px;height:32px;position:relative;border-right:0.5px solid rgba(0,229,255,0.07);}
+table.fb td.slabel{font-family:'Space Mono',monospace;font-size:10px;color:var(--tdim);text-align:right;padding-right:10px;border-right:none;white-space:nowrap;}
+.str-line{position:absolute;top:50%;left:0;right:0;transform:translateY(-50%);}
+.fret-bar{position:absolute;top:0;bottom:0;right:0;width:1.5px;background:rgba(200,216,240,0.18);}
+.nut-bar{position:absolute;top:0;bottom:0;left:0;width:3px;background:var(--tmid);}
+.fdot{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:8px;font-weight:700;z-index:2;}
+.fdot-n{background:var(--cyan);color:var(--navy);border:1.5px solid var(--cyan);}
+.fdot-s{background:var(--mag);color:#fff;border:1.5px solid var(--mag);}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:14px;}
+.leg-item{display:flex;align-items:center;gap:7px;font-family:'Space Mono',monospace;font-size:11px;color:var(--tmid);}
+.f-finger{display:inline-block;width:22px;height:22px;border-radius:50%;text-align:center;line-height:22px;font-size:11px;font-weight:700;}
+.f1{background:var(--cdim);border:1px solid var(--cyan);color:var(--cyan);}
+.f2{background:var(--mdim);border:1px solid var(--mag);color:var(--mag);}
+.f3{background:var(--adim);border:1px solid var(--amber);color:var(--amber);}
+.f4{background:var(--gdim);border:1px solid var(--green);color:var(--green);}
+.f0{background:var(--navy3);border:1px solid var(--tdim);color:var(--tdim);}
+.finger-wrap{overflow-x:auto;}
+.finger-table{border-collapse:collapse;min-width:540px;width:100%;}
+.finger-table th{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;color:var(--tdim);letter-spacing:1px;text-transform:uppercase;padding:7px 10px;border-bottom:0.5px solid var(--border);text-align:left;}
+.finger-table td{font-family:'Space Mono',monospace;font-size:11px;color:var(--text);padding:7px 10px;border-bottom:0.5px solid rgba(0,229,255,0.06);}
+.finger-table tr:hover td{background:var(--cdim);}
+.f-note{color:var(--cyan);font-weight:700;}
+.f-sharp{color:var(--mag);font-weight:700;}
+.f-fret{color:var(--amber);}
+.info-box{background:var(--navy2);border:0.5px solid var(--mborder);border-left:2px solid var(--mag);border-radius:10px;padding:16px 18px;font-size:13px;line-height:1.75;color:var(--text);}
+.info-box strong{color:var(--mag);font-family:'Rajdhani',sans-serif;font-size:14px;letter-spacing:1px;display:block;margin-bottom:6px;}
+.export-bar{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;}
+.ebtn{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:10px 18px;border-radius:7px;cursor:pointer;border:none;transition:all .2s;display:flex;align-items:center;gap:7px;flex:1;justify-content:center;min-width:140px;}
+.ebtn-copy{background:transparent;border:1px solid var(--cborder);color:var(--cyan);}
+.ebtn-copy:hover{background:var(--cdim);border-color:var(--cyan);}
+.ebtn-copy.copied{background:var(--gdim);border-color:var(--green);color:var(--green);}
+.ebtn-dl{background:var(--navy3);border:1px solid var(--cborder);color:var(--cyan);}
+.ebtn-dl:hover{background:var(--navy4);border-color:var(--cyan);}
+.ebtn-drive{background:var(--mdim);border:1px solid var(--mborder);color:var(--mag);}
+.ebtn-drive:hover{background:rgba(224,64,251,0.22);}
+.ebtn:disabled{opacity:.4;cursor:not-allowed;}
+.status-msg{font-family:'Space Mono',monospace;font-size:11px;padding:9px 14px;border-radius:7px;margin-top:10px;display:none;}
+.st-ok{background:var(--gdim);color:var(--green);border:0.5px solid rgba(57,255,20,0.3);}
+.st-err{background:var(--mdim);color:var(--mag);border:0.5px solid var(--mborder);}
+.api-section{background:var(--navy2);border:0.5px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:16px;}
+.api-section p{font-size:12px;color:var(--tdim);font-family:'Space Mono',monospace;margin-bottom:10px;line-height:1.6;}
+.api-row{display:flex;gap:8px;align-items:center;}
+.api-row input{flex:1;}
+.api-row button{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:8px 16px;border-radius:6px;cursor:pointer;border:none;background:var(--cyan);color:var(--navy);white-space:nowrap;}
+.api-saved{color:var(--green);font-family:'Space Mono',monospace;font-size:10px;margin-top:6px;display:none;}
+.footer{border-top:0.5px solid var(--border);padding:18px 24px;font-family:'Space Mono',monospace;font-size:10px;color:var(--tdim);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;max-width:1100px;margin:0 auto;}
+.footer a{color:var(--cyan);text-decoration:none;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">TC</div>
+  <div class="topbar-title">
+    <h1>MIDI → Tab</h1>
+    <p>TechCre8 NoteMapper · Fusing creative artistry with disciplined project execution.</p>
+  </div>
+  <div class="topbar-links">
+    <a href="https://technicallycreative.work/" target="_blank">technicallycreative.work</a>
+    <a href="https://techcre8.gumroad.com/" target="_blank">Gumroad</a>
+  </div>
+</div>
+
+<div class="main">
+
+  <div class="api-section" id="apiSection">
+    <p>Claude AI powers note analysis. Paste your Anthropic API key — stored only in your browser, never sent anywhere except Anthropic's API.</p>
+    <div class="api-row">
+      <input type="password" id="apiKeyInput" placeholder="Key saved — paste new key to update">
+      <button onclick="saveApiKey()">Save Key</button>
+    </div>
+    <div class="api-saved" id="apiSaved" style="display: block;">✓ Key saved — ready to use</div>
+  </div>
+
+  <div class="upload-zone" id="dropZone" onclick="document.getElementById('midiInput').click()" ondragover="onDrag(event)" ondragleave="onDragLeave()" ondrop="onDrop(event)">
+    <div class="uz-icon">🎹</div>
+    <h2>Drop your .mid file here</h2>
+    <p>Ableton: right-click MIDI clip → Export MIDI Clip → drag here · or click to browse</p>
+  </div>
+  <input type="file" id="midiInput" accept=".mid,.midi" onchange="loadMidi(event)">
+
+  <div id="fileBadge" class="file-badge" style="display:none;">
+    <span id="fileLabel">—</span>
+    <span class="rm" onclick="clearFile()">✕ clear</span>
+  </div>
+
+  <!-- MAIN CONTROLS -->
+  <div class="controls-bar">
+    <div class="cg"><label>Tuning</label>
+      <select id="tuning">
+        <option value="standard">Standard (EADGBe)</option>
+        <option value="dropD">Drop D (DADGBe)</option>
+        <option value="dadgad">DADGAD</option>
+        <option value="openE">Open E</option>
+      </select>
+    </div>
+    <div class="cg"><label>Max fret</label>
+      <select id="maxFret">
+        <option value="12">12</option>
+        <option value="17">17</option>
+        <option value="24" selected="">24</option>
+      </select>
+    </div>
+    <div class="cg"><label>Notes/line</label>
+      <select id="npl">
+        <option value="8">8</option>
+        <option value="16" selected="">16</option>
+        <option value="24">24</option>
+        <option value="32">32</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- BPM + KEY BAR -->
+  <div class="meta-bar">
+    <div class="cg" style="flex-direction:column;align-items:flex-start;gap:4px;">
+      <label style="font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;color:var(--cyan);letter-spacing:1px;text-transform:uppercase;">BPM</label>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input type="number" id="bpmInput" min="20" max="300" value="120" style="width:80px;" oninput="onBpmOverride()">
+        <div>
+          <div class="meta-detected" id="bpmDetected">Load a MIDI file to detect</div>
+        </div>
+      </div>
+    </div>
+    <div style="width:1px;height:48px;background:var(--border);margin:0 6px;"></div>
+    <div class="cg" style="flex-direction:column;align-items:flex-start;gap:4px;">
+      <label style="font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;color:var(--mag);letter-spacing:1px;text-transform:uppercase;">Key</label>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <select id="keyOverride" onchange="onKeyOverride()" style="border-color:var(--mborder);">
+          <option value="auto">Auto-detect</option>
+          <option value="C major">C major</option>
+          <option value="C minor">C minor</option>
+          <option value="C# major">C# major</option>
+          <option value="C# minor">C# minor</option>
+          <option value="D major">D major</option>
+          <option value="D minor">D minor</option>
+          <option value="Eb major">Eb major</option>
+          <option value="Eb minor">Eb minor</option>
+          <option value="E major">E major</option>
+          <option value="E minor">E minor</option>
+          <option value="F major">F major</option>
+          <option value="F minor">F minor</option>
+          <option value="F# major">F# major</option>
+          <option value="F# minor">F# minor</option>
+          <option value="G major">G major</option>
+          <option value="G minor">G minor</option>
+          <option value="Ab major">Ab major</option>
+          <option value="Ab minor">Ab minor</option>
+          <option value="A major">A major</option>
+          <option value="A minor">A minor</option>
+          <option value="Bb major">Bb major</option>
+          <option value="Bb minor">Bb minor</option>
+          <option value="B major">B major</option>
+          <option value="B minor">B minor</option>
+        </select>
+        <div>
+          <div class="meta-detected" id="keyDetected">Detected after analysis</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-go" id="goBtn" onclick="runAnalysis()" disabled="">Load a .mid file to begin</button>
+
+  <div class="loading" id="loadingBox">
+    <div class="spinner"></div>
+    <p id="loadMsg">Parsing MIDI...</p>
+  </div>
+
+  <div class="result" id="result">
+    <div class="stats-row">
+      <div class="stat"><div class="sv" id="stNotes">0</div><div class="sl">Notes</div></div>
+      <div class="stat"><div class="sv" id="stUnique">0</div><div class="sl">Unique</div></div>
+      <div class="stat"><div class="sv" id="stRange">—</div><div class="sl">Range</div></div>
+      <div class="stat"><div class="sv mag" id="stKey">—</div><div class="sl">Key</div></div>
+      <div class="stat"><div class="sv amber" id="stBpm">—</div><div class="sl">BPM</div></div>
+      <div class="stat"><div class="sv" id="stTracks">0</div><div class="sl">Tracks</div></div>
+    </div>
+
+    <div class="section-head">Track / Channel</div>
+    <div class="track-select" id="trackBtns"></div>
+
+    <div class="section-head">Notes Detected</div>
+    <div id="noteChips" class="note-chips"></div>
+
+    <div class="section-head" style="margin-top:18px;">View</div>
+    <div class="toggle-row">
+      <button class="tbtn active" id="btnTab" onclick="setView('tab')">ASCII Tab</button>
+      <button class="tbtn" id="btnFb" onclick="setView('fretboard')">Fretboard</button>
+      <button class="tbtn" id="btnFing" onclick="setView('fingering')">Fingering</button>
+    </div>
+
+    <div id="viewTab">
+      <div class="rhythm-legend">
+        <div class="rl-item"><span>↑</span> 8th note</div>
+        <div class="rl-item"><span>↑↑</span> quarter</div>
+        <div class="rl-item"><span>↑↑↑</span> dotted quarter</div>
+        <div class="rl-item"><span>↑↑↑↑</span> half note</div>
+        <div class="rl-item"><span>—</span> sustained</div>
+      </div>
+      <div class="tab-toolbar">
+        <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--tdim);">
+          Strings: <span style="color:#b5d4f4">e</span> <span style="color:#cecbf6">B</span> <span style="color:#fac775">G</span> <span style="color:#f5c4b3">D</span> <span style="color:#9fe1cb">A</span> <span style="color:#f4c0d1">E</span>
+        </div>
+        <button class="ebtn ebtn-copy" id="copyTabBtn" onclick="copyTab()" style="flex:none;min-width:auto;padding:7px 14px;">⎘ Copy Tab</button>
+      </div>
+      <div class="tab-wrap" id="tabOutput"></div>
+    </div>
+
+    <div id="viewFb" style="display:none;">
+      <div class="fb-wrap" id="fbOutput"></div>
+    </div>
+
+    <div id="viewFing" style="display:none;">
+      <div class="legend">
+        <div class="leg-item"><span class="f-finger f1">1</span> Index</div>
+        <div class="leg-item"><span class="f-finger f2">2</span> Middle</div>
+        <div class="leg-item"><span class="f-finger f3">3</span> Ring</div>
+        <div class="leg-item"><span class="f-finger f4">4</span> Pinky</div>
+        <div class="leg-item"><span class="f-finger f0">0</span> Open</div>
+      </div>
+      <div class="finger-wrap">
+        <table class="finger-table">
+          <thead><tr><th>#</th><th>Note</th><th>Ableton</th><th>MIDI</th><th>String</th><th>Fret</th><th>Finger</th><th>Tip</th></tr></thead>
+          <tbody id="fingerBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="section-head">AI Analysis</div>
+    <div id="aiBox" class="info-box"><strong>Analysis</strong>Load a MIDI file and run analysis to see Claude's breakdown here.</div>
+
+    <div class="section-head">Export Report</div>
+    <div class="export-bar">
+      <button class="ebtn ebtn-copy" id="copyBtn2" onclick="copyTab()">⎘ Copy Tab</button>
+      <button class="ebtn ebtn-dl" onclick="downloadReport()">⬇ Download Report</button>
+      <button class="ebtn ebtn-drive" id="driveBtn" onclick="saveToDrive()">▲ Save to Google Drive</button>
+    </div>
+    <div id="statusMsg" class="status-msg"></div>
+  </div>
+</div>
+
+<div class="footer">
+  <span>TechCre8 NoteMapper v4 · <a href="https://technicallycreative.work/">technicallycreative.work</a></span>
+  <span>Fusing creative artistry with disciplined project execution.</span>
+</div>
+
+<script is:inline src="/notemapper/Midi.js"></script>
+<script is:inline>
+const NN=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const SHARPS=new Set(['C#','D#','F#','G#','A#']);
+const TUNINGS={standard:[40,45,50,55,59,64],dropD:[38,45,50,55,59,64],dadgad:[38,45,50,55,57,62],openE:[40,47,52,56,59,64]};
+const SNAMES={standard:['E2','A2','D3','G3','B3','E4'],dropD:['D2','A2','D3','G3','B3','E4'],dadgad:['D2','A2','D3','G3','A3','D4'],openE:['E2','B2','E3','G#3','B3','E4']};
+const SDISPLAY=['e','B','G','D','A','E'];
+const SCOLORS=['#b5d4f4','#cecbf6','#fac775','#f5c4b3','#9fe1cb','#f4c0d1'];
+const STHICK=[0.8,1.1,1.4,1.8,2,2.5];
+
+// Key detection profiles — count semitone presence weighted by major/minor scales
+const KEY_PROFILES={
+  major:[6.35,2.23,3.48,2.33,4.38,4.09,2.52,5.19,2.39,3.66,2.29,2.88],
+  minor:[6.33,2.68,3.52,5.38,2.60,3.53,2.54,4.75,3.98,2.69,3.34,3.17]
+};
+
+let parsedMidi=null,allEvents=[],selectedTrack='all',fingeringData=[],currentFileName='midi-export',aiText='';
+let detectedBpm=120,detectedKey='Unknown',finalKey='Unknown',finalBpm=120,bpmOverridden=false,keyOverridden=false;
+
+// ── API KEY ────────────────────────────────────────────────────
+function saveApiKey(){
+  const k=document.getElementById('apiKeyInput').value.trim();
+  if(!k.startsWith('sk-')){alert('Key should start with sk-ant-...');return;}
+  localStorage.setItem('tc_api_key',k);
+  document.getElementById('apiSaved').style.display='block';
+  document.getElementById('apiKeyInput').value='';
+}
+window.addEventListener('DOMContentLoaded',()=>{
+  const k=localStorage.getItem('tc_api_key');
+  if(k){document.getElementById('apiSaved').style.display='block';document.getElementById('apiKeyInput').placeholder='Key saved — paste new key to update';}
+});
+
+// ── BPM DETECTION ──────────────────────────────────────────────
+function detectBpm(midi){
+  // @tonejs/midi exposes header.tempos array [{bpm, ticks}]
+  try{
+    if(midi.header&&midi.header.tempos&&midi.header.tempos.length>0){
+      return Math.round(midi.header.tempos[0].bpm);
+    }
+  }catch(e){}
+  return 120;
+}
+
+function onBpmOverride(){
+  const v=parseInt(document.getElementById('bpmInput').value);
+  if(v>=20&&v<=300){
+    finalBpm=v;
+    bpmOverridden=(v!==detectedBpm);
+    document.getElementById('bpmDetected').innerHTML=bpmOverridden
+      ?`<span style="color:var(--amber)">⚠ overriding detected ${detectedBpm} BPM</span>`
+      :`<span>✓ from MIDI file</span>`;
+    document.getElementById('stBpm').textContent=v;
+  }
+}
+
+// ── KEY DETECTION ──────────────────────────────────────────────
+function detectKeyFromNotes(events){
+  // Build pitch class histogram
+  const hist=new Array(12).fill(0);
+  events.forEach(e=>{hist[e.midi%12]++;});
+  const total=events.length||1;
+  const norm=hist.map(v=>v/total);
+
+  let bestScore=-Infinity,bestKey='C major';
+  for(let root=0;root<12;root++){
+    ['major','minor'].forEach(mode=>{
+      const profile=KEY_PROFILES[mode];
+      let score=0;
+      for(let i=0;i<12;i++) score+=norm[(root+i)%12]*profile[i];
+      if(score>bestScore){bestScore=score;bestKey=NN[root]+' '+mode;}
+    });
+  }
+  return bestKey;
+}
+
+function onKeyOverride(){
+  const v=document.getElementById('keyOverride').value;
+  if(v==='auto'){
+    keyOverridden=false;
+    finalKey=detectedKey;
+    document.getElementById('keyDetected').innerHTML=`<span>✓ auto-detected</span>`;
+  } else {
+    keyOverridden=true;
+    finalKey=v;
+    document.getElementById('keyDetected').innerHTML=`<span style="color:var(--amber)">⚠ manual override</span>`;
+  }
+  document.getElementById('stKey').textContent=finalKey;
+}
+
+// ── HELPERS ────────────────────────────────────────────────────
+function midi2name(m){return NN[m%12]+(Math.floor(m/12)-2);}
+function midi2base(m){return NN[m%12];}
+function bestPos(midi,tuning,maxFret){
+  const bases=TUNINGS[tuning]||TUNINGS.standard;
+  let best=null;
+  for(let si=0;si<6;si++){
+    const f=midi-bases[si];
+    if(f>=0&&f<=maxFret){if(!best||f<best.fret||(f===best.fret&&si>best.si))best={si,fret:f,string:6-si};}
+  }
+  return best;
+}
+function suggestFinger(fret,prev){
+  if(fret===0)return 0;
+  if(prev===null||prev===undefined)return Math.min(fret,4)||1;
+  const d=fret-prev;
+  if(d===0)return 1;if(d>0)return Math.min(d+1,4);return Math.max(1,4+d);
+}
+function fingerTip(fret){
+  if(fret===0)return 'Open — no fretting needed';
+  if(fret<=4)return 'First position — thumb behind neck';
+  if(fret<=7)return 'Shift to 2nd position';
+  if(fret<=12)return 'Upper position';
+  return 'High register — anchor with thumb over neck';
+}
+function rhythmSym(d){
+  if(d<=0.26)return '↑';if(d<=0.55)return '↑↑';if(d<=0.80)return '↑↑↑';return '↑↑↑↑';
+}
+
+// ── FILE HANDLING ──────────────────────────────────────────────
+function onDrag(e){e.preventDefault();document.getElementById('dropZone').classList.add('drag');}
+function onDragLeave(){document.getElementById('dropZone').classList.remove('drag');}
+function onDrop(e){e.preventDefault();document.getElementById('dropZone').classList.remove('drag');const f=e.dataTransfer.files[0];if(f)processMidi(f);}
+function loadMidi(e){const f=e.target.files[0];if(f)processMidi(f);}
+function clearFile(){
+  parsedMidi=null;allEvents=[];
+  document.getElementById('fileBadge').style.display='none';
+  document.getElementById('result').style.display='none';
+  document.getElementById('goBtn').disabled=true;
+  document.getElementById('goBtn').textContent='Load a .mid file to begin';
+  document.getElementById('midiInput').value='';
+  document.getElementById('bpmDetected').textContent='Load a MIDI file to detect';
+  document.getElementById('keyDetected').textContent='Detected after analysis';
+}
+function processMidi(file){
+  currentFileName=file.name.replace(/\.midi?$/i,'');
+  const r=new FileReader();
+  r.onload=function(e){
+    try{
+      parsedMidi=new Midi(e.target.result);
+
+      // BPM detection
+      detectedBpm=detectBpm(parsedMidi);
+      finalBpm=detectedBpm;
+      bpmOverridden=false;
+      document.getElementById('bpmInput').value=detectedBpm;
+      document.getElementById('bpmDetected').innerHTML=`<span>✓ detected from MIDI file</span>`;
+
+      document.getElementById('fileLabel').textContent='🎹 '+file.name;
+      document.getElementById('fileBadge').style.display='flex';
+      document.getElementById('goBtn').disabled=false;
+      document.getElementById('goBtn').textContent='Convert → Tab + Fingering ↗';
+    }catch(err){alert('Could not parse MIDI file. Ensure it\'s a valid .mid exported from Ableton.');}
+  };
+  r.readAsArrayBuffer(file);
+}
+
+// ── MAIN ANALYSIS ──────────────────────────────────────────────
+async function runAnalysis(){
+  if(!parsedMidi)return;
+  document.getElementById('loadingBox').style.display='block';
+  document.getElementById('result').style.display='none';
+  document.getElementById('goBtn').disabled=true;
+  setMsg('Parsing MIDI tracks...');
+
+  const tuning=document.getElementById('tuning').value;
+  const maxFret=parseInt(document.getElementById('maxFret').value);
+
+  allEvents=[];
+  let trackCount=0;
+  parsedMidi.tracks.forEach((track,ti)=>{
+    if(track.notes&&track.notes.length>0){
+      trackCount++;
+      track.notes.forEach(note=>{
+        allEvents.push({midi:note.midi,time:note.time,duration:note.duration,track:ti,trackName:track.name||('Track '+(ti+1)),name:midi2name(note.midi)});
+      });
+    }
+  });
+  allEvents.sort((a,b)=>a.time-b.time);
+
+  const tracks=[...new Set(allEvents.map(n=>n.track))];
+  renderTrackBtns(tracks);
+
+  const midis=allEvents.map(n=>n.midi);
+  const unique=[...new Set(allEvents.map(n=>n.name))];
+
+  // Key detection
+  setMsg('Detecting key...');
+  detectedKey=detectKeyFromNotes(allEvents);
+  if(!keyOverridden){
+    finalKey=detectedKey;
+    document.getElementById('keyDetected').innerHTML=`<span>✓ auto-detected</span>`;
+    document.getElementById('keyOverride').value='auto';
+  }
+
+  // Stats
+  document.getElementById('stNotes').textContent=allEvents.length;
+  document.getElementById('stUnique').textContent=unique.length;
+  document.getElementById('stRange').textContent=midi2name(Math.min(...midis))+'–'+midi2name(Math.max(...midis));
+  document.getElementById('stKey').textContent=finalKey;
+  document.getElementById('stBpm').textContent=finalBpm;
+  document.getElementById('stTracks').textContent=trackCount;
+
+  // AI analysis
+  setMsg('Getting AI analysis...');
+  aiText='';
+  const apiKey=localStorage.getItem('tc_api_key');
+  if(apiKey){
+    try{
+      const resp=await fetch('https://api.anthropic.com/v1/messages',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+        body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:`You are a guitar and music theory expert. Analyze these MIDI notes for a guitarist.
+
+Notes (Ableton naming, C3=middle C): ${unique.slice(0,24).join(', ')}
+Total notes: ${allEvents.length}
+Detected key: ${finalKey}
+BPM: ${finalBpm}
+Tuning: ${tuning}
+
+In 4-5 sentences: confirm or refine the detected key, describe the scale/mode, comment on how the BPM affects playability, and give one practical fingering or position tip for guitar. Be direct and specific.`}]})
+      });
+      const data=await resp.json();
+      aiText=data.content?.[0]?.text||'Could not parse response.';
+    }catch(e){aiText='API call failed — check your key and internet connection.';}
+  } else {
+    aiText='No API key set. Add your Anthropic API key at the top of the page to enable AI analysis.';
+  }
+  document.getElementById('aiBox').innerHTML='<strong>Claude Analysis</strong>'+aiText;
+
+  setMsg('Building fingering guide...');
+  buildFingeringData(tuning,maxFret);
+  renderView(tuning,maxFret);
+
+  document.getElementById('loadingBox').style.display='none';
+  document.getElementById('result').style.display='block';
+  document.getElementById('goBtn').disabled=false;
+  document.getElementById('result').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function setMsg(m){document.getElementById('loadMsg').textContent=m;}
+function getFiltered(){return selectedTrack==='all'?allEvents:allEvents.filter(n=>n.track===parseInt(selectedTrack));}
+
+function buildFingeringData(tuning,maxFret){
+  const notes=getFiltered();let prev=null;
+  fingeringData=notes.map(n=>{
+    const pos=bestPos(n.midi,tuning,maxFret);
+    const f=pos?suggestFinger(pos.fret,prev):0;
+    if(pos)prev=pos.fret;
+    return{...n,pos,finger:f,tip:pos?fingerTip(pos.fret):'Out of range for this tuning'};
+  });
+}
+
+// ── RENDER ─────────────────────────────────────────────────────
+function renderTrackBtns(tracks){
+  const wrap=document.getElementById('trackBtns');
+  let html='<button class="trbtn active" onclick="selectTrack(this,\'all\')">All tracks</button>';
+  tracks.forEach(ti=>{
+    const name=allEvents.find(n=>n.track===ti)?.trackName||('Track '+(ti+1));
+    html+=`<button class="trbtn" onclick="selectTrack(this,${ti})">${name}</button>`;
+  });
+  wrap.innerHTML=html;
+}
+function selectTrack(el,t){
+  selectedTrack=t;
+  document.querySelectorAll('.trbtn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  const tuning=document.getElementById('tuning').value;
+  const maxFret=parseInt(document.getElementById('maxFret').value);
+  buildFingeringData(tuning,maxFret);
+  renderView(tuning,maxFret);
+}
+function renderView(tuning,maxFret){
+  const notes=getFiltered();
+  const unique=[...new Set(notes.map(n=>n.name))];
+  document.getElementById('noteChips').innerHTML=unique.map(n=>`<span class="chip ${SHARPS.has(n.replace(/\d/,''))?'chip-s':'chip-n'}">${n}</span>`).join('');
+  renderTab(notes,tuning,maxFret);
+  renderFretboard(notes,tuning,maxFret);
+  renderFingering();
+}
+function renderTab(notes,tuning,maxFret){
+  const npl=parseInt(document.getElementById('npl').value)||16;
+  const mapped=notes.map(n=>({...n,pos:bestPos(n.midi,tuning,maxFret)})).filter(n=>n.pos);
+  if(!mapped.length){document.getElementById('tabOutput').innerHTML='<div class="tab-block">No notes in guitar range for this tuning.</div>';window._tabPlain='';return;}
+  const chunks=[];for(let i=0;i<mapped.length;i+=npl)chunks.push(mapped.slice(i,i+npl));
+  let plain='',html='';
+  chunks.forEach((chunk,ci)=>{
+    let rr='  |';chunk.forEach(n=>{rr+=rhythmSym(n.duration).padEnd(3);});rr+='|';
+    const rows=[0,1,2,3,4,5].map(si=>{
+      let l=SDISPLAY[si]+' |';
+      chunk.forEach(n=>{l+=(n.pos&&n.pos.si===si?String(n.pos.fret):'--').padEnd(3,'-');});
+      return{l:l+'|',c:SCOLORS[si]};
+    });
+    plain+=rr+'\n';rows.forEach(r=>{plain+=r.l+'\n';});if(ci<chunks.length-1)plain+='\n';
+    html+=`<span style="color:#5a7a9a">${rr}</span>\n`;
+    rows.forEach(r=>{html+=`<span style="color:${r.c}">${r.l}</span>\n`;});
+    if(ci<chunks.length-1)html+='\n';
+  });
+  window._tabPlain=plain;
+  document.getElementById('tabOutput').innerHTML=`<div class="tab-block">${html}</div>`;
+}
+function renderFretboard(notes,tuning,maxFret){
+  const unique=[...new Set(notes.map(n=>n.midi))];
+  const bases=TUNINGS[tuning]||TUNINGS.standard;
+  const snames=SNAMES[tuning]||SNAMES.standard;
+  const dm={};
+  unique.forEach(midi=>{bases.forEach((base,si)=>{const f=midi-base;if(f>=0&&f<=maxFret)dm[`${si}-${f}`]={name:midi2name(midi),isSharp:SHARPS.has(NN[midi%12])};});});
+  const dMax=Math.min(maxFret,24);
+  let html='<table class="fb"><thead><tr><th class="slabel"></th>';
+  for(let f=0;f<=dMax;f++)html+=`<th>${f}</th>`;
+  html+='</tr></thead><tbody>';
+  for(let si=0;si<6;si++){
+    html+=`<tr><td class="slabel" style="color:${SCOLORS[si]};">${SDISPLAY[si]}<br><span style="font-size:8px;opacity:.6;">${snames[si]}</span></td>`;
+    for(let f=0;f<=dMax;f++){
+      const d=dm[`${si}-${f}`];
+      html+=`<td><div class="str-line" style="background:rgba(200,216,240,${0.08+STHICK[si]*0.05});height:${STHICK[si]}px;"></div>`;
+      html+=f===0?'<div class="nut-bar"></div>':'<div class="fret-bar"></div>';
+      if(d)html+=`<div class="fdot ${d.isSharp?'fdot-s':'fdot-n'}">${d.name.replace('#','♯')}</div>`;
+      html+='</td>';
+    }
+    html+='</tr>';
+  }
+  html+='</tbody></table>';
+  document.getElementById('fbOutput').innerHTML=html;
+}
+function renderFingering(){
+  document.getElementById('fingerBody').innerHTML=fingeringData.slice(0,150).map((n,i)=>{
+    if(!n.pos)return`<tr><td>${i+1}</td><td colspan="7" style="color:var(--tdim);">Out of range</td></tr>`;
+    const nc=SHARPS.has(midi2base(n.midi))?'f-sharp':'f-note';
+    return`<tr>
+      <td style="color:var(--tdim)">${i+1}</td>
+      <td class="${nc}">${midi2base(n.midi)}</td>
+      <td style="color:var(--cyan);font-size:10px;">${n.name}</td>
+      <td style="color:var(--mag)">${n.midi}</td>
+      <td style="color:${SCOLORS[n.pos.si]}">${SDISPLAY[n.pos.si]} (str ${n.pos.string})</td>
+      <td class="f-fret">${n.pos.fret===0?'Open':n.pos.fret}</td>
+      <td><span class="f-finger f${n.finger}">${n.finger}</span></td>
+      <td style="font-size:10px;color:var(--tdim)">${n.tip}</td>
+    </tr>`;
+  }).join('')+(fingeringData.length>150?`<tr><td colspan="8" style="text-align:center;color:var(--tdim);font-size:10px;padding:10px;">...${fingeringData.length-150} more notes in downloaded report</td></tr>`:'');
+}
+function setView(v){
+  document.getElementById('btnTab').classList.toggle('active',v==='tab');
+  document.getElementById('btnFb').classList.toggle('active',v==='fretboard');
+  document.getElementById('btnFing').classList.toggle('active',v==='fingering');
+  document.getElementById('viewTab').style.display=v==='tab'?'block':'none';
+  document.getElementById('viewFb').style.display=v==='fretboard'?'block':'none';
+  document.getElementById('viewFing').style.display=v==='fingering'?'block':'none';
+}
+function copyTab(){
+  const text=window._tabPlain||'No tab generated yet.';
+  const flash=()=>{
+    ['copyTabBtn','copyBtn2'].forEach(id=>{
+      const b=document.getElementById(id);if(!b)return;
+      const orig=b.textContent;b.textContent='✓ Copied!';b.classList.add('copied');
+      setTimeout(()=>{b.textContent=orig;b.classList.remove('copied');},2000);
+    });
+  };
+  navigator.clipboard.writeText(text).then(flash).catch(()=>{
+    const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);flash();
+  });
+}
+
+// ── REPORT BUILDER ─────────────────────────────────────────────
+function buildReportHTML(){
+  const tuning=document.getElementById('tuning').value;
+  const maxFret=parseInt(document.getElementById('maxFret').value);
+  const notes=getFiltered();
+  const unique=[...new Set(notes.map(n=>n.name))];
+  const midis=notes.map(n=>n.midi);
+  const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  const tabText=window._tabPlain||'No tab data.';
+  const bases=TUNINGS[tuning]||TUNINGS.standard;
+  const snames=SNAMES[tuning]||SNAMES.standard;
+  const uniqueMidi=[...new Set(notes.map(n=>n.midi))];
+  const dm={};
+  uniqueMidi.forEach(midi=>{bases.forEach((base,si)=>{const f=midi-base;if(f>=0&&f<=maxFret)dm[`${si}-${f}`]={name:midi2name(midi),isSharp:SHARPS.has(NN[midi%12])};});});
+  const dMax=Math.min(maxFret,17);
+
+  let fbHTML='<table style="border-collapse:collapse;font-family:monospace;font-size:11px;"><thead><tr><th style="width:65px;text-align:right;padding-right:8px;color:#5a7a9a;font-size:10px;">Str</th>';
+  for(let f=0;f<=dMax;f++)fbHTML+=`<th style="width:34px;text-align:center;color:#5a7a9a;font-size:9px;padding:2px;">${f}</th>`;
+  fbHTML+='</tr></thead><tbody>';
+  for(let si=0;si<6;si++){
+    fbHTML+=`<tr><td style="text-align:right;padding-right:8px;color:${SCOLORS[si]};font-size:10px;white-space:nowrap;">${SDISPLAY[si]} ${snames[si]}</td>`;
+    for(let f=0;f<=dMax;f++){
+      const d=dm[`${si}-${f}`];
+      const bg=d?(d.isSharp?'#e040fb':'#00e5ff'):'transparent';
+      const col=d?'#070c18':'transparent';
+      fbHTML+=`<td style="width:34px;height:26px;position:relative;${f===0?'border-left:3px solid #8aa0bc;':'border-right:1px solid rgba(200,216,240,0.1);'}text-align:center;vertical-align:middle;"><div style="position:absolute;top:50%;left:0;right:0;height:${STHICK[si]}px;transform:translateY(-50%);background:rgba(200,216,240,0.15);"></div>${d?`<span style="position:relative;z-index:2;display:inline-block;width:20px;height:20px;border-radius:50%;background:${bg};color:${col};font-size:8px;font-weight:700;line-height:20px;text-align:center;">${d.name.replace('#','♯')}</span>`:''}</td>`;
+    }
+    fbHTML+='</tr>';
+  }
+  fbHTML+='</tbody></table>';
+
+  let fingHTML='<table style="width:100%;border-collapse:collapse;font-family:monospace;font-size:11px;"><thead><tr>';
+  ['#','Note','Ableton','MIDI','String','Fret','Finger','Tip'].forEach(h=>fingHTML+=`<th style="text-align:left;padding:6px 10px;border-bottom:1px solid #1a2840;color:#5a7a9a;font-size:10px;letter-spacing:1px;">${h}</th>`);
+  fingHTML+='</tr></thead><tbody>';
+  fingeringData.forEach((n,i)=>{
+    if(!n.pos){fingHTML+=`<tr><td style="padding:5px 10px;color:#5a7a9a;">${i+1}</td><td colspan="7" style="padding:5px 10px;color:#5a7a9a;">Out of range</td></tr>`;return;}
+    const fc=['','#00e5ff','#e040fb','#ffaa00','#39ff14'][n.finger]||'#5a7a9a';
+    fingHTML+=`<tr style="border-bottom:1px solid rgba(0,229,255,0.05);"><td style="padding:5px 10px;color:#5a7a9a;">${i+1}</td><td style="padding:5px 10px;color:${SHARPS.has(midi2base(n.midi))?'#e040fb':'#00e5ff'};font-weight:700;">${midi2base(n.midi)}</td><td style="padding:5px 10px;color:#00e5ff;">${n.name}</td><td style="padding:5px 10px;color:#e040fb;">${n.midi}</td><td style="padding:5px 10px;color:${SCOLORS[n.pos.si]};">${SDISPLAY[n.pos.si]} (${snames[n.pos.si]})</td><td style="padding:5px 10px;color:#ffaa00;">${n.pos.fret===0?'Open':n.pos.fret}</td><td style="padding:5px 10px;"><span style="display:inline-block;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,0.3);border:1px solid ${fc};color:${fc};font-size:10px;font-weight:700;text-align:center;line-height:20px;">${n.finger}</span></td><td style="padding:5px 10px;color:#8aa0bc;font-size:10px;">${n.tip}</td></tr>`;
+  });
+  fingHTML+='</tbody></table>';
+
+  return`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechCre8 Tab Report — ${currentFileName}</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Space+Mono:wght@400;700&family=Exo+2:wght@300;400;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#070c18;color:#c8d8f0;font-family:'Exo 2',sans-serif;padding:36px;max-width:1100px;margin:0 auto;}
+.rh{border-bottom:1px solid rgba(0,229,255,0.2);padding-bottom:22px;margin-bottom:30px;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:14px;}
+.brand{display:flex;align-items:center;gap:14px;}
+.logo{width:46px;height:46px;border:2px solid #00e5ff;border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:#00e5ff;}
+.brand h1{font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700;color:#00e5ff;letter-spacing:3px;text-transform:uppercase;}
+.brand p{font-size:11px;color:#5a7a9a;font-family:'Space Mono',monospace;margin-top:3px;}
+.meta{text-align:right;font-family:'Space Mono',monospace;font-size:10px;color:#5a7a9a;line-height:2;}
+.meta span{color:#c8d8f0;}
+.stats{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:30px;}
+.stat{background:#0d1526;border:0.5px solid rgba(0,229,255,0.15);border-radius:9px;padding:13px 18px;flex:1;min-width:85px;}
+.stat .v{font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:700;color:#00e5ff;}
+.stat .v.mag{color:#e040fb;}.stat .v.amb{color:#ffaa00;}
+.stat .l{font-family:'Space Mono',monospace;font-size:9px;color:#5a7a9a;margin-top:3px;text-transform:uppercase;letter-spacing:1px;}
+.sec{margin-bottom:34px;}
+.sh{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;color:#5a7a9a;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;padding-bottom:7px;border-bottom:0.5px solid rgba(0,229,255,0.12);}
+.tab-block{font-family:'Space Mono',monospace;font-size:12px;line-height:2;background:#0d1526;border:0.5px solid rgba(0,229,255,0.15);border-radius:9px;padding:18px 20px;white-space:pre;overflow-x:auto;}
+.rkey{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:10px;font-family:'Space Mono',monospace;font-size:10px;color:#8aa0bc;}
+.rkey span{color:#00e5ff;}
+.ai{background:#0d1526;border-left:2px solid #e040fb;border-radius:9px;padding:16px 18px;font-size:13px;line-height:1.75;}
+.ai strong{color:#e040fb;font-family:'Rajdhani',sans-serif;font-size:14px;letter-spacing:1px;display:block;margin-bottom:8px;}
+.foot{border-top:0.5px solid rgba(0,229,255,0.12);padding-top:18px;margin-top:36px;font-family:'Space Mono',monospace;font-size:10px;color:#5a7a9a;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.foot a{color:#00e5ff;text-decoration:none;}
+@media print{body{padding:16px;}@page{margin:1.5cm;size:A4;}}
+</style></head><body>
+<div class="rh">
+  <div class="brand"><div class="logo">TC</div><div><h1>Guitar Tab Report</h1><p>TechCre8 NoteMapper · MIDI to Tab Converter</p></div></div>
+  <div class="meta">File: <span>${currentFileName}</span><br>Key: <span>${finalKey}</span><br>BPM: <span>${finalBpm}</span><br>Tuning: <span>${tuning}</span><br>Date: <span>${date}</span></div>
+</div>
+<div class="stats">
+  <div class="stat"><div class="v">${notes.length}</div><div class="l">Total Notes</div></div>
+  <div class="stat"><div class="v">${unique.length}</div><div class="l">Unique</div></div>
+  <div class="stat"><div class="v mag">${finalKey}</div><div class="l">Key</div></div>
+  <div class="stat"><div class="v amb">${finalBpm}</div><div class="l">BPM</div></div>
+  <div class="stat"><div class="v">${midis.length?midi2name(Math.min(...midis)):'—'}</div><div class="l">Lowest</div></div>
+  <div class="stat"><div class="v">${midis.length?midi2name(Math.max(...midis)):'—'}</div><div class="l">Highest</div></div>
+</div>
+<div class="sec"><div class="sh">ASCII Tab — ${finalKey} · ${finalBpm} BPM · ${tuning}</div>
+  <div class="rkey"><span>↑</span> 8th &nbsp;<span>↑↑</span> quarter &nbsp;<span>↑↑↑</span> dotted quarter &nbsp;<span>↑↑↑↑</span> half &nbsp;<span>—</span> sustained</div>
+  <div class="tab-block">${tabText}</div>
+</div>
+<div class="sec"><div class="sh">Fretboard Map (frets 0–${dMax})</div>
+  <div style="overflow-x:auto;background:#0d1526;border:0.5px solid rgba(0,229,255,0.15);border-radius:9px;padding:16px;">${fbHTML}</div>
+</div>
+<div class="sec"><div class="sh">Fingering Guide</div>
+  <div style="overflow-x:auto;background:#0d1526;border:0.5px solid rgba(0,229,255,0.15);border-radius:9px;padding:16px;">${fingHTML}</div>
+</div>
+<div class="sec"><div class="sh">AI Analysis</div>
+  <div class="ai"><strong>Claude Analysis</strong>${aiText||'No AI analysis available.'}</div>
+</div>
+<div class="foot">
+  <span>TechCre8 NoteMapper v4 · <a href="https://technicallycreative.work">technicallycreative.work</a></span>
+  <span>Fusing creative artistry with disciplined project execution.</span>
+</div>
+</body></html>`;
+}
+
+// ── DOWNLOAD ───────────────────────────────────────────────────
+function downloadReport(){
+  if(!allEvents.length){showStatus('Run analysis first.','err');return;}
+  const html=buildReportHTML();
+  const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=`TechCre8_Tab_${currentFileName}_${new Date().toISOString().slice(0,10)}.html`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),5000);
+  showStatus('✓ Report downloaded! Open in Chrome → Ctrl+P → Save as PDF for a PDF version.','ok');
+}
+
+// ── GOOGLE DRIVE ───────────────────────────────────────────────
+async function saveToDrive(){
+  if(!allEvents.length){showStatus('Run analysis first.','err');return;}
+  const apiKey=localStorage.getItem('tc_api_key');
+  if(!apiKey){showStatus('Add your Anthropic API key first.','err');return;}
+  const btn=document.getElementById('driveBtn');
+  btn.disabled=true;btn.textContent='Saving to Drive...';
+  const html=buildReportHTML();
+  const fileName=`TechCre8_Tab_${currentFileName}_${new Date().toISOString().slice(0,10)}.html`;
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',max_tokens:1000,
+        mcp_servers:[{type:'url',url:'https://drivemcp.googleapis.com/mcp/v1',name:'google-drive'}],
+        messages:[{role:'user',content:`Create a new file in Google Drive named "${fileName}" with mimeType "text/html". Content:\n${html.slice(0,6000)}`}]
+      })
+    });
+    const data=await resp.json();
+    const text=data.content?.map(c=>c.text||'').join(' ')||'';
+    if(text.toLowerCase().includes('creat')||text.toLowerCase().includes('upload')||text.toLowerCase().includes('id')){
+      showStatus('✓ Saved to Google Drive! Check your Drive root folder.','ok');
+    } else {
+      showStatus('Drive save uncertain — download instead and upload manually.','err');
+    }
+  }catch(e){showStatus('Drive connection failed. Download the report and upload to Drive manually.','err');}
+  btn.disabled=false;btn.textContent='▲ Save to Google Drive';
+}
+
+function showStatus(msg,type){
+  const el=document.getElementById('statusMsg');
+  el.textContent=msg;
+  el.className='status-msg '+(type==='ok'?'st-ok':'st-err');
+  el.style.display='block';
+  setTimeout(()=>{el.style.display='none';},7000);
+}
+
+// ── LISTENERS ──────────────────────────────────────────────────
+document.getElementById('tuning').addEventListener('change',()=>{
+  if(allEvents.length){const t=document.getElementById('tuning').value,m=parseInt(document.getElementById('maxFret').value);buildFingeringData(t,m);renderView(t,m);}
+});
+document.getElementById('maxFret').addEventListener('change',()=>{
+  if(allEvents.length){const t=document.getElementById('tuning').value,m=parseInt(document.getElementById('maxFret').value);buildFingeringData(t,m);renderView(t,m);}
+});
+document.getElementById('npl').addEventListener('change',()=>{
+  if(allEvents.length)renderTab(getFiltered(),document.getElementById('tuning').value,parseInt(document.getElementById('maxFret').value));
+});
+</script>
+
+
+</body></html>

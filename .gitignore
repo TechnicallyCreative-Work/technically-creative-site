@@ -4,13 +4,18 @@ dist/
 
 # dependencies
 node_modules/
+vscode-extension/vendor/*.tgz
 
 # logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+*.log
 
+# extension build artifacts
+*.ablx
+*.tsbuildinfo
 
 # environment variables
 .env
