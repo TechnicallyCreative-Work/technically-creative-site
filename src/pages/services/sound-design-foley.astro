@@ -1,8 +1,6 @@
 ---
 import Layout from '~/layouts/PageLayout.astro';
 import Header from '~/components/widgets/Header.astro';
-import Hero from '~/components/widgets/Hero.astro';
-import BrandBanner from '~/components/widgets/BrandBanner.astro';
 import Steps from '~/components/widgets/Steps.astro';
 import Pricing from '~/components/widgets/Pricing.astro';
 import Content from '~/components/widgets/Content.astro';
@@ -22,24 +20,6 @@ const links = headerData.links;
   <Fragment slot="header">
     <Header links={links} isSticky showToggleTheme />
   </Fragment>
-
-  <BrandBanner />
-
-  <Hero
-    id="sound-hero"
-    title="Sound Design & Foley"
-    tagline="Cinematic detail delivered with discipline"
-    actions={[
-      { variant: 'primary', text: 'Request a quote', href: '/contact#form' },
-      { variant: 'secondary', text: 'Back to services', href: '/services' },
-    ]}
-  >
-    <Fragment slot="subtitle">
-      Whether it is a streaming trailer, social spot, or gameplay moment, I build soundscapes that reinforce narrative
-      beats and deliver clean handoffs to your editorial or mixing team. Expect clear checkpoints, asset labeling, and
-      coverage for alt versions.
-    </Fragment>
-  </Hero>
 
   <Steps
     id="sound-process"

@@ -1,8 +1,6 @@
 ---
 import Layout from '~/layouts/PageLayout.astro';
 import Header from '~/components/widgets/Header.astro';
-import BrandBanner from '~/components/widgets/BrandBanner.astro';
-import Hero from '~/components/widgets/Hero.astro';
 import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
 import CallToAction from '~/components/widgets/CallToAction.astro';
 import { Icon } from 'astro-icon/components';
@@ -151,17 +149,6 @@ const upworkServices = [
       showToggleTheme
     />
   </Fragment>
-  <BrandBanner />
-  <Hero
-    tagline="Products & Services"
-    title="Everything I Offer"
-    actions={[{ variant: 'primary', text: 'Book or inquire', href: getPermalink('/contact#form') }]}
-  >
-    <Fragment slot="subtitle">
-      Digital products link to Gumroad. Online consulting is booked through Upwork. Indianapolis local services — recording, live sound, DJ, karaoke, and Ableton training — are booked directly.
-    </Fragment>
-  </Hero>
-
   <!-- Ableton Training -->
   <WidgetWrapper id="ableton-training" containerClass="max-w-6xl mx-auto py-12 md:py-16">
     <div class="flex items-center gap-3 text-primary">

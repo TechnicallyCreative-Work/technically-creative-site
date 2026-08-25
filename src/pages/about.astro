@@ -1,8 +1,6 @@
 ---
 import Layout from '~/layouts/PageLayout.astro';
 import Header from '~/components/widgets/Header.astro';
-import Hero from '~/components/widgets/Hero.astro';
-import BrandBanner from '~/components/widgets/BrandBanner.astro';
 import Content from '~/components/widgets/Content.astro';
 import CallToAction from '~/components/widgets/CallToAction.astro';
 import { headerData } from '~/navigation';
@@ -29,21 +27,6 @@ const links = headerData.links;
   <Fragment slot="header">
     <Header links={links} isSticky showToggleTheme />
   </Fragment>
-
-  <BrandBanner />
-
-  <!-- Hero -->
-  <Hero
-    id="hero"
-    title="About the company"
-    tagline="Where music technology meets structured delivery"
-    actions={[{ variant: 'primary', text: 'Start a project', href: getPermalink('/contact#form') }]}
-  >
-    <Fragment slot="subtitle">
-      A creative consultancy built to turn chaos into momentum. We pair audio craft with PMP-informed delivery and
-      practical automation so your work ships on time—without dulling the art.
-    </Fragment>
-  </Hero>
 
   <!-- Company Overview -->
   <Content

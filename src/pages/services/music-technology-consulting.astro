@@ -1,8 +1,6 @@
 ---
 import Layout from '~/layouts/PageLayout.astro';
 import Header from '~/components/widgets/Header.astro';
-import Hero from '~/components/widgets/Hero.astro';
-import BrandBanner from '~/components/widgets/BrandBanner.astro';
 import Steps from '~/components/widgets/Steps.astro';
 import Pricing from '~/components/widgets/Pricing.astro';
 import Content from '~/components/widgets/Content.astro';
@@ -22,24 +20,6 @@ const links = headerData.links;
   <Fragment slot="header">
     <Header links={links} isSticky showToggleTheme />
   </Fragment>
-
-  <BrandBanner />
-
-  <Hero
-    id="consulting-hero"
-    title="Music Technology Consulting"
-    tagline="Systems coaching for creative teams"
-    actions={[
-      { variant: 'primary', text: 'Book discovery call', href: '/contact#form' },
-      { variant: 'secondary', text: 'Back to services', href: '/services' },
-    ]}
-  >
-    <Fragment slot="subtitle">
-      I help artists, studios, and production teams streamline the way they create by pairing deep DAW knowledge with PMP
-      project leadership. From hybrid studio buildouts to coaching your assistants, everything is documented and tracked
-      so improvements stick.
-    </Fragment>
-  </Hero>
 
   <Steps
     id="consulting-process"

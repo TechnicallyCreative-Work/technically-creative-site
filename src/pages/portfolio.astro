@@ -2,8 +2,6 @@
 import Layout from '~/layouts/PageLayout.astro';
 import Header from '~/components/widgets/Header.astro';
 
-import Hero from '~/components/widgets/Hero.astro';
-import BrandBanner from '~/components/widgets/BrandBanner.astro';
 import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
 import CallToAction from '~/components/widgets/CallToAction.astro';
 import Button from '~/components/ui/Button.astro';
@@ -613,17 +611,6 @@ const categories: Category[] = [
       showToggleTheme
     />
   </Fragment>
-  <BrandBanner />
-  <Hero
-    tagline="Portfolio"
-    title="Service-Aligned Work"
-    actions={[{ variant: 'primary', text: 'Start a project', href: getPermalink('/contact#form') }]}
-  >
-    <Fragment slot="subtitle">
-      Each section mirrors a core service. Projects are tagged by status—completed, in progress, on hold, or queued—so you can see exactly where things stand.
-    </Fragment>
-  </Hero>
-
   {categories.map(({ id, title, description, icon, serviceHref, heroVideo, projects }) => (
     <WidgetWrapper id={id} containerClass="max-w-6xl mx-auto py-12 md:py-16">
       <div class="flex items-center gap-3 text-primary">

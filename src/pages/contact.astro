@@ -1,8 +1,6 @@
 ---
 import Layout from '~/layouts/PageLayout.astro';
 import Header from '~/components/widgets/Header.astro';
-import Hero from '~/components/widgets/Hero.astro';
-import BrandBanner from '~/components/widgets/BrandBanner.astro';
 import ContactUs from '~/components/widgets/Contact.astro';
 import Features2 from '~/components/widgets/Features2.astro';
 import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
@@ -27,18 +25,6 @@ const hubspotForm = {
   <Fragment slot="header">
     <Header links={links} isSticky showToggleTheme />
   </Fragment>
-  <BrandBanner />
-  <!-- Hero Widget ******************* -->
-  <Hero
-    tagline="Contact"
-    title="How do we get started?"
-  >
-    <Fragment slot="subtitle">
-      Tell me what you need, how fast you need it, and any reference material. I'll respond within one business day so we
-      can map next steps together.
-    </Fragment>
-  </Hero>
-
   <ContactUs
     id="form"
     title="Fill out this form!"

@@ -1,8 +1,6 @@
 ---
 import Layout from '~/layouts/PageLayout.astro';
 import Header from '~/components/widgets/Header.astro';
-import Hero from '~/components/widgets/Hero.astro';
-import BrandBanner from '~/components/widgets/BrandBanner.astro';
 import Steps from '~/components/widgets/Steps.astro';
 import Pricing from '~/components/widgets/Pricing.astro';
 import Content from '~/components/widgets/Content.astro';
@@ -22,23 +20,6 @@ const links = headerData.links;
   <Fragment slot="header">
     <Header links={links} isSticky showToggleTheme />
   </Fragment>
-
-  <BrandBanner />
-
-  <Hero
-    id="pm-hero"
-    title="Project Management Consulting"
-    tagline="Delivery leadership for creative teams"
-    actions={[
-      { variant: 'primary', text: 'Book project consult', href: '/contact#form' },
-      { variant: 'secondary', text: 'Back to services', href: '/services' },
-    ]}
-  >
-    <Fragment slot="subtitle">
-      When your production calendar is crowded, I help map scope, coordinate stakeholders, and keep risks visible. From
-      sprint cadences to live production launches, you get the structure without the bureaucracy.
-    </Fragment>
-  </Hero>
 
   <Steps
     id="pm-process"
