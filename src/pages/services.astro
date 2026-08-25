@@ -2,6 +2,7 @@
 import Layout from '~/layouts/PageLayout.astro';
 import Header from '~/components/widgets/Header.astro';
 
+import BrandBanner from '~/components/widgets/BrandBanner.astro';
 import Features from '~/components/widgets/Features.astro';
 import Content from '~/components/widgets/Content.astro';
 import CallToAction from '~/components/widgets/CallToAction.astro';
@@ -27,6 +28,8 @@ const links = headerData.links;
   <Fragment slot="header">
     <Header links={links} isSticky showToggleTheme />
   </Fragment>
+
+  <BrandBanner />
 
   <!-- Service Offerings -->
   <Features
