@@ -12,6 +12,8 @@ const links = headerData.links;
 
 const metadata = {
   title: 'Contact',
+  description:
+    'Get in touch with Technically Creative — Indianapolis-based mixing, sound design, project management, and workflow automation for artists and teams that need reliable delivery.',
 };
 
 const hubspotForm = {
@@ -27,6 +29,12 @@ const hubspotForm = {
     <Header links={links} isSticky showToggleTheme />
   </Fragment>
   <BrandBanner />
+
+  <div class="container pt-10 pb-2 md:pt-14">
+    <h1 class="text-3xl font-bold tracking-tight md:text-4xl">Contact Technically Creative — Indianapolis Music Production &amp; PM Consulting</h1>
+    <p class="mt-3 max-w-2xl text-muted dark:text-slate-400">How do we get started?</p>
+  </div>
+
   <ContactUs
     id="form"
     title="Fill out this form!"
