@@ -2,7 +2,6 @@
 import Layout from '~/layouts/PageLayout.astro';
 import Header from '~/components/widgets/Header.astro';
 import BrandBanner from '~/components/widgets/BrandBanner.astro';
-import Hero from '~/components/widgets/Hero.astro';
 import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
 import CallToAction from '~/components/widgets/CallToAction.astro';
 import { Icon } from 'astro-icon/components';
@@ -39,11 +38,13 @@ const tools = [
     />
   </Fragment>
   <BrandBanner />
-  <Hero tagline="Tools" title="Free Tools">
-    <Fragment slot="subtitle">
+
+  <div class="container pt-10 pb-2 md:pt-14">
+    <h1 class="text-3xl font-bold tracking-tight md:text-4xl">Free Tools — Browser-Based Utilities from Technically Creative</h1>
+    <p class="mt-3 max-w-2xl text-muted dark:text-slate-400">
       Browser-based tools built by Technically Creative — pick one below to get started. More are on the way.
-    </Fragment>
-  </Hero>
+    </p>
+  </div>
 
   <WidgetWrapper id="tools-grid" containerClass="max-w-6xl mx-auto py-4 md:py-8">
     <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

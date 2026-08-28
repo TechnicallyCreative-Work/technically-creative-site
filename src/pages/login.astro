@@ -4,7 +4,6 @@ export const prerender = false;
 import Layout from '~/layouts/PageLayout.astro';
 import Header from '~/components/widgets/Header.astro';
 import BrandBanner from '~/components/widgets/BrandBanner.astro';
-import Hero from '~/components/widgets/Hero.astro';
 import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
 import { getPermalink } from '~/utils/permalinks';
 import { headerData } from '~/navigation';
@@ -20,9 +19,11 @@ const metadata = {
     <Header links={headerData.links} isSticky showToggleTheme />
   </Fragment>
   <BrandBanner />
-  <Hero tagline="Members" title="Log In">
-    <Fragment slot="subtitle">Sign in to your account.</Fragment>
-  </Hero>
+
+  <div class="container pt-10 pb-2 md:pt-14">
+    <h1 class="text-3xl font-bold tracking-tight md:text-4xl">Log In</h1>
+    <p class="mt-3 max-w-2xl text-muted dark:text-slate-400">Sign in to your account.</p>
+  </div>
 
   <WidgetWrapper containerClass="max-w-md mx-auto py-4 md:py-8">
     <form id="login-form" class="rounded-2xl border border-primary/30 bg-white/70 p-6 dark:bg-slate-900/40">

@@ -1,7 +1,6 @@
 ---
 import Layout from '~/layouts/PageLayout.astro';
 import Header from '~/components/widgets/Header.astro';
-import Hero from '~/components/widgets/Hero.astro';
 import BrandBanner from '~/components/widgets/BrandBanner.astro';
 import ContactUs from '~/components/widgets/Contact.astro';
 import Features2 from '~/components/widgets/Features2.astro';
@@ -13,6 +12,8 @@ const links = headerData.links;
 
 const metadata = {
   title: 'Contact',
+  description:
+    'Get in touch with Technically Creative — Indianapolis-based mixing, sound design, project management, and workflow automation for artists and teams that need reliable delivery.',
 };
 
 const hubspotForm = {
@@ -28,16 +29,11 @@ const hubspotForm = {
     <Header links={links} isSticky showToggleTheme />
   </Fragment>
   <BrandBanner />
-  <!-- Hero Widget ******************* -->
-  <Hero
-    tagline="Contact"
-    title="How do we get started?"
-  >
-    <Fragment slot="subtitle">
-      Tell me what you need, how fast you need it, and any reference material. I'll respond within one business day so we
-      can map next steps together.
-    </Fragment>
-  </Hero>
+
+  <div class="container pt-10 pb-2 md:pt-14">
+    <h1 class="text-3xl font-bold tracking-tight md:text-4xl">Contact Technically Creative — Indianapolis Music Production &amp; PM Consulting</h1>
+    <p class="mt-3 max-w-2xl text-muted dark:text-slate-400">How do we get started?</p>
+  </div>
 
   <ContactUs
     id="form"
@@ -189,20 +185,11 @@ const hubspotForm = {
           <p class="text-sm text-muted dark:text-slate-400">
             Full work history, client reviews, and project catalog. Best for contracts, hourly work, and milestone-based projects.
           </p>
-          <div class="mt-4 flex-1 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
-            <iframe
-              src="https://www.upwork.com/freelancers/techcre8?embed=true"
-              title="Upwork Profile — Technically Creative"
-              class="h-64 w-full border-0"
-              loading="lazy"
-              sandbox="allow-scripts allow-same-origin allow-popups"
-            ></iframe>
-          </div>
           <a
             href="https://www.upwork.com/freelancers/techcre8"
             target="_blank"
             rel="noopener noreferrer"
-            class="mt-4 inline-flex items-center justify-center gap-2 rounded-lg bg-[#14a800] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#0f8700]"
+            class="mt-4 md:mt-auto inline-flex items-center justify-center gap-2 rounded-lg bg-[#14a800] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#0f8700]"
           >
             View Upwork Profile
             <Icon name="tabler:external-link" class="h-4 w-4" />
@@ -220,20 +207,11 @@ const hubspotForm = {
           <p class="text-sm text-muted dark:text-slate-400">
             Commission-free freelance platform. Great for independent project work with no platform fees taken from your payment.
           </p>
-          <div class="mt-4 flex-1 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
-            <iframe
-              src="https://contra.com/techcre8?embed=true"
-              title="Contra Profile — Technically Creative"
-              class="h-64 w-full border-0"
-              loading="lazy"
-              sandbox="allow-scripts allow-same-origin allow-popups"
-            ></iframe>
-          </div>
           <a
             href="https://contra.com/techcre8"
             target="_blank"
             rel="noopener noreferrer"
-            class="mt-4 inline-flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white"
+            class="mt-4 md:mt-auto inline-flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white"
           >
             View Contra Profile
             <Icon name="tabler:external-link" class="h-4 w-4" />

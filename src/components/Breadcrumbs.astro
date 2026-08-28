@@ -1,0 +1,120 @@
+---
+import '@fontsource/orbitron/500.css';
+import '@fontsource/orbitron/700.css';
+import { trimSlash } from '~/utils/permalinks';
+
+const LABELS: Record<string, string> = {
+  about: 'About',
+  contact: 'Contact',
+  credentials: 'Credentials',
+  portfolio: 'Portfolio',
+  services: 'Services',
+  store: 'Store',
+  notemapper: 'NoteMapper',
+  privacy: 'Privacy Policy',
+  terms: 'Terms of Service',
+  'mixing-mastering': 'Mixing & Mastering',
+  'music-technology-consulting': 'Music Technology Consulting',
+  'project-management-consulting': 'Project Management Consulting',
+  'public-speaking-workshops': 'Public Speaking & Workshops',
+  'sound-design-foley': 'Sound Design & Foley',
+  'workflow-automation': 'Workflow Automation',
+};
+
+function humanize(segment: string) {
+  return segment
+    .split('-')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
+const path = trimSlash(new URL(Astro.url).pathname);
+const segments = path ? path.split('/').filter(Boolean) : [];
+
+const crumbs = segments.map((segment, i) => ({
+  label: LABELS[segment] ?? humanize(segment),
+  href: '/' + segments.slice(0, i + 1).join('/'),
+  isLast: i === segments.length - 1,
+}));
+---
+
+{
+  crumbs.length > 0 && (
+    <nav aria-label="Breadcrumb" class="tc-breadcrumbs">
+      <ol>
+        <li>
+          <a href="/">Home</a>
+        </li>
+        {crumbs.map((crumb) => (
+          <>
+            <li class="tc-breadcrumbs__sep" aria-hidden="true">
+              /
+            </li>
+            <li>
+              {crumb.isLast ? (
+                <span aria-current="page">{crumb.label}</span>
+              ) : (
+                <a href={crumb.href}>{crumb.label}</a>
+              )}
+            </li>
+          </>
+        ))}
+      </ol>
+    </nav>
+  )
+}
+
+<style>
+  .tc-breadcrumbs {
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 0.875rem 1.5rem;
+    font-family: 'Orbitron', var(--tc-font-sans), sans-serif;
+  }
+
+  .tc-breadcrumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .tc-breadcrumbs li {
+    display: flex;
+    align-items: center;
+  }
+
+  .tc-breadcrumbs a,
+  .tc-breadcrumbs span {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .tc-breadcrumbs a {
+    color: var(--tc-text-muted);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .tc-breadcrumbs a:hover {
+    color: var(--tc-primary);
+    text-shadow: 0 0 8px color-mix(in srgb, var(--tc-primary) 55%, transparent);
+  }
+
+  .tc-breadcrumbs span[aria-current='page'] {
+    font-weight: 700;
+    color: var(--tc-primary);
+  }
+
+  .tc-breadcrumbs__sep {
+    color: var(--tc-secondary);
+    opacity: 0.5;
+    font-size: 0.75rem;
+  }
+</style>

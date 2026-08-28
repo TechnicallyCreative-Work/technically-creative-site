@@ -1,5 +1,10 @@
 ---
 import '@fontsource-variable/inter';
+import '@fontsource/orbitron/500.css';
+import '@fontsource/orbitron/600.css';
+import '@fontsource/orbitron/700.css';
+import '@fontsource/orbitron/800.css';
+import '@fontsource/orbitron/900.css';
 ---
 
 <style is:global>
@@ -11,14 +16,14 @@ import '@fontsource-variable/inter';
 
     --tc-text-heading: rgb(0 0 0);
     --tc-text-default: rgb(16 16 16);
-    --tc-text-muted: rgb(16 16 16 / 66%);
+    --tc-text-muted: rgb(16 16 16 / 85%);
     --tc-bg-page: rgb(255 255 255);
 
 
     /* Fonts */
     --tc-font-sans: 'Inter Variable';
     --tc-font-serif: 'Inter Variable';
-    --tc-font-heading: 'Inter Variable';
+    --tc-font-heading: 'Orbitron';
   }
   /* Dark mode on <html class="dark"> or <body class="dark"> */
   .dark {
@@ -45,6 +50,19 @@ import '@fontsource-variable/inter';
       Roboto,
       sans-serif;
   }
+
+  /* Headings, nav, buttons, and labels get the display font, always uppercase */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  label {
+    font-family: var(--tc-font-heading), var(--tc-font-sans), sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
 </style>
 
 <style is:inline>
@@ -56,13 +74,13 @@ import '@fontsource-variable/inter';
 
     --tc-text-heading: rgb(0 0 0);
     --tc-text-default: rgb(16 16 16);
-    --tc-text-muted: rgb(16 16 16 / 66%);
+    --tc-text-muted: rgb(16 16 16 / 85%);
     --tc-bg-page: rgb(255 255 255);
 
     /* Fonts */
     --tc-font-sans: 'Inter Variable';
     --tc-font-serif: 'Inter Variable';
-    --tc-font-heading: 'Inter Variable';
+    --tc-font-heading: 'Orbitron';
 
     /* Selection */
     --tc-selection-bg: lavender;
@@ -88,7 +106,7 @@ import '@fontsource-variable/inter';
     /* Fonts (same) */
     --tc-font-sans: 'Inter Variable';
     --tc-font-serif: 'Inter Variable';
-    --tc-font-heading: 'Inter Variable';
+    --tc-font-heading: 'Orbitron';
 
     /* Selection (dark) */
     --tc-selection-bg: rgb(10 10 20);

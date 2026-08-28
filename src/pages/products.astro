@@ -2,7 +2,6 @@
 import Layout from '~/layouts/PageLayout.astro';
 import Header from '~/components/widgets/Header.astro';
 import BrandBanner from '~/components/widgets/BrandBanner.astro';
-import Hero from '~/components/widgets/Hero.astro';
 import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
 import CallToAction from '~/components/widgets/CallToAction.astro';
 import { Icon } from 'astro-icon/components';
@@ -107,16 +106,14 @@ const darkArt = [
     />
   </Fragment>
   <BrandBanner />
-  <Hero
-    tagline="Products"
-    title="Digital Products"
-    actions={[{ variant: 'primary', text: 'Browse all on Gumroad', href: 'https://techcre8.gumroad.com' }]}
-  >
-    <Fragment slot="subtitle">
+
+  <div class="container pt-10 pb-2 md:pt-14">
+    <h1 class="text-3xl font-bold tracking-tight md:text-4xl">Digital Products — Ableton Training &amp; Art Prints on Gumroad</h1>
+    <p class="mt-3 max-w-2xl text-muted dark:text-slate-400">
       Ableton training modules and digital art prints, available for instant purchase and download on Gumroad. Looking
       for local or custom work instead? Visit <a href={getPermalink('/local-services')} class="font-semibold text-primary hover:underline">Local Services</a>.
-    </Fragment>
-  </Hero>
+    </p>
+  </div>
 
   <!-- Ableton Training -->
   <WidgetWrapper id="ableton-training" containerClass="max-w-6xl mx-auto py-12 md:py-16">

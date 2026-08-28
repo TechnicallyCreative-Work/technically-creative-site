@@ -5,93 +5,42 @@ export const headerData = {
     {
       text: 'Home',
       href: getPermalink('/'),
+      icon: 'tabler:home',
     },
     {
       text: 'Services',
-      links: [
-        {
-          text: 'Mixing & Mastering',
-          href: getPermalink('/services/mixing-mastering'),
-        },
-        {
-          text: 'Music Technology Consulting',
-          href: getPermalink('/services/music-technology-consulting'),
-        },
-        {
-          text: 'Project Management Consulting',
-          href: getPermalink('/services/project-management-consulting'),
-        },
-        {
-          text: 'Public Speaking & Workshops',
-          href: getPermalink('/services/public-speaking-workshops'),
-        },
-        {
-          text: 'Sound Design & Foley',
-          href: getPermalink('/services/sound-design-foley'),
-        },
-        {
-          text: 'Workflow Automation',
-          href: getPermalink('/services/workflow-automation'),
-        },
-      ],
+      href: getPermalink('/services'),
+      icon: 'tabler:briefcase',
     },
     {
       text: 'Portfolio',
-      links: [
-        { text: 'Music & Sound Design', href: getPermalink('/portfolio#music-sound-design') },
-        { text: 'Sound & Audio Engineering', href: getPermalink('/portfolio#sound-audio-engineering') },
-        { text: 'Ableton Training', href: getPermalink('/portfolio#ableton-training') },
-        { text: 'Graphic Design & Visual Art', href: getPermalink('/portfolio#graphic-design') },
-        { text: 'Automation', href: getPermalink('/portfolio#automation') },
-        { text: 'Project Management', href: getPermalink('/portfolio#project-management') },
-        { text: 'Video Editing', href: getPermalink('/portfolio#video-editing') },
-        { text: 'Gear Consultation', href: getPermalink('/portfolio#gear-consultation') },
-        { text: 'Performance / Live Sound', href: getPermalink('/portfolio#performance-live-sound') },
-        { text: 'Technology Efficiency', href: getPermalink('/portfolio#technology-efficiency') },
-        { text: 'Signal & Space', href: getPermalink('/portfolio#signal-space') },
-      ],
+      href: getPermalink('/portfolio'),
+      icon: 'tabler:layout-grid',
     },
     {
       text: 'Tools',
       href: getPermalink('/tools'),
+      icon: 'tabler:tool',
     },
     {
       text: 'News',
       href: getBlogPermalink(),
+      icon: 'tabler:news',
     },
     {
       text: 'About',
-      links: [
-        {
-          text: 'About',
-          href: getPermalink('/about'),
-        },
-        {
-          text: 'Credentials',
-          href: getPermalink('/credentials'),
-        },
-        {
-          text: 'Contact',
-          href: getPermalink('/contact'),
-        },
-      ],
+      href: getPermalink('/about'),
+      icon: 'tabler:info-circle',
     },
     {
       text: 'Products',
-      links: [
-        { text: 'Ableton Training', href: getPermalink('/products#ableton-training') },
-        { text: 'Nature Series Prints', href: getPermalink('/products#nature-series') },
-        { text: 'Dark & Fan Art', href: getPermalink('/products#dark-art') },
-        { text: 'Browse All on Gumroad', href: 'https://techcre8.gumroad.com' },
-      ],
+      href: getPermalink('/products'),
+      icon: 'tabler:shopping-bag',
     },
     {
       text: 'Local Services',
-      links: [
-        { text: 'Graphic Design & Commissions', href: getPermalink('/local-services#graphic-design') },
-        { text: 'Online Consulting', href: getPermalink('/local-services#services') },
-        { text: 'Indianapolis Local Services', href: getPermalink('/local-services#local-services') },
-      ],
+      href: getPermalink('/local-services'),
+      icon: 'tabler:map-pin',
     },
   ],
   actions: [

@@ -2,7 +2,6 @@
 import Layout from '~/layouts/PageLayout.astro';
 import Header from '~/components/widgets/Header.astro';
 
-import Hero from '~/components/widgets/Hero.astro';
 import BrandBanner from '~/components/widgets/BrandBanner.astro';
 import Features from '~/components/widgets/Features.astro';
 import Content from '~/components/widgets/Content.astro';
@@ -22,7 +21,7 @@ const metadata = {
   ignoreTitleTemplate: true,
 };
 
-const links = [...headerData.links, { text: 'Portfolio', href: '/portfolio' }];
+const links = headerData.links;
 ---
 
 <Layout metadata={metadata}>
@@ -32,18 +31,10 @@ const links = [...headerData.links, { text: 'Portfolio', href: '/portfolio' }];
 
   <BrandBanner />
 
-  <!-- Hero -->
-  <Hero
-    id="hero"
-    title="Services"
-    tagline="Creative delivery without the chaos"
-    actions={[{ variant: 'primary', text: 'Start a project', href: '/contact#form' }]}
-  >
-    <Fragment slot="subtitle">
-      Pair award-winning audio craft with project leadership so every engagement stays organized, transparent, and on
-      schedule.
-    </Fragment>
-  </Hero>
+  <div class="container pt-10 pb-2 md:pt-14">
+    <h1 class="text-3xl font-bold tracking-tight md:text-4xl">Services — Indianapolis Music Production, Project Management &amp; Automation</h1>
+    <p class="mt-3 max-w-2xl text-muted dark:text-slate-400">Creative delivery without the chaos.</p>
+  </div>
 
   <!-- Service Offerings -->
   <Features

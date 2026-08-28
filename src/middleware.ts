@@ -1,4 +1,5 @@
 import { defineMiddleware } from 'astro:middleware';
+import type { User } from '@supabase/supabase-js';
 import { createSupabaseServerClient } from '~/lib/supabase-server';
 
 // Route prefixes that require a signed-in user. Add future member-only
@@ -28,7 +29,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
   // static page at build time (and would run on every static-page request in
   // any case where Supabase is briefly unreachable) — a network hiccup here
   // should fall back to "signed out", not break the page.
-  let user = null;
+  let user: User | null = null;
   try {
     const { data } = await supabase.auth.getUser();
     user = data.user;

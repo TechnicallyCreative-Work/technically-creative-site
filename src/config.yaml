@@ -63,7 +63,12 @@ ui:
     showSocialIcons: true
     showThemeToggle: true
 
+analytics:
+  vendors:
+    googleAnalytics:
+      id: 'G-PJ5FG0TZP2'
+
 features:
   rss: false
   sitemap: true
-  analytics: false
+  analytics: true
