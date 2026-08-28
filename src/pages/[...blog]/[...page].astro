@@ -1,0 +1,171 @@
+---
+import type { InferGetStaticPropsType, GetStaticPaths } from 'astro';
+import { Icon } from 'astro-icon/components';
+
+import Layout from '~/layouts/PageLayout.astro';
+import BlogList from '~/components/blog/List.astro';
+import Headline from '~/components/blog/Headline.astro';
+import Pagination from '~/components/blog/Pagination.astro';
+import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
+// import PostTags from "~/components/blog/Tags.astro";
+
+import { blogListRobots, getStaticPathsBlogList } from '~/utils/blog';
+import { getPermalink } from '~/utils/permalinks';
+
+export const prerender = true;
+
+export const getStaticPaths = (async ({ paginate }) => {
+  return await getStaticPathsBlogList({ paginate });
+}) satisfies GetStaticPaths;
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+
+const { page } = Astro.props as Props;
+const currentPage = page.currentPage ?? 1;
+
+// const allCategories = await findCategories();
+// const allTags = await findTags();
+
+const metadata = {
+  title: `News${currentPage > 1 ? ` — Page ${currentPage}` : ''}`,
+  description: 'Updates, newsletter issues, and social recaps from Technically Creative.',
+  robots: {
+    index: blogListRobots?.index && currentPage === 1,
+    follow: blogListRobots?.follow,
+  },
+  openGraph: {
+    type: 'blog',
+  },
+};
+
+// Set once a PDF/HTML issue exists — the download button below activates automatically.
+const latestNewsletterUrl: string | null = null;
+
+const followLinks = [
+  { name: 'Instagram', handle: 'Follow', icon: 'tabler:brand-instagram', href: 'https://www.instagram.com/technicallycreativellc/', color: '#E1306C' },
+  { name: 'Facebook', handle: 'Follow', icon: 'tabler:brand-facebook', href: 'https://www.facebook.com/share/19Pu1jnFMj/', color: '#1877F2' },
+  { name: 'YouTube', handle: 'Subscribe', icon: 'tabler:brand-youtube', href: 'https://www.youtube.com/@rootcauseriff', color: '#FF0000' },
+  { name: 'Discord', handle: 'Join', icon: 'tabler:brand-discord', href: 'https://discord.gg/8hGAgFkWc', color: '#5865F2' },
+];
+---
+
+<Layout metadata={metadata}>
+  <section class="px-6 sm:px-6 pt-12 sm:pt-16 lg:pt-20 mx-auto max-w-4xl">
+    <Headline subtitle="Updates, newsletter issues, and recaps from Technically Creative.">News</Headline>
+  </section>
+
+  {currentPage === 1 && (
+    <>
+      <!-- Newsletter -->
+      <WidgetWrapper id="newsletter" containerClass="max-w-4xl mx-auto py-4 md:py-8">
+        <div class="flex items-center gap-3 text-primary">
+          <Icon name="tabler:mail" class="h-6 w-6" />
+          <h2 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-2xl">Newsletter</h2>
+        </div>
+        <p class="mt-2 max-w-2xl text-sm text-muted dark:text-slate-400">
+          The Technically Creative newsletter and curated industry roundups are both published here under the
+          <a href={getPermalink('newsletter', 'category')} class="font-medium text-primary hover:underline">Newsletter</a> category.
+        </p>
+
+        <div class="mt-6 grid gap-4 sm:grid-cols-2">
+          <!-- Download latest -->
+          {latestNewsletterUrl ? (
+            <a
+              href={latestNewsletterUrl}
+              class="group flex flex-col justify-center rounded-2xl border border-primary/30 bg-white/70 p-5 transition hover:border-primary hover:shadow-md dark:bg-slate-900/40"
+            >
+              <div class="flex items-center gap-2 font-semibold text-slate-900 dark:text-white">
+                <Icon name="tabler:download" class="h-5 w-5 text-primary" /> Download the latest issue
+              </div>
+              <span class="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-primary group-hover:underline">
+                Get the PDF <Icon name="tabler:arrow-right" class="h-4 w-4" />
+              </span>
+            </a>
+          ) : (
+            <div class="flex flex-col justify-center rounded-2xl border border-dashed border-primary/20 bg-white/40 p-5 opacity-70 dark:bg-slate-900/20">
+              <div class="flex items-center gap-2 font-semibold text-slate-900 dark:text-white">
+                <Icon name="tabler:download" class="h-5 w-5 text-primary" /> Download the latest issue
+              </div>
+              <span class="mt-3 inline-block w-fit rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+                Coming soon
+              </span>
+            </div>
+          )}
+
+          <!-- Email subscribe -->
+          <form
+            id="newsletter-subscribe-form"
+            class="flex flex-col justify-center rounded-2xl border border-primary/30 bg-white/70 p-5 dark:bg-slate-900/40"
+          >
+            <div class="flex items-center gap-2 font-semibold text-slate-900 dark:text-white">
+              <Icon name="tabler:send" class="h-5 w-5 text-primary" /> Get it by email
+            </div>
+            <div class="mt-3 flex gap-2">
+              <input
+                type="email"
+                name="email"
+                required
+                placeholder="you@example.com"
+                class="min-w-0 flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-slate-900"
+              />
+              <button
+                type="submit"
+                class="shrink-0 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary/90"
+              >
+                Subscribe
+              </button>
+            </div>
+            <p id="newsletter-subscribe-message" class="mt-2 hidden text-xs text-muted dark:text-slate-400"></p>
+          </form>
+        </div>
+      </WidgetWrapper>
+
+      <!-- Follow & Connect -->
+      <WidgetWrapper id="connect" containerClass="max-w-4xl mx-auto py-4 md:py-8">
+        <div class="flex items-center gap-3 text-primary">
+          <Icon name="tabler:users" class="h-6 w-6" />
+          <h2 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-2xl">Follow & Connect</h2>
+        </div>
+        <div class="mt-6 grid gap-4 grid-cols-2 sm:grid-cols-4">
+          {followLinks.map(({ name, handle, icon, href, color }) => (
+            <a
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="group flex flex-col items-center gap-2 rounded-2xl border border-primary/20 bg-white/70 p-5 text-center transition hover:border-primary hover:shadow-md dark:bg-slate-900/40"
+            >
+              <Icon name={icon} class="h-8 w-8" style={`color:${color}`} />
+              <span class="font-semibold text-slate-900 dark:text-white">{name}</span>
+              <span class="text-xs font-medium text-primary group-hover:underline">{handle}</span>
+            </a>
+          ))}
+        </div>
+      </WidgetWrapper>
+    </>
+  )}
+
+  <section class="px-6 sm:px-6 pb-12 sm:pb-16 lg:pb-20 mx-auto max-w-4xl">
+    <h2 class="mt-6 mb-8 text-center text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:mb-12">
+      Latest Posts
+    </h2>
+    <BlogList posts={page.data} />
+    <Pagination prevUrl={page.url.prev} nextUrl={page.url.next} />
+    <!--
+      <PostTags tags={allCategories} class="mb-2" title="Search by Categories:" isCategory />
+      <PostTags tags={allTags}  title="Search by Tags:" />
+    -->
+  </section>
+</Layout>
+
+<script>
+  const form = document.getElementById('newsletter-subscribe-form') as HTMLFormElement | null;
+  const message = document.getElementById('newsletter-subscribe-message');
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (!message) return;
+    message.textContent = "Thanks! Email sign-up isn't wired to a mailing list yet — check back soon.";
+    message.classList.remove('hidden');
+    form.reset();
+  });
+</script>

@@ -53,7 +53,11 @@ export const headerData = {
     },
     {
       text: 'Tools',
-      links: [{ text: 'NoteMapper (MIDI to Tab)', href: getPermalink('/notemapper') }],
+      href: getPermalink('/tools'),
+    },
+    {
+      text: 'News',
+      href: getBlogPermalink(),
     },
     {
       text: 'About',
@@ -75,22 +79,25 @@ export const headerData = {
     {
       text: 'Products',
       links: [
-        { text: 'Ableton Training', href: getPermalink('/store#ableton-training') },
-        { text: 'Nature Series Prints', href: getPermalink('/store#nature-series') },
-        { text: 'Dark & Fan Art', href: getPermalink('/store#dark-art') },
+        { text: 'Ableton Training', href: getPermalink('/products#ableton-training') },
+        { text: 'Nature Series Prints', href: getPermalink('/products#nature-series') },
+        { text: 'Dark & Fan Art', href: getPermalink('/products#dark-art') },
         { text: 'Browse All on Gumroad', href: 'https://techcre8.gumroad.com' },
       ],
     },
     {
-      text: 'Services',
+      text: 'Local Services',
       links: [
-        { text: 'Graphic Design & Commissions', href: getPermalink('/store#graphic-design') },
-        { text: 'Online Consulting', href: getPermalink('/store#services') },
-        { text: 'Indianapolis Local Services', href: getPermalink('/store#local-services') },
+        { text: 'Graphic Design & Commissions', href: getPermalink('/local-services#graphic-design') },
+        { text: 'Online Consulting', href: getPermalink('/local-services#services') },
+        { text: 'Indianapolis Local Services', href: getPermalink('/local-services#local-services') },
       ],
     },
   ],
-  actions: [{ text: 'Start a Project', href: getPermalink('/contact') }],
+  actions: [
+    { text: 'Log In', href: getPermalink('/login') },
+    { text: 'Start a Project', href: getPermalink('/contact') },
+  ],
 };
 
 export const footerData = {
@@ -107,6 +114,14 @@ export const footerData = {
       ],
     },
     {
+      title: 'Shop',
+      links: [
+        { text: 'Products', href: getPermalink('/products') },
+        { text: 'Local Services', href: getPermalink('/local-services') },
+        { text: 'Tools', href: getPermalink('/tools') },
+      ],
+    },
+    {
       title: 'Company',
       links: [
         { text: 'Home', href: getPermalink('/') },
@@ -119,6 +134,7 @@ export const footerData = {
       title: 'Resources',
       links: [
         { text: 'Services Overview', href: getPermalink('/services') },
+        { text: 'News', href: getBlogPermalink() },
         { text: 'Terms of Service', href: getPermalink('/terms') },
         { text: 'Privacy Policy', href: getPermalink('/privacy') },
       ],
@@ -127,12 +143,15 @@ export const footerData = {
   secondaryLinks: [
     { text: 'Home', href: getPermalink('/') },
     { text: 'Services', href: getPermalink('/services') },
+    { text: 'News', href: getBlogPermalink() },
     { text: 'Contact', href: getPermalink('/contact') },
   ],
   socialLinks: [
     { ariaLabel: 'LinkedIn', icon: 'tabler:brand-linkedin', href: 'https://www.linkedin.com/company/technically-creative-llc/' },
     { ariaLabel: 'Instagram', icon: 'tabler:brand-instagram', href: 'https://www.instagram.com/technicallycreativellc/' },
+    { ariaLabel: 'Facebook', icon: 'tabler:brand-facebook', href: 'https://www.facebook.com/share/19Pu1jnFMj/' },
     { ariaLabel: 'YouTube', icon: 'tabler:brand-youtube', href: 'https://www.youtube.com/@rootcauseriff' },
+    { ariaLabel: 'Discord', icon: 'tabler:brand-discord', href: 'https://discord.gg/8hGAgFkWc' },
     { ariaLabel: 'Email', icon: 'tabler:mail', href: 'mailto:hello@technicallycreative.work' },
   ],
   footNote: 

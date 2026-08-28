@@ -1,8 +1,12 @@
+# Disabled: the site now has server-rendered routes (/login, /account,
+# /api/*) that GitHub Pages — static-file-only hosting — cannot serve. Auto-
+# deploying here would silently publish a broken duplicate site (marketing
+# pages fine, everything new 404ing) at the old Pages URL. Hosting has moved
+# to Netlify (see astro.config.ts adapter + netlify.toml). Re-enable the
+# `push` trigger below only if this site goes back to being fully static.
 name: Deploy to GitHub Pages
 
 on:
-  push:
-    branches: [master]
   workflow_dispatch:
 
 permissions:

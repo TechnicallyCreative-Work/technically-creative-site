@@ -3,6 +3,7 @@ import { fileURLToPath } from 'url';
 
 import { defineConfig } from 'astro/config';
 
+import netlify from '@astrojs/netlify';
 import sitemap from '@astrojs/sitemap';
 import tailwind from '@astrojs/tailwind';
 import mdx from '@astrojs/mdx';
@@ -23,12 +24,17 @@ const whenExternalScripts = (items: (() => AstroIntegration) | (() => AstroInteg
 
 export default defineConfig({
   output: 'static',
+  adapter: netlify(),
 
   integrations: [
     tailwind({
       applyBaseStyles: false,
     }),
-    sitemap(),
+    sitemap({
+      // Account/auth pages are noindex (see their per-page metadata) —
+      // keep them out of the sitemap too rather than submitting noindex URLs.
+      filter: (page) => !/\/(login|signup|account)\/?$/.test(page) && !page.includes('/api/'),
+    }),
     mdx(),
     icon({
       include: {

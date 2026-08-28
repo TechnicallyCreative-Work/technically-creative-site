@@ -1,0 +1,108 @@
+---
+export const prerender = false;
+
+import Layout from '~/layouts/PageLayout.astro';
+import Header from '~/components/widgets/Header.astro';
+import BrandBanner from '~/components/widgets/BrandBanner.astro';
+import Hero from '~/components/widgets/Hero.astro';
+import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
+import { getPermalink } from '~/utils/permalinks';
+import { headerData } from '~/navigation';
+
+const metadata = {
+  title: 'Sign Up — Technically Creative LLC',
+  robots: { index: false, follow: false },
+};
+---
+
+<Layout metadata={metadata}>
+  <Fragment slot="header">
+    <Header links={headerData.links} isSticky showToggleTheme />
+  </Fragment>
+  <BrandBanner />
+  <Hero tagline="Members" title="Create an Account">
+    <Fragment slot="subtitle">Sign up for free — upgrade to a paid membership any time from your account page.</Fragment
+    >
+  </Hero>
+
+  <WidgetWrapper containerClass="max-w-md mx-auto py-4 md:py-8">
+    <form id="signup-form" class="rounded-2xl border border-primary/30 bg-white/70 p-6 dark:bg-slate-900/40">
+      <div class="mb-4">
+        <label for="email" class="block text-sm font-medium text-slate-900 dark:text-white">Email</label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          required
+          autocomplete="email"
+          class="mt-1 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-slate-900"
+        />
+      </div>
+      <div class="mb-4">
+        <label for="password" class="block text-sm font-medium text-slate-900 dark:text-white">Password</label>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          required
+          minlength="8"
+          autocomplete="new-password"
+          class="mt-1 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-slate-900"
+        />
+      </div>
+      <p id="signup-error" class="mb-4 hidden text-sm text-rose-600"></p>
+      <p id="signup-success" class="mb-4 hidden text-sm text-emerald-600"></p>
+      <button
+        type="submit"
+        id="signup-submit"
+        class="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primary/90"
+      >
+        Sign up
+      </button>
+      <p class="mt-4 text-center text-sm text-muted dark:text-slate-400">
+        Already have an account? <a href={getPermalink('/login')} class="font-semibold text-primary hover:underline"
+          >Log in</a
+        >
+      </p>
+    </form>
+  </WidgetWrapper>
+</Layout>
+
+<script>
+  import { createSupabaseBrowserClient } from '~/lib/supabase-client';
+
+  const form = document.getElementById('signup-form') as HTMLFormElement;
+  const errorEl = document.getElementById('signup-error') as HTMLParagraphElement;
+  const successEl = document.getElementById('signup-success') as HTMLParagraphElement;
+  const submitBtn = document.getElementById('signup-submit') as HTMLButtonElement;
+  const supabase = createSupabaseBrowserClient();
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    errorEl.classList.add('hidden');
+    successEl.classList.add('hidden');
+
+    const formData = new FormData(form);
+    const email = String(formData.get('email') ?? '');
+    const password = String(formData.get('password') ?? '');
+
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/api/auth/callback`,
+      },
+    });
+
+    if (error) {
+      errorEl.textContent = error.message;
+      errorEl.classList.remove('hidden');
+      return;
+    }
+
+    successEl.textContent = 'Check your email to confirm your account, then log in.';
+    successEl.classList.remove('hidden');
+    form.reset();
+    submitBtn.disabled = true;
+  });
+</script>

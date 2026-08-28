@@ -1,0 +1,313 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+import Header from '~/components/widgets/Header.astro';
+import BrandBanner from '~/components/widgets/BrandBanner.astro';
+import Hero from '~/components/widgets/Hero.astro';
+import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
+import CallToAction from '~/components/widgets/CallToAction.astro';
+import { Icon } from 'astro-icon/components';
+import { getImage } from 'astro:assets';
+import { getPermalink } from '~/utils/permalinks';
+import { headerData } from '~/navigation';
+
+import abtS01Bundle from '~/assets/images/abt-s01-bundle.png';
+import abtS01M01 from '~/assets/images/abt-s01-m01.png';
+import abtS01M02 from '~/assets/images/abt-s01-m02.png';
+import abtS01M03 from '~/assets/images/abt-s01-m03.png';
+import abtS01M04 from '~/assets/images/abt-s01-m04.png';
+import abtS01M05 from '~/assets/images/abt-s01-m05.png';
+import abtS01M06 from '~/assets/images/abt-s01-m06.png';
+import storeXenomorph from '~/assets/images/store-xenomorph.png';
+import storeHorrorOwl from '~/assets/images/store-horrorowl.png';
+import storeDredd from '~/assets/images/store-dredd.png';
+import storeNatureSeries from '~/assets/images/store-nature-series.png';
+
+// Downsample all for-sale product images — served as low-res WebP previews only
+const [
+  bundlePreview, m01Preview, m02Preview, m03Preview, m04Preview, m05Preview, m06Preview,
+  xenoPreview, owlPreview, dreddPreview, naturePreview,
+] = await Promise.all([
+  getImage({ src: abtS01Bundle,    width: 800, format: 'webp', quality: 72 }),
+  getImage({ src: abtS01M01,       width: 560, format: 'webp', quality: 72 }),
+  getImage({ src: abtS01M02,       width: 560, format: 'webp', quality: 72 }),
+  getImage({ src: abtS01M03,       width: 560, format: 'webp', quality: 72 }),
+  getImage({ src: abtS01M04,       width: 560, format: 'webp', quality: 72 }),
+  getImage({ src: abtS01M05,       width: 560, format: 'webp', quality: 72 }),
+  getImage({ src: abtS01M06,       width: 560, format: 'webp', quality: 72 }),
+  getImage({ src: storeXenomorph,  width: 700, format: 'webp', quality: 72 }),
+  getImage({ src: storeHorrorOwl,  width: 700, format: 'webp', quality: 72 }),
+  getImage({ src: storeDredd,      width: 700, format: 'webp', quality: 72 }),
+  getImage({ src: storeNatureSeries, width: 700, format: 'webp', quality: 72 }),
+]);
+
+// Gallery images — add new entries to the arrays below to populate each section gallery
+import gDesk1 from '~/assets/images/desk1.jpg';
+import gDesk2 from '~/assets/images/desk2.jpg';
+import gDesk3 from '~/assets/images/desk3.jpg';
+import gAiDesk from '~/assets/images/gallery-studio-ai-desk.png';
+import gXenoMaster from '~/assets/images/gallery-xeno-master.png';
+import gXenoMaster2 from '~/assets/images/gallery-xeno-master2.png';
+import gArtprints from '~/assets/images/artprints-gallery.jpg';
+
+const galleries: Record<string, { src: string; alt: string }[]> = {
+  'ableton-training': [
+    { src: gDesk3.src, alt: 'Ableton studio setup' },
+    { src: gDesk1.src, alt: 'Studio desk setup' },
+    { src: gDesk2.src, alt: 'Studio desk side view' },
+    { src: gAiDesk.src, alt: 'AI-rendered studio desk' },
+  ],
+  'nature-series': [
+    { src: storeNatureSeries.src, alt: 'Nature series art prints panel' },
+    { src: gArtprints.src, alt: 'Physical art prints' },
+  ],
+  'dark-art': [
+    { src: storeXenomorph.src, alt: 'XENOMORPH dark sci-fi print' },
+    { src: gXenoMaster.src, alt: 'XENOMORPH master print' },
+    { src: gXenoMaster2.src, alt: 'XENOMORPH master print variant' },
+    { src: storeDredd.src, alt: 'Dredd fan art print' },
+    { src: storeHorrorOwl.src, alt: "Hoo's Watching biomechanical owl" },
+  ],
+};
+
+const metadata = {
+  title: 'Digital Products — Technically Creative LLC',
+  description: 'Ableton training modules and digital art prints — available instantly on Gumroad.',
+};
+
+const abletonModules = [
+  { id: 'ABTS01M01', label: 'Module 01', title: 'Session View & Clip View',            imgSrc: m01Preview.src },
+  { id: 'ABTS01M02', label: 'Module 02', title: 'Settings That Actually Matter',        imgSrc: m02Preview.src },
+  { id: 'ABTS01M03', label: 'Module 03', title: 'MIDI Controller Setup',                imgSrc: m03Preview.src },
+  { id: 'ABTS01M04', label: 'Module 04', title: 'Building Your Production Template',    imgSrc: m04Preview.src },
+  { id: 'ABTS01M05', label: 'Module 05', title: 'Your First Beat Using Draw Mode',      imgSrc: m05Preview.src },
+  { id: 'ABTS01M06', label: 'Module 06', title: 'Key Controls & Shortcuts Reference',   imgSrc: m06Preview.src },
+];
+
+const naturePrints = [
+  { slug: 'Mantis', name: 'Praying Mantis', price: '$8', desc: 'Nature Series single print' },
+  { slug: 'moth', name: 'Moth', price: '$8', desc: 'Nature Series single print' },
+  { slug: 'frog', name: 'Frog', price: '$8', desc: 'Nature Series single print' },
+];
+
+const darkArt = [
+  { slug: 'xeno',       name: 'XENOMORPH',      price: '$7+',  desc: 'Dark Sci-Fi Study — digital print',                  imgSrc: xenoPreview.src },
+  { slug: 'bloodskull', name: 'BloodSkull',      price: '$10+', desc: 'Digital print',                                      imgSrc: null },
+  { slug: 'DREDD-Dark', name: 'Dredd',           price: '$5+',  desc: 'Dark Sci-Fi Fan Art — digital print',                imgSrc: dreddPreview.src },
+  { slug: 'CyberOwl',   name: "Hoo's Watching",  price: '$7+',  desc: 'Biomechanical Owl — Ink & Watercolor Digital Print', imgSrc: owlPreview.src },
+];
+---
+
+<Layout metadata={metadata}>
+  <Fragment slot="header">
+    <Header
+      links={headerData.links}
+      actions={[{ text: 'Hire me', href: getPermalink('/contact#form') }]}
+      isSticky
+      showToggleTheme
+    />
+  </Fragment>
+  <BrandBanner />
+  <Hero
+    tagline="Products"
+    title="Digital Products"
+    actions={[{ variant: 'primary', text: 'Browse all on Gumroad', href: 'https://techcre8.gumroad.com' }]}
+  >
+    <Fragment slot="subtitle">
+      Ableton training modules and digital art prints, available for instant purchase and download on Gumroad. Looking
+      for local or custom work instead? Visit <a href={getPermalink('/local-services')} class="font-semibold text-primary hover:underline">Local Services</a>.
+    </Fragment>
+  </Hero>
+
+  <!-- Ableton Training -->
+  <WidgetWrapper id="ableton-training" containerClass="max-w-6xl mx-auto py-12 md:py-16">
+    <div class="flex items-center gap-3 text-primary">
+      <Icon name="tabler:device-laptop" class="h-7 w-7" />
+      <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">Ableton Training</h2>
+    </div>
+    <p class="mt-2 max-w-2xl text-muted dark:text-slate-300">Structured modules from the Ableton Basics Session 01 series — buy the full bundle or individual modules.</p>
+
+    <div class="mt-6 overflow-hidden rounded-2xl shadow-lg aspect-video w-full max-w-3xl">
+      <iframe
+        width="100%"
+        height="100%"
+        src="https://www.youtube.com/embed/PDIT1bvipnk?si=oDD2HzqEpdqKthqv"
+        title="Ableton Training — Technically Creative"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen
+        class="w-full h-full"
+      ></iframe>
+    </div>
+
+    {galleries['ableton-training'].length > 0 && (
+      <div class="mt-6 flex gap-3 overflow-x-auto pb-2">
+        {galleries['ableton-training'].map(({ src, alt }) => (
+          <div class="shrink-0 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
+            <img src={src} alt={alt} class="h-44 w-auto object-cover" loading="lazy" />
+          </div>
+        ))}
+      </div>
+    )}
+
+    <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <!-- Bundle (featured) -->
+      <a
+        href="https://techcre8.gumroad.com/l/ABTS01"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="group col-span-full flex flex-col overflow-hidden rounded-2xl border border-primary/40 bg-primary/5 transition hover:border-primary hover:shadow-lg dark:bg-primary/10 sm:col-span-2 lg:col-span-1"
+      >
+        <img src={bundlePreview.src} alt="Ableton Basics Session 01 Bundle" class="h-48 w-full object-cover pointer-events-none select-none" draggable="false" />
+        <div class="flex flex-col p-5">
+          <div class="flex items-start justify-between gap-2">
+            <span class="text-base font-bold text-slate-900 dark:text-white">Ableton Basics — Session 01</span>
+            <span class="shrink-0 rounded-full bg-primary/20 px-3 py-1 text-sm font-bold text-primary">$27</span>
+          </div>
+          <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Orientation, Template & Your First Beat — complete session bundle</p>
+          <span class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary group-hover:underline">
+            Get on Gumroad <Icon name="tabler:external-link" class="h-4 w-4" />
+          </span>
+        </div>
+      </a>
+
+      <!-- Individual modules -->
+      {abletonModules.map(({ id, label, title, imgSrc }) => (
+        <a
+          href={`https://techcre8.gumroad.com/l/${id}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group flex flex-col overflow-hidden rounded-2xl border border-dashed border-primary/30 bg-white/70 transition hover:border-primary/60 hover:shadow-md dark:bg-slate-900/40"
+        >
+          <img src={imgSrc} alt={`Ableton Basics ${label}`} class="h-36 w-full object-cover pointer-events-none select-none" draggable="false" />
+          <div class="flex flex-col p-4">
+            <div class="flex items-start justify-between gap-2">
+              <span class="font-semibold text-slate-900 dark:text-white">{label}</span>
+              <span class="shrink-0 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300">$5</span>
+            </div>
+            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{title}</p>
+            <span class="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary group-hover:underline">
+              Get on Gumroad <Icon name="tabler:external-link" class="h-3.5 w-3.5" />
+            </span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </WidgetWrapper>
+
+  <!-- Nature Series -->
+  <WidgetWrapper id="nature-series" containerClass="max-w-6xl mx-auto py-12 md:py-16">
+    <div class="flex items-center gap-3 text-primary">
+      <Icon name="tabler:leaf" class="h-7 w-7" />
+      <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">Digital Art — Nature Series</h2>
+    </div>
+    <p class="mt-2 max-w-2xl text-muted dark:text-slate-300">Original digital art prints — buy individual pieces or save with the full bundle.</p>
+
+    {galleries['nature-series'].length > 0 && (
+      <div class="mt-6 flex gap-3 overflow-x-auto pb-2">
+        {galleries['nature-series'].map(({ src, alt }) => (
+          <div class="shrink-0 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
+            <img src={src} alt={alt} class="h-44 w-auto object-cover" loading="lazy" />
+          </div>
+        ))}
+      </div>
+    )}
+
+    <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <!-- Bundle (featured) -->
+      <a
+        href="https://techcre8.gumroad.com/l/natureseriesbundle"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="group flex flex-col overflow-hidden rounded-2xl border border-primary/40 bg-primary/5 transition hover:border-primary hover:shadow-lg dark:bg-primary/10"
+      >
+        <img src={naturePreview.src} alt="Nature Series Bundle" class="h-44 w-full object-cover pointer-events-none select-none" draggable="false" />
+        <div class="flex flex-col p-4">
+          <div class="flex items-start justify-between gap-2">
+            <span class="font-bold text-slate-900 dark:text-white">Nature Series Bundle</span>
+            <span class="shrink-0 rounded-full bg-primary/20 px-2.5 py-0.5 text-xs font-bold text-primary">$20</span>
+          </div>
+          <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">All three prints — Mantis, Moth & Frog</p>
+          <span class="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary group-hover:underline">
+            Get on Gumroad <Icon name="tabler:external-link" class="h-3.5 w-3.5" />
+          </span>
+        </div>
+      </a>
+
+      {naturePrints.map(({ slug, name, price, desc }) => (
+        <a
+          href={`https://techcre8.gumroad.com/l/${slug}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group flex flex-col overflow-hidden rounded-2xl border border-dashed border-primary/30 bg-white/70 transition hover:border-primary/60 hover:shadow-md dark:bg-slate-900/40"
+        >
+          <img src={naturePreview.src} alt={name} class="h-44 w-full object-cover pointer-events-none select-none" draggable="false" />
+          <div class="flex flex-col p-4">
+            <div class="flex items-start justify-between gap-2">
+              <span class="font-semibold text-slate-900 dark:text-white">{name}</span>
+              <span class="shrink-0 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300">{price}</span>
+            </div>
+            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{desc}</p>
+            <span class="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary group-hover:underline">
+              Get on Gumroad <Icon name="tabler:external-link" class="h-3.5 w-3.5" />
+            </span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </WidgetWrapper>
+
+  <!-- Dark & Fan Art -->
+  <WidgetWrapper id="dark-art" containerClass="max-w-6xl mx-auto py-12 md:py-16">
+    <div class="flex items-center gap-3 text-primary">
+      <Icon name="tabler:skull" class="h-7 w-7" />
+      <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">Digital Art — Dark & Fan Art</h2>
+    </div>
+    <p class="mt-2 max-w-2xl text-muted dark:text-slate-300">Original and fan art digital prints — dark sci-fi, biomechanical, and ink & watercolor works.</p>
+
+    {galleries['dark-art'].length > 0 && (
+      <div class="mt-6 flex gap-3 overflow-x-auto pb-2">
+        {galleries['dark-art'].map(({ src, alt }) => (
+          <div class="shrink-0 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
+            <img src={src} alt={alt} class="h-44 w-auto object-cover" loading="lazy" />
+          </div>
+        ))}
+      </div>
+    )}
+
+    <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {darkArt.map(({ slug, name, price, desc, imgSrc }) => (
+        <a
+          href={`https://techcre8.gumroad.com/l/${slug}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group flex flex-col overflow-hidden rounded-2xl border border-dashed border-primary/30 bg-white/70 transition hover:border-primary/60 hover:shadow-md dark:bg-slate-900/40"
+        >
+          {imgSrc ? (
+            <img src={imgSrc} alt={name} class="h-44 w-full object-cover pointer-events-none select-none" draggable="false" />
+          ) : (
+            <div class="flex h-44 w-full items-center justify-center bg-slate-100 text-xs text-slate-400 dark:bg-slate-800">
+              Image coming soon
+            </div>
+          )}
+          <div class="flex flex-col p-4">
+            <div class="flex items-start justify-between gap-2">
+              <span class="font-semibold text-slate-900 dark:text-white">{name}</span>
+              <span class="shrink-0 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300">{price}</span>
+            </div>
+            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{desc}</p>
+            <span class="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary group-hover:underline">
+              Get on Gumroad <Icon name="tabler:external-link" class="h-3.5 w-3.5" />
+            </span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </WidgetWrapper>
+
+  <CallToAction
+    title="Need something custom instead?"
+    subtitle="Custom commissions, graphic design, and local/on-site work are booked through Local Services."
+    actions={[{ variant: 'primary', text: 'View Local Services', href: getPermalink('/local-services') }]}
+  />
+</Layout>

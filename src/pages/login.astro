@@ -1,0 +1,91 @@
+---
+export const prerender = false;
+
+import Layout from '~/layouts/PageLayout.astro';
+import Header from '~/components/widgets/Header.astro';
+import BrandBanner from '~/components/widgets/BrandBanner.astro';
+import Hero from '~/components/widgets/Hero.astro';
+import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
+import { getPermalink } from '~/utils/permalinks';
+import { headerData } from '~/navigation';
+
+const metadata = {
+  title: 'Log In — Technically Creative LLC',
+  robots: { index: false, follow: false },
+};
+---
+
+<Layout metadata={metadata}>
+  <Fragment slot="header">
+    <Header links={headerData.links} isSticky showToggleTheme />
+  </Fragment>
+  <BrandBanner />
+  <Hero tagline="Members" title="Log In">
+    <Fragment slot="subtitle">Sign in to your account.</Fragment>
+  </Hero>
+
+  <WidgetWrapper containerClass="max-w-md mx-auto py-4 md:py-8">
+    <form id="login-form" class="rounded-2xl border border-primary/30 bg-white/70 p-6 dark:bg-slate-900/40">
+      <div class="mb-4">
+        <label for="email" class="block text-sm font-medium text-slate-900 dark:text-white">Email</label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          required
+          autocomplete="email"
+          class="mt-1 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-slate-900"
+        />
+      </div>
+      <div class="mb-4">
+        <label for="password" class="block text-sm font-medium text-slate-900 dark:text-white">Password</label>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          required
+          autocomplete="current-password"
+          class="mt-1 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-slate-900"
+        />
+      </div>
+      <p id="login-error" class="mb-4 hidden text-sm text-rose-600"></p>
+      <button
+        type="submit"
+        class="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primary/90"
+      >
+        Log in
+      </button>
+      <p class="mt-4 text-center text-sm text-muted dark:text-slate-400">
+        No account yet? <a href={getPermalink('/signup')} class="font-semibold text-primary hover:underline">Sign up</a>
+      </p>
+    </form>
+  </WidgetWrapper>
+</Layout>
+
+<script>
+  import { createSupabaseBrowserClient } from '~/lib/supabase-client';
+
+  const form = document.getElementById('login-form') as HTMLFormElement;
+  const errorEl = document.getElementById('login-error') as HTMLParagraphElement;
+  const supabase = createSupabaseBrowserClient();
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    errorEl.classList.add('hidden');
+
+    const formData = new FormData(form);
+    const email = String(formData.get('email') ?? '');
+    const password = String(formData.get('password') ?? '');
+
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+    if (error) {
+      errorEl.textContent = error.message;
+      errorEl.classList.remove('hidden');
+      return;
+    }
+
+    const next = new URLSearchParams(window.location.search).get('next');
+    window.location.href = next && next.startsWith('/') ? next : '/account';
+  });
+</script>

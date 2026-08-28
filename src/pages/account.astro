@@ -1,0 +1,127 @@
+---
+export const prerender = false;
+
+import Layout from '~/layouts/PageLayout.astro';
+import Header from '~/components/widgets/Header.astro';
+import BrandBanner from '~/components/widgets/BrandBanner.astro';
+import Hero from '~/components/widgets/Hero.astro';
+import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
+import { Icon } from 'astro-icon/components';
+import { headerData } from '~/navigation';
+
+// Guaranteed non-null here — src/middleware.ts redirects unauthenticated
+// requests to /login before this page ever renders.
+const { user, supabase } = Astro.locals;
+
+const { data: profile } = await supabase.from('profiles').select('membership_tier').eq('id', user!.id).single();
+
+const isPaid = profile?.membership_tier === 'paid';
+const checkoutState = Astro.url.searchParams.get('checkout');
+
+const metadata = {
+  title: 'My Account — Technically Creative LLC',
+  robots: { index: false, follow: false },
+};
+---
+
+<Layout metadata={metadata}>
+  <Fragment slot="header">
+    <Header links={headerData.links} isSticky showToggleTheme />
+  </Fragment>
+  <BrandBanner />
+  <Hero tagline="Members" title="My Account">
+    <Fragment slot="subtitle">{user!.email}</Fragment>
+  </Hero>
+
+  <WidgetWrapper containerClass="max-w-md mx-auto py-4 md:py-8">
+    {
+      checkoutState === 'success' && (
+        <div class="mb-4 rounded-lg bg-emerald-500/10 px-4 py-3 text-sm text-emerald-600">
+          You're upgraded! It may take a moment for your status below to update.
+        </div>
+      )
+    }
+    {
+      checkoutState === 'cancelled' && (
+        <div class="mb-4 rounded-lg bg-slate-500/10 px-4 py-3 text-sm text-slate-600 dark:text-slate-400">
+          Checkout was cancelled — no charge was made.
+        </div>
+      )
+    }
+
+    <div class="rounded-2xl border border-primary/30 bg-white/70 p-6 dark:bg-slate-900/40">
+      <div class="flex items-center justify-between gap-2">
+        <span class="font-semibold text-slate-900 dark:text-white">Membership</span>
+        <span
+          class:list={[
+            'shrink-0 rounded-full px-3 py-1 text-xs font-bold',
+            isPaid
+              ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400'
+              : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300',
+          ]}
+        >
+          {isPaid ? 'Paid' : 'Free'}
+        </span>
+      </div>
+
+      {
+        isPaid ? (
+          <button
+            id="manage-billing-btn"
+            class="mt-5 flex w-full items-center justify-center gap-1.5 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primary/90"
+          >
+            <Icon name="tabler:credit-card" class="h-4 w-4" /> Manage billing
+          </button>
+        ) : (
+          <button
+            id="upgrade-btn"
+            class="mt-5 flex w-full items-center justify-center gap-1.5 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primary/90"
+          >
+            <Icon name="tabler:star" class="h-4 w-4" /> Upgrade to paid membership
+          </button>
+        )
+      }
+      <p id="stripe-action-error" class="mt-3 hidden text-sm text-rose-600"></p>
+
+      <form method="POST" action="/api/auth/logout" class="mt-3">
+        <button
+          type="submit"
+          class="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-gray-50 dark:border-gray-700 dark:text-slate-300 dark:hover:bg-slate-800"
+        >
+          Log out
+        </button>
+      </form>
+    </div>
+  </WidgetWrapper>
+</Layout>
+
+<script>
+  async function goToStripe(endpoint: string, button: HTMLButtonElement) {
+    const errorEl = document.getElementById('stripe-action-error') as HTMLParagraphElement;
+    errorEl.classList.add('hidden');
+    button.disabled = true;
+
+    try {
+      const res = await fetch(endpoint, { method: 'POST' });
+      const data = await res.json();
+
+      if (!res.ok || !data.url) {
+        throw new Error(data.error ?? 'Something went wrong');
+      }
+
+      window.location.href = data.url;
+    } catch (err) {
+      errorEl.textContent = err instanceof Error ? err.message : 'Something went wrong';
+      errorEl.classList.remove('hidden');
+      button.disabled = false;
+    }
+  }
+
+  document.getElementById('upgrade-btn')?.addEventListener('click', (e) => {
+    goToStripe('/api/stripe/create-checkout-session', e.currentTarget as HTMLButtonElement);
+  });
+
+  document.getElementById('manage-billing-btn')?.addEventListener('click', (e) => {
+    goToStripe('/api/stripe/create-portal-session', e.currentTarget as HTMLButtonElement);
+  });
+</script>

@@ -1,6 +1,7 @@
 # build output
 dist/
 .output/
+.netlify/
 
 # dependencies
 node_modules/
@@ -20,6 +21,8 @@ pnpm-debug.log*
 # environment variables
 .env
 .env.production
+.env.local
+.env.*.local
 clf.env
 
 # macOS-specific files

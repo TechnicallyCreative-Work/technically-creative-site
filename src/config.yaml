@@ -22,6 +22,37 @@ metadata:
   twitter:
     card: 'summary_large_image'
 
+apps:
+  blog:
+    isEnabled: true
+    postsPerPage: 9
+    isRelatedPostsEnabled: true
+    relatedPostsCount: 3
+    post:
+      isEnabled: true
+      permalink: '/news/%slug%'
+      robots:
+        index: true
+        follow: true
+    list:
+      isEnabled: true
+      pathname: 'news'
+      robots:
+        index: true
+        follow: true
+    category:
+      isEnabled: true
+      pathname: 'category'
+      robots:
+        index: true
+        follow: true
+    tag:
+      isEnabled: true
+      pathname: 'tag'
+      robots:
+        index: false
+        follow: true
+
 i18n:
   language: 'en'
   textDirection: 'ltr'
