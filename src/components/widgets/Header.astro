@@ -3,7 +3,6 @@ import { Icon } from 'astro-icon/components';
 import Logo from '~/components/Logo.astro';
 import ToggleTheme from '~/components/common/ToggleTheme.astro';
 import ToggleMenu from '~/components/common/ToggleMenu.astro';
-import Button from '~/components/ui/Button.astro';
 
 import { getHomePermalink } from '~/utils/permalinks';
 import { trimSlash, getAsset } from '~/utils/permalinks';
@@ -80,7 +79,16 @@ const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
       </a>
       {
         loginAction && (
-          <Button {...loginAction} class="ml-3 py-2 px-4 font-semibold shadow-none text-sm w-auto" />
+          <a
+            href={loginAction.href}
+            aria-label={loginAction.text}
+            class="header-nav-link relative inline-flex items-center justify-center rounded-full p-2.5 ml-2 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
+          >
+            {loginAction.icon && <Icon name={loginAction.icon} class="w-5 h-5" />}
+            <span class="nav-tooltip" role="tooltip">
+              {loginAction.text}
+            </span>
+          </a>
         )
       }
       <div class="flex items-center md:hidden">
@@ -186,9 +194,18 @@ const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
         </div>
         {
           actions?.length ? (
-            <span class="ml-4 rtl:ml-0 rtl:mr-4">
+            <span class="ml-4 rtl:ml-0 rtl:mr-4 flex items-center">
               {actions.map((btnProps) => (
-                <Button {...btnProps} class="ml-2 py-2.5 px-5.5 md:px-6 font-semibold shadow-none text-sm w-auto" />
+                <a
+                  href={btnProps.href}
+                  aria-label={btnProps.text}
+                  class="header-nav-link relative inline-flex items-center justify-center rounded-full p-2.5 ml-2 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
+                >
+                  {btnProps.icon && <Icon name={btnProps.icon} class="w-5 h-5" />}
+                  <span class="nav-tooltip" role="tooltip">
+                    {btnProps.text}
+                  </span>
+                </a>
               ))}
             </span>
           ) : (
