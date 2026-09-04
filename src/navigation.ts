@@ -43,8 +43,8 @@ export const headerData = {
       icon: 'tabler:map-pin',
     },
   ],
+  loginAction: { text: 'Log In', href: getPermalink('/login') },
   actions: [
-    { text: 'Log In', href: getPermalink('/login') },
     { text: 'Start a Project', href: getPermalink('/contact') },
   ],
 };

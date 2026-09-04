@@ -28,6 +28,7 @@ export interface Props {
   id?: string;
   links?: Array<MenuLink>;
   actions?: Array<CallToAction>;
+  loginAction?: CallToAction;
   isSticky?: boolean;
   isFullWidth?: boolean;
   showToggleTheme?: boolean;
@@ -39,6 +40,7 @@ const {
   id = 'header',
   links = [],
   actions = [],
+  loginAction,
   isSticky = false,
   isFullWidth = false,
   showToggleTheme = false,
@@ -76,6 +78,11 @@ const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
       <a class="flex items-center" href={getHomePermalink()}>
         <Logo />
       </a>
+      {
+        loginAction && (
+          <Button {...loginAction} class="ml-3 py-2 px-4 font-semibold shadow-none text-sm w-auto" />
+        )
+      }
       <div class="flex items-center md:hidden">
         <ToggleMenu />
       </div>
