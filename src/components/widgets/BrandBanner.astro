@@ -10,10 +10,10 @@ const videoId = 'brand-banner-video';
 const muteButtonId = 'brand-banner-mute-toggle';
 ---
 
-<div class="relative w-full md:w-1/2 md:mx-auto overflow-hidden bg-black">
+<div class="relative w-full overflow-hidden bg-black h-[140px] sm:h-[180px] md:h-[220px] lg:h-[260px] xl:h-[300px]">
   <video
     id={videoId}
-    class="block w-full h-auto"
+    class="absolute inset-0 h-full w-full object-cover"
     autoplay
     muted
     loop
@@ -29,6 +29,7 @@ const muteButtonId = 'brand-banner-mute-toggle';
       alt="Technically Creative circuit heads branding artwork"
       loading="lazy"
       decoding="async"
+      class="h-full w-full object-cover"
     />
   </video>
   <button
