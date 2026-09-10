@@ -22,7 +22,7 @@ const {
   <div class="flex flex-wrap justify-center -m-4 text-center">
     {
       stats &&
-        stats.map(({ amount, title, icon }) => (
+        stats.map(({ amount, title, icon, key }) => (
           <div class="p-4 md:w-1/4 sm:w-1/2 w-full min-w-[220px] text-center md:border-r md:last:border-none dark:md:border-slate-500 intersect-once motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade intersect-quarter">
             {icon && (
               <div class="flex items-center justify-center mx-auto mb-4 text-primary">
@@ -30,7 +30,10 @@ const {
               </div>
             )}
             {amount && (
-              <div class="font-heading text-primary text-[2.6rem] font-bold dark:text-white lg:text-5xl xl:text-6xl">
+              <div
+                class="font-heading text-primary text-[2.6rem] font-bold dark:text-white lg:text-5xl xl:text-6xl"
+                data-stat-key={key}
+              >
                 {amount}
               </div>
             )}

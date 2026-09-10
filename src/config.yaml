@@ -9,7 +9,7 @@ metadata:
   title:
     default: 'Technically Creative'
     template: '%s - Technically Creative'
-  description: 'Creative audio, project leadership, workflow automation, and workshops that keep your launches on schedule.'
+  description: 'PMP-certified project management, n8n workflow automation, and professional mixing/mastering for creative teams and musicians. Indianapolis-based, remote-friendly.'
   robots:
     index: true
     follow: true

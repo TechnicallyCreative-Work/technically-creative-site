@@ -11,7 +11,7 @@ import CallToAction from '~/components/widgets/CallToAction.astro';
 import stepsVisual from '~/assets/images/verticalcool.jpg';
 
 const metadata = {
-  title: 'Technically Creative - Audio / PM / Delivery',
+  title: 'Freelance Mixing & Workflow Automation | Indianapolis',
   ignoreTitleTemplate: true,
 };
 ---
@@ -185,12 +185,30 @@ const metadata = {
   <!-- Stats Widget ****************** -->
   <Stats
     stats={[
-      { title: 'Asset Downloads', amount: '120' },
-      { title: 'Projects Completed', amount: '800' },
-      { title: 'Projects in Progress', amount: '300' },
-      { title: 'Newsletter Subscribers', amount: '100' },
+      { title: 'Projects Completed', amount: '13', key: 'projects_completed' },
+      { title: 'Projects in Progress', amount: '5', key: 'projects_in_progress' },
+      { title: 'Newsletter Subscribers', amount: '20', key: 'newsletter_subscribers' },
+      { title: 'Asset Downloads', amount: '0', key: 'asset_downloads' },
     ]}
   />
+
+  <script>
+    (async () => {
+      try {
+        const res = await fetch('https://technicallycreative.app.n8n.cloud/webhook/website-stats');
+        if (!res.ok) return;
+        const stats = await res.json();
+        for (const [key, value] of Object.entries(stats)) {
+          const el = document.querySelector(`[data-stat-key="${key}"]`);
+          if (el && (typeof value === 'number' || typeof value === 'string')) {
+            el.textContent = String(value);
+          }
+        }
+      } catch {
+        // Fallback numbers already rendered — fail silently.
+      }
+    })();
+  </script>
 
   <!-- CallToAction Widget *********** -->
   <CallToAction
