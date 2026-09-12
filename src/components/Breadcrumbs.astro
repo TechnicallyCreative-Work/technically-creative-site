@@ -1,7 +1,11 @@
 ---
 import '@fontsource/orbitron/500.css';
 import '@fontsource/orbitron/700.css';
-import { trimSlash } from '~/utils/permalinks';
+import { trimSlash, CATEGORY_BASE, TAG_BASE } from '~/utils/permalinks';
+
+// Base segments like "category" and "tag" have no listing page of their own —
+// only /category/[slug] and /tag/[slug] exist — so they shouldn't render as links.
+const NON_NAVIGABLE_BASES = new Set([CATEGORY_BASE, TAG_BASE].filter(Boolean));
 
 const LABELS: Record<string, string> = {
   about: 'About',
@@ -35,6 +39,7 @@ const crumbs = segments.map((segment, i) => ({
   label: LABELS[segment] ?? humanize(segment),
   href: '/' + segments.slice(0, i + 1).join('/'),
   isLast: i === segments.length - 1,
+  isNavigable: !NON_NAVIGABLE_BASES.has(segment),
 }));
 ---
 
@@ -53,8 +58,10 @@ const crumbs = segments.map((segment, i) => ({
             <li>
               {crumb.isLast ? (
                 <span aria-current="page">{crumb.label}</span>
-              ) : (
+              ) : crumb.isNavigable ? (
                 <a href={crumb.href}>{crumb.label}</a>
+              ) : (
+                <span>{crumb.label}</span>
               )}
             </li>
           </>
