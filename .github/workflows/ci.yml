@@ -20,7 +20,7 @@ jobs:
         run: npm ci
 
       - name: Astro check
-        run: npx astro@latest check
+        run: npx astro check
 
       - name: Build
         run: npm run build
