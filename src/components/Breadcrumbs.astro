@@ -1,7 +1,7 @@
 ---
 import '@fontsource/orbitron/500.css';
 import '@fontsource/orbitron/700.css';
-import { trimSlash, CATEGORY_BASE, TAG_BASE } from '~/utils/permalinks';
+import { trimSlash, getCanonical, CATEGORY_BASE, TAG_BASE } from '~/utils/permalinks';
 
 // Base segments like "category" and "tag" have no listing page of their own —
 // only /category/[slug] and /tag/[slug] exist — so they shouldn't render as links.
@@ -41,7 +41,31 @@ const crumbs = segments.map((segment, i) => ({
   isLast: i === segments.length - 1,
   isNavigable: !NON_NAVIGABLE_BASES.has(segment),
 }));
+
+// Non-navigable crumbs (e.g. "category", "tag" base segments) have no real
+// page of their own, so they're left out of the structured data entirely
+// rather than listed with a dead link.
+const breadcrumbSchema =
+  crumbs.length > 0
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: String(getCanonical('/')) },
+          ...crumbs
+            .filter((crumb) => crumb.isNavigable || crumb.isLast)
+            .map((crumb, i) => ({
+              '@type': 'ListItem',
+              position: i + 2,
+              name: crumb.label,
+              ...(crumb.isLast ? {} : { item: String(getCanonical(crumb.href)) }),
+            })),
+        ],
+      }
+    : null;
 ---
+
+{breadcrumbSchema && <script type="application/ld+json" is:inline set:html={JSON.stringify(breadcrumbSchema)} />}
 
 {
   crumbs.length > 0 && (
