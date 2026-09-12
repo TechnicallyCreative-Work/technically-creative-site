@@ -1,0 +1,33 @@
+---
+import { SITE, METADATA } from 'astrowind:config';
+
+const siteUrl = String(SITE.site).replace(/\/$/, '') + '/';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: SITE.name,
+  url: siteUrl,
+  logo: new URL('/logo.svg', siteUrl).toString(),
+  description: METADATA?.description,
+  email: 'hello@technicallycreative.work',
+  areaServed: {
+    '@type': 'City',
+    name: 'Indianapolis, IN',
+  },
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Indianapolis',
+    addressRegion: 'IN',
+    addressCountry: 'US',
+  },
+  sameAs: [
+    'https://www.linkedin.com/company/technically-creative-llc/',
+    'https://www.instagram.com/technicallycreativellc/',
+    'https://www.facebook.com/share/19Pu1jnFMj/',
+    'https://www.youtube.com/@rootcauseriff',
+  ],
+};
+---
+
+<script type="application/ld+json" is:inline set:html={JSON.stringify(schema)} />

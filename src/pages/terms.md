@@ -1,5 +1,6 @@
 ---
 title: 'Terms and Conditions'
+description: 'The terms and conditions governing use of the Technically Creative LLC website and services.'
 layout: '~/layouts/MarkdownLayout.astro'
 ---
 

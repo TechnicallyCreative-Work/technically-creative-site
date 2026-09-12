@@ -1,5 +1,6 @@
 ---
 title: 'Privacy Policy'
+description: 'How Technically Creative LLC collects, uses, and protects your personal information when you use our website or services.'
 layout: '~/layouts/MarkdownLayout.astro'
 ---
 
