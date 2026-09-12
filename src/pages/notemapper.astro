@@ -175,7 +175,7 @@ table.fb td.slabel{font-family:'Space Mono',monospace;font-size:10px;color:var(-
   <div class="api-section" id="apiSection">
     <p>Claude AI powers note analysis. Paste your Anthropic API key — stored only in your browser, never sent anywhere except Anthropic's API.</p>
     <div class="api-row">
-      <input type="password" id="apiKeyInput" placeholder="Key saved — paste new key to update">
+      <input type="password" id="apiKeyInput" aria-label="Anthropic API key" placeholder="Key saved — paste new key to update">
       <button onclick="saveApiKey()">Save Key</button>
     </div>
     <div class="api-saved" id="apiSaved" style="display: block;">✓ Key saved — ready to use</div>
@@ -186,7 +186,7 @@ table.fb td.slabel{font-family:'Space Mono',monospace;font-size:10px;color:var(-
     <h2>Drop your .mid file here</h2>
     <p>Ableton: right-click MIDI clip → Export MIDI Clip → drag here · or click to browse</p>
   </div>
-  <input type="file" id="midiInput" accept=".mid,.midi" onchange="loadMidi(event)">
+  <input type="file" id="midiInput" aria-label="Upload a MIDI file" accept=".mid,.midi" onchange="loadMidi(event)">
 
   <div id="fileBadge" class="file-badge" style="display:none;">
     <span id="fileLabel">—</span>
@@ -195,7 +195,7 @@ table.fb td.slabel{font-family:'Space Mono',monospace;font-size:10px;color:var(-
 
   <!-- MAIN CONTROLS -->
   <div class="controls-bar">
-    <div class="cg"><label>Tuning</label>
+    <div class="cg"><label for="tuning">Tuning</label>
       <select id="tuning">
         <option value="standard">Standard (EADGBe)</option>
         <option value="dropD">Drop D (DADGBe)</option>
@@ -203,14 +203,14 @@ table.fb td.slabel{font-family:'Space Mono',monospace;font-size:10px;color:var(-
         <option value="openE">Open E</option>
       </select>
     </div>
-    <div class="cg"><label>Max fret</label>
+    <div class="cg"><label for="maxFret">Max fret</label>
       <select id="maxFret">
         <option value="12">12</option>
         <option value="17">17</option>
         <option value="24" selected="">24</option>
       </select>
     </div>
-    <div class="cg"><label>Notes/line</label>
+    <div class="cg"><label for="npl">Notes/line</label>
       <select id="npl">
         <option value="8">8</option>
         <option value="16" selected="">16</option>
@@ -223,7 +223,7 @@ table.fb td.slabel{font-family:'Space Mono',monospace;font-size:10px;color:var(-
   <!-- BPM + KEY BAR -->
   <div class="meta-bar">
     <div class="cg" style="flex-direction:column;align-items:flex-start;gap:4px;">
-      <label style="font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;color:var(--cyan);letter-spacing:1px;text-transform:uppercase;">BPM</label>
+      <label for="bpmInput" style="font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;color:var(--cyan);letter-spacing:1px;text-transform:uppercase;">BPM</label>
       <div style="display:flex;align-items:center;gap:8px;">
         <input type="number" id="bpmInput" min="20" max="300" value="120" style="width:80px;" oninput="onBpmOverride()">
         <div>
@@ -233,7 +233,7 @@ table.fb td.slabel{font-family:'Space Mono',monospace;font-size:10px;color:var(-
     </div>
     <div style="width:1px;height:48px;background:var(--border);margin:0 6px;"></div>
     <div class="cg" style="flex-direction:column;align-items:flex-start;gap:4px;">
-      <label style="font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;color:var(--mag);letter-spacing:1px;text-transform:uppercase;">Key</label>
+      <label for="keyOverride" style="font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;color:var(--mag);letter-spacing:1px;text-transform:uppercase;">Key</label>
       <div style="display:flex;align-items:center;gap:8px;">
         <select id="keyOverride" onchange="onKeyOverride()" style="border-color:var(--mborder);">
           <option value="auto">Auto-detect</option>
