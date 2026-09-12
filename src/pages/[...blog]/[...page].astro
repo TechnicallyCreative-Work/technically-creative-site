@@ -45,7 +45,8 @@ const followLinks = [
   { name: 'Instagram', handle: 'Follow', icon: 'tabler:brand-instagram', href: 'https://www.instagram.com/technicallycreativellc/', color: '#E1306C' },
   { name: 'Facebook', handle: 'Follow', icon: 'tabler:brand-facebook', href: 'https://www.facebook.com/share/19Pu1jnFMj/', color: '#1877F2' },
   { name: 'YouTube', handle: 'Subscribe', icon: 'tabler:brand-youtube', href: 'https://www.youtube.com/@rootcauseriff', color: '#FF0000' },
-  { name: 'Discord', handle: 'Join', icon: 'tabler:brand-discord', href: 'https://discord.gg/8hGAgFkWc', color: '#5865F2' },
+  // Not released yet — rendered as an inactive, grayed-out card below instead of a link.
+  { name: 'Discord', handle: 'Coming soon', icon: 'tabler:brand-discord', href: 'https://discord.gg/8hGAgFkWc', color: '#5865F2', disabled: true },
 ];
 ---
 
@@ -127,18 +128,31 @@ const followLinks = [
           <h2 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-2xl">Follow & Connect</h2>
         </div>
         <div class="mt-6 grid gap-4 grid-cols-2 sm:grid-cols-4">
-          {followLinks.map(({ name, handle, icon, href, color }) => (
-            <a
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="group flex flex-col items-center gap-2 rounded-2xl border border-primary/20 bg-white/70 p-5 text-center transition hover:border-primary hover:shadow-md dark:bg-slate-900/40"
-            >
-              <Icon name={icon} class="h-8 w-8" style={`color:${color}`} />
-              <span class="font-semibold text-slate-900 dark:text-white">{name}</span>
-              <span class="text-xs font-medium text-primary group-hover:underline">{handle}</span>
-            </a>
-          ))}
+          {followLinks.map(({ name, handle, icon, href, color, disabled }) =>
+            disabled ? (
+              <div
+                class="flex flex-col items-center gap-2 rounded-2xl border border-dashed border-primary/20 bg-white/40 p-5 text-center opacity-60 dark:bg-slate-900/20"
+                aria-disabled="true"
+              >
+                <Icon name={icon} class="h-8 w-8 text-slate-400 dark:text-slate-600" />
+                <span class="font-semibold text-slate-500 dark:text-slate-500">{name}</span>
+                <span class="inline-block w-fit rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+                  {handle}
+                </span>
+              </div>
+            ) : (
+              <a
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="group flex flex-col items-center gap-2 rounded-2xl border border-primary/20 bg-white/70 p-5 text-center transition hover:border-primary hover:shadow-md dark:bg-slate-900/40"
+              >
+                <Icon name={icon} class="h-8 w-8" style={`color:${color}`} />
+                <span class="font-semibold text-slate-900 dark:text-white">{name}</span>
+                <span class="text-xs font-medium text-primary group-hover:underline">{handle}</span>
+              </a>
+            )
+          )}
         </div>
       </WidgetWrapper>
     </>
@@ -161,11 +175,37 @@ const followLinks = [
   const form = document.getElementById('newsletter-subscribe-form') as HTMLFormElement | null;
   const message = document.getElementById('newsletter-subscribe-message');
 
-  form?.addEventListener('submit', (event) => {
+  form?.addEventListener('submit', async (event) => {
     event.preventDefault();
     if (!message) return;
-    message.textContent = "Thanks! Email sign-up isn't wired to a mailing list yet — check back soon.";
+
+    const emailInput = form.elements.namedItem('email') as HTMLInputElement | null;
+    const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement | null;
+    const email = emailInput?.value.trim();
+    if (!email) return;
+
     message.classList.remove('hidden');
-    form.reset();
+    message.textContent = 'Subscribing…';
+    if (submitButton) submitButton.disabled = true;
+
+    try {
+      const response = await fetch('/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await response.json().catch(() => ({}));
+
+      if (response.ok) {
+        message.textContent = "Thanks! You're subscribed to the newsletter.";
+        form.reset();
+      } else {
+        message.textContent = data?.error || 'Something went wrong. Please try again.';
+      }
+    } catch {
+      message.textContent = 'Something went wrong. Please try again.';
+    } finally {
+      if (submitButton) submitButton.disabled = false;
+    }
   });
 </script>
