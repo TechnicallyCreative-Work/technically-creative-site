@@ -1,5 +1,6 @@
 import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
-import type { HTMLAttributes, ImageMetadata } from 'astro/types';
+import type { HTMLAttributes, HTMLTag, ImageMetadata } from 'astro/types';
+import type { ImageProps } from '~/utils/images-optimization';
 
 export interface Post {
   /** A unique ID number that identifies a post. */
@@ -80,6 +81,8 @@ export interface MetaDataOpenGraph {
   images?: Array<MetaDataImage>;
   locale?: string;
   type?: string;
+  title?: string;
+  description?: string;
 }
 
 export interface MetaDataTwitter {
@@ -89,7 +92,7 @@ export interface MetaDataTwitter {
 }
 
 export interface Image {
-  src: string;
+  src: string | ImageMetadata;
   alt?: string;
 }
 
@@ -226,7 +229,7 @@ export interface Form {
 export interface Hero extends Omit<Headline, 'classes'>, Omit<Widget, 'isDark' | 'classes'> {
   content?: string;
   actions?: string | CallToAction[];
-  image?: string | unknown;
+  image?: string | ImageProps;
   inlineImage?: boolean;
   backgroundImage?: string;
   backgroundClass?: string;
@@ -248,6 +251,7 @@ export interface Pricing extends Omit<Headline, 'classes'>, Widget {
 export interface Testimonials extends Omit<Headline, 'classes'>, Widget {
   testimonials?: Array<Testimonial>;
   callToAction?: CallToAction;
+  isFullWidth?: boolean;
 }
 
 export interface Brands extends Omit<Headline, 'classes'>, Widget {
@@ -288,7 +292,7 @@ export interface Content extends Omit<Headline, 'classes'>, Widget {
   items?: Array<Item>;
   columns?: number;
   containerClass?: string;
-  as?: string;
+  as?: HTMLTag;
   isReversed?: boolean;
   isAfterContent?: boolean;
   callToAction?: CallToAction;
