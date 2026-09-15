@@ -84,6 +84,17 @@ const metadata = {
       }
       <p id="stripe-action-error" class="mt-3 hidden text-sm text-rose-600"></p>
 
+      {
+        isPaid && (
+          <a
+            href="/account/notemapper-saves"
+            class="mt-3 flex w-full items-center justify-center gap-1.5 rounded-lg border border-gray-200 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-gray-50 dark:border-gray-700 dark:text-slate-300 dark:hover:bg-slate-800"
+          >
+            <Icon name="tabler:music" class="h-4 w-4" /> View NoteMapper saves
+          </a>
+        )
+      }
+
       <form method="POST" action="/api/auth/logout" class="mt-3">
         <button
           type="submit"

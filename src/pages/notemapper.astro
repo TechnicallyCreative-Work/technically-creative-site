@@ -1,3 +1,42 @@
+---
+export const prerender = false;
+
+import { createSupabaseServiceRoleClient } from '~/lib/supabase-server';
+import { getOrCreateUsageRow } from '~/lib/notemapper-usage';
+
+const { user, supabase } = Astro.locals;
+
+let anonId = Astro.cookies.get('nm_uid')?.value;
+if (!anonId) {
+  anonId = crypto.randomUUID();
+  Astro.cookies.set('nm_uid', anonId, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'lax',
+    path: '/',
+    maxAge: 60 * 60 * 24 * 365,
+  });
+}
+
+let isPaidMember = false;
+if (user) {
+  const { data: profile } = await supabase.from('profiles').select('membership_tier').eq('id', user.id).single();
+  isPaidMember = profile?.membership_tier === 'paid';
+}
+
+const usageRow = await getOrCreateUsageRow(createSupabaseServiceRoleClient(), {
+  anonId,
+  userId: user?.id ?? null,
+});
+
+const notemapperState = {
+  isSignedIn: Boolean(user),
+  isPaidMember,
+  useCount: usageRow.use_count,
+  emailCaptured: Boolean(usageRow.email_captured_at),
+};
+---
+
 <!DOCTYPE html>
 <!-- aka "Notemapper" -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -160,6 +199,15 @@ table.fb td.slabel{font-family:'Space Mono',monospace;font-size:10px;color:var(-
 .api-saved{color:var(--green);font-family:'Space Mono',monospace;font-size:10px;margin-top:6px;display:none;}
 .footer{border-top:0.5px solid var(--border);padding:18px 24px;font-family:'Space Mono',monospace;font-size:10px;color:var(--tdim);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;max-width:1100px;margin:0 auto;}
 .footer a{color:var(--cyan);text-decoration:none;}
+.usage-banner{font-family:'Space Mono',monospace;font-size:11px;color:var(--amber);background:var(--adim);border:0.5px solid rgba(255,170,0,0.3);border-radius:8px;padding:9px 14px;margin-bottom:14px;}
+.gate-overlay{display:none;position:fixed;inset:0;background:rgba(7,12,24,0.85);z-index:1000;align-items:center;justify-content:center;padding:20px;}
+.gate-card{background:var(--navy2);border:0.5px solid var(--cborder);border-radius:14px;padding:28px 26px;max-width:380px;width:100%;}
+.gate-card h2{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--cyan);letter-spacing:1px;margin-bottom:10px;}
+.gate-card p{font-size:12px;color:var(--tmid);line-height:1.6;margin-bottom:16px;}
+.gate-card input[type=email]{width:100%;margin-bottom:12px;}
+.gate-card .gate-error{font-family:'Space Mono',monospace;font-size:11px;color:var(--mag);margin-top:-4px;margin-bottom:10px;display:none;}
+.ebtn-save{background:var(--gdim);border:1px solid rgba(57,255,20,0.3);color:var(--green);}
+.ebtn-save:hover{background:rgba(57,255,20,0.18);}
 </style>
 </head>
 <body>
@@ -171,6 +219,7 @@ table.fb td.slabel{font-family:'Space Mono',monospace;font-size:10px;color:var(-
     <p>TechCre8 NoteMapper · Fusing creative artistry with disciplined project execution.</p>
   </div>
   <div class="topbar-links">
+    {isPaidMember && <a href="/account/notemapper-saves">My Saves</a>}
     <a href="/tools">&larr; All Tools</a>
     <a href="https://technicallycreative.work/" target="_blank">technicallycreative.work</a>
     <a href="https://techcre8.gumroad.com/" target="_blank">Gumroad</a>
@@ -178,6 +227,8 @@ table.fb td.slabel{font-family:'Space Mono',monospace;font-size:10px;color:var(-
 </div>
 
 <div class="main">
+
+  <div class="usage-banner" id="usageBanner" style="display:none;"></div>
 
   <div class="api-section" id="apiSection">
     <p>Claude AI powers note analysis. Paste your Anthropic API key — stored only in your browser, never sent anywhere except Anthropic's API.</p>
@@ -351,6 +402,7 @@ table.fb td.slabel{font-family:'Space Mono',monospace;font-size:10px;color:var(-
       <button class="ebtn ebtn-copy" id="copyBtn2" onclick="copyTab()">⎘ Copy Tab</button>
       <button class="ebtn ebtn-dl" onclick="downloadReport()">⬇ Download Report</button>
       <button class="ebtn ebtn-drive" id="driveBtn" onclick="saveToDrive()">▲ Save to Google Drive</button>
+      <button class="ebtn ebtn-save" id="saveBtn" onclick="saveToAccount()">★ Save to My Account</button>
     </div>
     <div id="statusMsg" class="status-msg"></div>
   </div>
@@ -361,6 +413,19 @@ table.fb td.slabel{font-family:'Space Mono',monospace;font-size:10px;color:var(-
   <span>Fusing creative artistry with disciplined project execution.</span>
 </div>
 
+<div class="gate-overlay" id="emailGateModal">
+  <div class="gate-card">
+    <h2>Keep going — free</h2>
+    <p>You've used your 3 free conversions. Drop your email to keep using NoteMapper free, unlimited — no card required.</p>
+    <input type="email" id="gateEmailInput" placeholder="you@example.com">
+    <div class="gate-error" id="gateEmailError"></div>
+    <button class="btn-go" id="gateEmailSubmit" onclick="submitGateEmail()">Continue</button>
+  </div>
+</div>
+
+<script is:inline define:vars={{ notemapperState }}>
+  window.__NOTEMAPPER_STATE__ = notemapperState;
+</script>
 <script is:inline src="/notemapper/Midi.js"></script>
 <script is:inline>
 const NN=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
@@ -377,7 +442,7 @@ const KEY_PROFILES={
   minor:[6.33,2.68,3.52,5.38,2.60,3.53,2.54,4.75,3.98,2.69,3.34,3.17]
 };
 
-let parsedMidi=null,allEvents=[],selectedTrack='all',fingeringData=[],currentFileName='midi-export',aiText='';
+let parsedMidi=null,allEvents=[],selectedTrack='all',fingeringData=[],currentFileName='midi-export',aiText='',currentFileObj=null;
 let detectedBpm=120,detectedKey='Unknown',finalKey='Unknown',finalBpm=120,bpmOverridden=false,keyOverridden=false;
 
 // ── API KEY ────────────────────────────────────────────────────
@@ -391,6 +456,10 @@ function saveApiKey(){
 window.addEventListener('DOMContentLoaded',()=>{
   const k=localStorage.getItem('tc_api_key');
   if(k){document.getElementById('apiSaved').style.display='block';document.getElementById('apiKeyInput').placeholder='Key saved — paste new key to update';}
+  const state=window.__NOTEMAPPER_STATE__||{};
+  if(!state.isPaidMember&&!state.emailCaptured){
+    updateUsageBanner(Math.max(0,3-(state.useCount||0)));
+  }
 });
 
 // ── BPM DETECTION ──────────────────────────────────────────────
@@ -495,6 +564,7 @@ function clearFile(){
   document.getElementById('keyDetected').textContent='Detected after analysis';
 }
 function processMidi(file){
+  currentFileObj=file;
   currentFileName=file.name.replace(/\.midi?$/i,'');
   const r=new FileReader();
   r.onload=function(e){
@@ -523,6 +593,18 @@ async function runAnalysis(){
   document.getElementById('loadingBox').style.display='block';
   document.getElementById('result').style.display='none';
   document.getElementById('goBtn').disabled=true;
+  setMsg('Checking usage...');
+
+  const gate=await fetch('/api/notemapper/check-and-increment',{method:'POST'}).then(r=>r.json()).catch(()=>({allowed:false,reason:'network_error'}));
+  if(!gate.allowed){
+    document.getElementById('loadingBox').style.display='none';
+    document.getElementById('goBtn').disabled=false;
+    if(gate.reason==='email_required'){openEmailGateModal();}
+    else{alert('Something went wrong checking usage. Please try again.');}
+    return;
+  }
+  updateUsageBanner(gate.remaining);
+
   setMsg('Parsing MIDI tracks...');
 
   const tuning=document.getElementById('tuning').value;
@@ -874,6 +956,98 @@ function showStatus(msg,type){
   el.className='status-msg '+(type==='ok'?'st-ok':'st-err');
   el.style.display='block';
   setTimeout(()=>{el.style.display='none';},7000);
+}
+
+// ── USAGE GATE ─────────────────────────────────────────────────
+function updateUsageBanner(remaining){
+  const state=window.__NOTEMAPPER_STATE__||{};
+  const banner=document.getElementById('usageBanner');
+  if(state.isPaidMember||state.emailCaptured||remaining===undefined){
+    banner.style.display='none';
+    return;
+  }
+  banner.textContent=remaining>0?`${remaining} free conversion${remaining===1?'':'s'} left.`:'Last free conversion used.';
+  banner.style.display='block';
+}
+function openEmailGateModal(){
+  document.getElementById('emailGateModal').style.display='flex';
+}
+function closeEmailGateModal(){
+  document.getElementById('emailGateModal').style.display='none';
+}
+async function submitGateEmail(){
+  const input=document.getElementById('gateEmailInput');
+  const errEl=document.getElementById('gateEmailError');
+  const btn=document.getElementById('gateEmailSubmit');
+  const email=input.value.trim();
+  errEl.style.display='none';
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    errEl.textContent='Enter a valid email address.';
+    errEl.style.display='block';
+    return;
+  }
+  btn.disabled=true;btn.textContent='Submitting...';
+  try{
+    const resp=await fetch('/api/notemapper/capture-email',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email})
+    });
+    const data=await resp.json();
+    if(!resp.ok){throw new Error(data.error||'Something went wrong.');}
+    window.__NOTEMAPPER_STATE__=window.__NOTEMAPPER_STATE__||{};
+    window.__NOTEMAPPER_STATE__.emailCaptured=true;
+    closeEmailGateModal();
+    updateUsageBanner();
+    runAnalysis();
+  }catch(e){
+    errEl.textContent=e.message||'Something went wrong. Please try again.';
+    errEl.style.display='block';
+  }
+  btn.disabled=false;btn.textContent='Continue';
+}
+
+// ── SAVE TO ACCOUNT ───────────────────────────────────────────
+async function saveToAccount(){
+  const state=window.__NOTEMAPPER_STATE__||{};
+  if(!state.isSignedIn){
+    window.location.href='/login?next=/notemapper';
+    return;
+  }
+  if(!state.isPaidMember){
+    const btn=document.getElementById('saveBtn');
+    btn.disabled=true;btn.textContent='Redirecting...';
+    try{
+      const resp=await fetch('/api/stripe/create-checkout-session',{method:'POST'});
+      const data=await resp.json();
+      if(!resp.ok||!data.url)throw new Error(data.error||'Could not start checkout.');
+      window.location.href=data.url;
+    }catch(e){
+      showStatus(e.message||'Could not start checkout.','err');
+      btn.disabled=false;btn.textContent='★ Save to My Account';
+    }
+    return;
+  }
+  if(!currentFileObj||!allEvents.length){showStatus('Run analysis first.','err');return;}
+  const btn=document.getElementById('saveBtn');
+  btn.disabled=true;btn.textContent='Saving...';
+  try{
+    const fd=new FormData();
+    fd.append('originalFile',currentFileObj,currentFileObj.name);
+    fd.append('originalFilename',currentFileObj.name);
+    fd.append('tabText',window._tabPlain||'');
+    fd.append('fingeringDataJson',JSON.stringify(fingeringData));
+    fd.append('reportHtml',buildReportHTML());
+    fd.append('detectedKey',finalKey);
+    fd.append('detectedBpm',String(finalBpm));
+    const resp=await fetch('/api/notemapper/save',{method:'POST',body:fd});
+    const data=await resp.json();
+    if(!resp.ok)throw new Error(data.error||'Could not save your work.');
+    showStatus('✓ Saved to your account!','ok');
+  }catch(e){
+    showStatus(e.message||'Could not save your work.','err');
+  }
+  btn.disabled=false;btn.textContent='★ Save to My Account';
 }
 
 // ── LISTENERS ──────────────────────────────────────────────────

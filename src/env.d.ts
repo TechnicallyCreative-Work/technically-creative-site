@@ -25,6 +25,9 @@ declare global {
     readonly STRIPE_PRICE_ID: string;
     readonly STRIPE_WEBHOOK_SECRET: string;
     readonly PUBLIC_SITE_URL: string;
+    readonly MAILERLITE_API_KEY: string;
+    readonly MAILERLITE_GROUP_ID_NOTEMAPPER: string;
+    readonly HUBSPOT_PRIVATE_APP_TOKEN: string;
   }
 
   interface ImportMeta {
