@@ -24,10 +24,19 @@ if (user) {
   isPaidMember = profile?.membership_tier === 'paid';
 }
 
-const usageRow = await getOrCreateUsageRow(createSupabaseServiceRoleClient(), {
-  anonId,
-  userId: user?.id ?? null,
-});
+// A Supabase hiccup here (or the usage row not existing yet) shouldn't take
+// down the whole page — fall back to a fresh-visitor gate state and let the
+// client-side /api/notemapper/check-and-increment call (which hits the same
+// helper) sort out the real usage count when they actually convert a file.
+let usageRow: { use_count: number; email_captured_at: string | null } = { use_count: 0, email_captured_at: null };
+try {
+  usageRow = await getOrCreateUsageRow(createSupabaseServiceRoleClient(), {
+    anonId,
+    userId: user?.id ?? null,
+  });
+} catch (err) {
+  console.error('NoteMapper usage row lookup failed on page render:', err);
+}
 
 const notemapperState = {
   isSignedIn: Boolean(user),
