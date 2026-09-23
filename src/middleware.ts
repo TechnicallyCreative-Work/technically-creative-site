@@ -20,17 +20,20 @@ export const onRequest = defineMiddleware(async (context, next) => {
     return next();
   }
 
-  const { supabase, applyPendingHeaders } = createSupabaseServerClient(context.request, context.cookies);
-  context.locals.supabase = supabase;
-
   // getUser() revalidates the token against Supabase's auth server rather than
   // trusting whatever is in the cookie — do not swap this for getSession().
-  // Wrapped defensively: this middleware also runs while prerendering every
-  // static page at build time (and would run on every static-page request in
-  // any case where Supabase is briefly unreachable) — a network hiccup here
-  // should fall back to "signed out", not break the page.
+  // Client construction is wrapped here too, not just the getUser() call:
+  // createServerClient throws synchronously if the Supabase env vars are
+  // missing/misconfigured (e.g. not set for this Netlify deploy context),
+  // and that must not 500 every non-prerendered page site-wide — fall back
+  // to "signed out" instead, same as any other Supabase hiccup.
   let user: User | null = null;
+  let applyPendingHeaders: (response: Response) => void = () => {};
   try {
+    const { supabase, applyPendingHeaders: apply } = createSupabaseServerClient(context.request, context.cookies);
+    context.locals.supabase = supabase;
+    applyPendingHeaders = apply;
+
     const { data } = await supabase.auth.getUser();
     user = data.user;
   } catch (err) {
