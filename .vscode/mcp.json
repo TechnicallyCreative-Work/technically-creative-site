@@ -1,0 +1,59 @@
+{
+	"servers": {
+		"io.github.antohins/seo-tools-mcp-ga4": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"seo-tools-mcp-ga4@1.8.0"
+			],
+			"env": {
+				"GOOGLE_CLIENT_ID": "${input:GOOGLE_CLIENT_ID}",
+				"GOOGLE_CLIENT_SECRET": "${input:GOOGLE_CLIENT_SECRET}",
+				"GA4_REFRESH_TOKEN": "${input:GA4_REFRESH_TOKEN}",
+				"GA4_SA_JSON": "${input:GA4_SA_JSON}",
+				"GA4_PROPERTY_ID": "${input:GA4_PROPERTY_ID}",
+				"GA4_OAUTH_PORT": "${input:GA4_OAUTH_PORT}"
+			},
+			"gallery": "https://api.mcp.github.com",
+			"version": "1.8.0"
+		}
+	},
+	"inputs": [
+		{
+			"id": "GOOGLE_CLIENT_ID",
+			"type": "promptString",
+			"description": "Google OAuth client ID (Desktop app), shared with the gsc server.",
+			"password": false
+		},
+		{
+			"id": "GOOGLE_CLIENT_SECRET",
+			"type": "promptString",
+			"description": "Google OAuth client secret.",
+			"password": true
+		},
+		{
+			"id": "GA4_REFRESH_TOKEN",
+			"type": "promptString",
+			"description": "OAuth refresh token (obtained via ga4_oauth_start / ga4_oauth_finish).",
+			"password": true
+		},
+		{
+			"id": "GA4_SA_JSON",
+			"type": "promptString",
+			"description": "Path to a service-account JSON key (alternative to OAuth).",
+			"password": false
+		},
+		{
+			"id": "GA4_PROPERTY_ID",
+			"type": "promptString",
+			"description": "Default GA4 property id (numeric, e.g. 123456789).",
+			"password": false
+		},
+		{
+			"id": "GA4_OAUTH_PORT",
+			"type": "promptString",
+			"description": "Loopback port for the OAuth flow (default 8586).",
+			"password": false
+		}
+	]
+}
