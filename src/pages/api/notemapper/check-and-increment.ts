@@ -2,7 +2,7 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { createSupabaseServiceRoleClient } from '~/lib/supabase-server';
-import { getOrCreateUsageRow } from '~/lib/notemapper-usage';
+import { getOrCreateUsageRow, type NotemapperUsageRow } from '~/lib/notemapper-usage';
 
 const FREE_USES = 3;
 
@@ -22,7 +22,13 @@ export const POST: APIRoute = async ({ cookies, locals }) => {
     isPaidMember = profile?.membership_tier === 'paid';
   }
 
-  const row = await getOrCreateUsageRow(service, { anonId, userId: user?.id ?? null });
+  let row: NotemapperUsageRow;
+  try {
+    row = await getOrCreateUsageRow(service, { anonId, userId: user?.id ?? null });
+  } catch (err) {
+    console.error('NoteMapper usage row lookup failed:', err);
+    return new Response(JSON.stringify({ error: 'Something went wrong. Please try again later.' }), { status: 500 });
+  }
 
   // Paying members and anyone who's already captured an email get unlimited
   // use — still counted for analytics, but never blocked.
