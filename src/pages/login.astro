@@ -68,11 +68,27 @@ const metadata = {
 
   const form = document.getElementById('login-form') as HTMLFormElement;
   const errorEl = document.getElementById('login-error') as HTMLParagraphElement;
-  const supabase = createSupabaseBrowserClient();
+
+  // Constructed defensively: if this throws (e.g. Supabase env vars missing
+  // at build time), the addEventListener below must still run so the form
+  // shows a real error instead of silently falling back to a native GET
+  // submit that just reloads the page with no explanation.
+  let supabase: ReturnType<typeof createSupabaseBrowserClient> | null = null;
+  try {
+    supabase = createSupabaseBrowserClient();
+  } catch (err) {
+    console.error('Failed to initialize Supabase client', err);
+  }
 
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     errorEl.classList.add('hidden');
+
+    if (!supabase) {
+      errorEl.textContent = 'Sign-in is temporarily unavailable. Please try again shortly.';
+      errorEl.classList.remove('hidden');
+      return;
+    }
 
     const formData = new FormData(form);
     const email = String(formData.get('email') ?? '');
