@@ -109,7 +109,8 @@ export const footerData = {
     { ariaLabel: 'Instagram', icon: 'tabler:brand-instagram', href: 'https://www.instagram.com/technicallycreativellc/' },
     { ariaLabel: 'Facebook', icon: 'tabler:brand-facebook', href: 'https://www.facebook.com/share/19Pu1jnFMj/' },
     { ariaLabel: 'YouTube', icon: 'tabler:brand-youtube', href: 'https://www.youtube.com/@rootcauseriff' },
-    { ariaLabel: 'Discord', icon: 'tabler:brand-discord', href: DISCORD_INVITE_URL },
+    // Discord intentionally left off the public footer — it's a paid-member
+    // perk, surfaced only on /account once membership_tier === 'paid'.
     { ariaLabel: 'Email', icon: 'tabler:mail', href: 'mailto:hello@technicallycreative.work' },
   ],
   footNote: 
