@@ -1,4 +1,4 @@
-import { getPermalink, getBlogPermalink, getAsset } from './utils/permalinks';
+import { getPermalink, getBlogPermalink } from './utils/permalinks';
 
 // Shared with the gated "Join the Discord" link on /account — keep in sync
 // if the invite is ever rotated.
