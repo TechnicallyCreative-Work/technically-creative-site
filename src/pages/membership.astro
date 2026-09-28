@@ -1,0 +1,241 @@
+---
+export const prerender = false;
+
+import Layout from '~/layouts/PageLayout.astro';
+import Header from '~/components/widgets/Header.astro';
+import BrandBanner from '~/components/widgets/BrandBanner.astro';
+import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
+import Headline from '~/components/ui/Headline.astro';
+import Button from '~/components/ui/Button.astro';
+import { Icon } from 'astro-icon/components';
+import { getPermalink } from '~/utils/permalinks';
+import { headerData } from '~/navigation';
+
+const { user, supabase } = Astro.locals;
+
+let isPaidMember = false;
+if (user) {
+  const { data: profile } = await supabase.from('profiles').select('membership_tier').eq('id', user.id).single();
+  isPaidMember = profile?.membership_tier === 'paid';
+}
+
+const metadata = {
+  title: 'Membership — Technically Creative LLC',
+  description:
+    'Free unlimited access to TechCre8 tools with just an email, or go Member for Discord, the podcast, and more.',
+};
+---
+
+<Layout metadata={metadata}>
+  <Fragment slot="header">
+    <Header links={headerData.links} isSticky showToggleTheme />
+  </Fragment>
+  <BrandBanner />
+
+  <WidgetWrapper containerClass="max-w-6xl mx-auto py-8 md:py-12">
+    <Headline
+      title="Pick your tier"
+      subtitle="Start free with just an email, or go Member for Discord, the podcast, and everything else below."
+    />
+
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+      <!-- Free tier -->
+      <div
+        class="flex flex-col rounded-2xl border border-gray-200 bg-white/70 p-6 dark:border-gray-700 dark:bg-slate-900/40"
+      >
+        <h3 class="text-center text-xl font-semibold uppercase tracking-wider">Free</h3>
+        <p class="mt-1 text-center font-light text-gray-600 dark:text-slate-400">Newsletter</p>
+        <div class="my-6 text-center">
+          <span class="text-5xl font-extrabold">$0</span>
+          <div class="text-sm lowercase text-gray-600 dark:text-slate-400">forever</div>
+        </div>
+        <ul class="mb-6 flex-1 space-y-2 text-left text-sm">
+          <li class="flex items-start gap-2">
+            <Icon name="tabler:check" class="mt-0.5 h-4 w-4 shrink-0 text-primary" /> Unlimited NoteMapper conversions
+          </li>
+          <li class="flex items-start gap-2">
+            <Icon name="tabler:check" class="mt-0.5 h-4 w-4 shrink-0 text-primary" /> Unlimited access to future free tools
+          </li>
+          <li class="flex items-start gap-2">
+            <Icon name="tabler:check" class="mt-0.5 h-4 w-4 shrink-0 text-primary" /> Monthly newsletter
+          </li>
+        </ul>
+
+        <form id="free-tier-form" class="mt-auto">
+          <label for="free-tier-email" class="sr-only">Email</label>
+          <input
+            id="free-tier-email"
+            name="email"
+            type="email"
+            required
+            autocomplete="email"
+            placeholder="you@example.com"
+            class="mb-2 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-slate-900"
+          />
+          <button
+            type="submit"
+            id="free-tier-submit"
+            class="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primary/90"
+          >
+            Get unlimited access
+          </button>
+          <p id="free-tier-error" class="mt-2 hidden text-xs text-rose-600"></p>
+          <p id="free-tier-success" class="mt-2 hidden text-xs text-emerald-600">
+            ✓ You're set — unlimited access unlocked.
+          </p>
+        </form>
+      </div>
+
+      <!-- Member tier -->
+      <div class="relative flex flex-col rounded-2xl border-2 border-primary bg-white/70 p-6 dark:bg-slate-900/40">
+        <span
+          class="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-1 text-xs font-bold uppercase tracking-wide text-white"
+        >
+          Most Popular
+        </span>
+        <h3 class="text-center text-xl font-semibold uppercase tracking-wider">Member</h3>
+        <p class="mt-1 text-center font-light text-gray-600 dark:text-slate-400">Full access</p>
+        <div class="my-6 text-center">
+          <span class="text-5xl font-extrabold">$5</span>
+          <div class="text-sm lowercase text-gray-600 dark:text-slate-400">/ month</div>
+        </div>
+        <ul class="mb-6 flex-1 space-y-2 text-left text-sm">
+          <li class="flex items-start gap-2">
+            <Icon name="tabler:check" class="mt-0.5 h-4 w-4 shrink-0 text-primary" /> Everything in Free
+          </li>
+          <li class="flex items-start gap-2">
+            <Icon name="tabler:check" class="mt-0.5 h-4 w-4 shrink-0 text-primary" /> Discord community access
+          </li>
+          <li class="flex items-start gap-2">
+            <Icon name="tabler:check" class="mt-0.5 h-4 w-4 shrink-0 text-primary" /> Podcast guest signup (via Discord)
+          </li>
+          <li class="flex items-start gap-2">
+            <Icon name="tabler:check" class="mt-0.5 h-4 w-4 shrink-0 text-primary" /> Exclusive videos & discounts
+          </li>
+        </ul>
+
+        {
+          isPaidMember ? (
+            <a
+              href="/account"
+              class="flex w-full items-center justify-center gap-1.5 rounded-lg bg-emerald-500/15 px-4 py-2.5 text-sm font-semibold text-emerald-600 dark:text-emerald-400"
+            >
+              <Icon name="tabler:check" class="h-4 w-4" /> You're a Member
+            </a>
+          ) : user ? (
+            <>
+              <button
+                id="member-upgrade-btn"
+                class="flex w-full items-center justify-center gap-1.5 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primary/90"
+              >
+                <Icon name="tabler:star" class="h-4 w-4" /> Upgrade — $5/mo
+              </button>
+              <p id="member-upgrade-error" class="mt-2 hidden text-xs text-rose-600" />
+            </>
+          ) : (
+            <Button variant="primary" href={getPermalink('/signup')} class="w-full justify-center">
+              Create Account
+            </Button>
+          )
+        }
+      </div>
+
+      <!-- Premier tier (placeholder) -->
+      <div
+        class="flex flex-col rounded-2xl border border-gray-200 bg-white/40 p-6 opacity-60 dark:border-gray-700 dark:bg-slate-900/20"
+      >
+        <h3 class="text-center text-xl font-semibold uppercase tracking-wider">Premier</h3>
+        <p class="mt-1 text-center font-light text-gray-600 dark:text-slate-400">Studio access</p>
+        <div class="my-6 text-center">
+          <span class="text-3xl font-extrabold">Coming Soon</span>
+        </div>
+        <ul class="mb-6 flex-1 space-y-2 text-left text-sm">
+          <li class="flex items-start gap-2">
+            <Icon name="tabler:check" class="mt-0.5 h-4 w-4 shrink-0 text-muted" /> Everything in Member
+          </li>
+          <li class="flex items-start gap-2">
+            <Icon name="tabler:check" class="mt-0.5 h-4 w-4 shrink-0 text-muted" /> Podcast studio / practice space access
+          </li>
+          <li class="flex items-start gap-2">
+            <Icon name="tabler:check" class="mt-0.5 h-4 w-4 shrink-0 text-muted" /> Limited availability
+          </li>
+        </ul>
+        <button
+          disabled
+          class="w-full cursor-not-allowed rounded-lg border border-gray-200 px-4 py-2.5 text-sm font-semibold text-muted dark:border-gray-700"
+        >
+          Coming Soon
+        </button>
+      </div>
+    </div>
+  </WidgetWrapper>
+</Layout>
+
+<script>
+  const form = document.getElementById('free-tier-form') as HTMLFormElement | null;
+  const errorEl = document.getElementById('free-tier-error') as HTMLParagraphElement | null;
+  const successEl = document.getElementById('free-tier-success') as HTMLParagraphElement | null;
+  const submitBtn = document.getElementById('free-tier-submit') as HTMLButtonElement | null;
+
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    errorEl?.classList.add('hidden');
+    successEl?.classList.add('hidden');
+    if (submitBtn) submitBtn.disabled = true;
+
+    const email = String(new FormData(form).get('email') ?? '');
+
+    try {
+      const res = await fetch('/api/notemapper/capture-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error ?? 'Something went wrong.');
+      }
+
+      // Best-effort general newsletter subscribe alongside the notemapper-gate
+      // capture above — the gate write is what actually unlocks the tool, so a
+      // hiccup here shouldn't surface as an error to the visitor.
+      fetch('/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      }).catch(() => {});
+
+      successEl?.classList.remove('hidden');
+      form.reset();
+    } catch (err) {
+      if (errorEl) {
+        errorEl.textContent = err instanceof Error ? err.message : 'Something went wrong.';
+        errorEl.classList.remove('hidden');
+      }
+      if (submitBtn) submitBtn.disabled = false;
+    }
+  });
+
+  document.getElementById('member-upgrade-btn')?.addEventListener('click', async (e) => {
+    const button = e.currentTarget as HTMLButtonElement;
+    const errorEl = document.getElementById('member-upgrade-error') as HTMLParagraphElement;
+    errorEl.classList.add('hidden');
+    button.disabled = true;
+
+    try {
+      const res = await fetch('/api/stripe/create-checkout-session', { method: 'POST' });
+      const data = await res.json();
+
+      if (!res.ok || !data.url) {
+        throw new Error(data.error ?? 'Something went wrong');
+      }
+
+      window.location.href = data.url;
+    } catch (err) {
+      errorEl.textContent = err instanceof Error ? err.message : 'Something went wrong';
+      errorEl.classList.remove('hidden');
+      button.disabled = false;
+    }
+  });
+</script>

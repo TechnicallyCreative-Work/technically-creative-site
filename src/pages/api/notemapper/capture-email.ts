@@ -22,10 +22,11 @@ export const POST: APIRoute = async ({ request, cookies, locals }) => {
   }
 
   const { user } = locals;
-  const service = createSupabaseServiceRoleClient();
 
+  let service: ReturnType<typeof createSupabaseServiceRoleClient>;
   let row: NotemapperUsageRow;
   try {
+    service = createSupabaseServiceRoleClient();
     row = await getOrCreateUsageRow(service, { anonId, userId: user?.id ?? null });
   } catch (err) {
     console.error('NoteMapper usage row lookup failed:', err);
