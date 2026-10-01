@@ -3,6 +3,8 @@ export const prerender = false;
 
 import { createSupabaseServiceRoleClient } from '~/lib/supabase-server';
 import { getOrCreateUsageRow } from '~/lib/notemapper-usage';
+import { headerData } from '~/navigation';
+import tcLogoIcon from '~/assets/images/tc-logo-icon.png';
 
 const { user, supabase } = Astro.locals;
 
@@ -81,11 +83,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 }
 html,body{min-height:100%;background:var(--navy);color:var(--text);font-family:'Exo 2',sans-serif;}
 body{padding:0;margin:0;}
-.topbar{background:var(--navy2);border-bottom:1px solid var(--cborder);padding:14px 28px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100;}
-.logo{width:40px;height:40px;border:1.5px solid var(--cyan);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:var(--cyan);flex-shrink:0;}
+.topbar{background:var(--navy2);border-bottom:1px solid var(--cborder);padding:14px 28px;display:flex;flex-wrap:wrap;align-items:center;gap:14px;position:sticky;top:0;z-index:100;}
+.logo{width:40px;height:40px;border:1.5px solid var(--cyan);border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;}
+.logo img{width:100%;height:100%;object-fit:cover;}
 .topbar-title h1{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--cyan);letter-spacing:3px;text-transform:uppercase;}
 .topbar-title p{font-size:10px;color:var(--tdim);font-family:'Space Mono',monospace;margin-top:1px;}
-.topbar-links{margin-left:auto;display:flex;gap:10px;align-items:center;}
+.topbar-links{margin-left:auto;display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
 .topbar-links a{font-family:'Space Mono',monospace;font-size:10px;color:var(--tdim);text-decoration:none;padding:5px 10px;border:0.5px solid var(--border);border-radius:5px;transition:all .2s;}
 .topbar-links a:hover{color:var(--cyan);border-color:var(--cyan);}
 .main{max-width:1100px;margin:0 auto;padding:28px 24px 60px;}
@@ -218,15 +221,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 
 <div class="topbar">
-  <div class="logo">TC</div>
+  <a href="/" class="logo"><img src={tcLogoIcon.src} width="40" height="40" alt="Technically Creative" /></a>
   <div class="topbar-title">
     <h1>MIDI → Tab</h1>
     <p>TechCre8 NoteMapper · Fusing creative artistry with disciplined project execution.</p>
   </div>
   <div class="topbar-links">
     {isPaidMember && <a href="/account/notemapper-saves">My Saves</a>}
-    <a href="/tools">&larr; All Tools</a>
-    <a href="https://technicallycreative.work/" target="_blank">technicallycreative.work</a>
+    {headerData.links.map((link) => <a href={link.href}>{link.text}</a>)}
     <a href="https://techcre8.gumroad.com/" target="_blank">Gumroad</a>
   </div>
 </div>
