@@ -1,4 +1,8 @@
-import { getPermalink, getBlogPermalink, getAsset } from './utils/permalinks';
+import { getPermalink, getBlogPermalink } from './utils/permalinks';
+
+// Shared with the gated "Join the Discord" link on /account — keep in sync
+// if the invite is ever rotated.
+export const DISCORD_INVITE_URL = 'https://discord.gg/8hGAgFkWc';
 
 export const headerData = {
   links: [
@@ -21,6 +25,11 @@ export const headerData = {
       text: 'Tools',
       href: getPermalink('/tools'),
       icon: 'tabler:tool',
+    },
+    {
+      text: 'Membership',
+      href: getPermalink('/membership'),
+      icon: 'tabler:star',
     },
     {
       text: 'News',
@@ -100,7 +109,8 @@ export const footerData = {
     { ariaLabel: 'Instagram', icon: 'tabler:brand-instagram', href: 'https://www.instagram.com/technicallycreativellc/' },
     { ariaLabel: 'Facebook', icon: 'tabler:brand-facebook', href: 'https://www.facebook.com/share/19Pu1jnFMj/' },
     { ariaLabel: 'YouTube', icon: 'tabler:brand-youtube', href: 'https://www.youtube.com/@rootcauseriff' },
-    { ariaLabel: 'Discord', icon: 'tabler:brand-discord', href: 'https://discord.gg/8hGAgFkWc' },
+    // Discord intentionally left off the public footer — it's a paid-member
+    // perk, surfaced only on /account once membership_tier === 'paid'.
     { ariaLabel: 'Email', icon: 'tabler:mail', href: 'mailto:hello@technicallycreative.work' },
   ],
   footNote: 

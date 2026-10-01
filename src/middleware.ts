@@ -20,6 +20,20 @@ export const onRequest = defineMiddleware(async (context, next) => {
     return next();
   }
 
+  // Anonymous visitor id for the free-tier usage gate (NoteMapper today, other
+  // free tools later) — set here rather than per-page so a visitor who signs
+  // up from /membership (or anywhere else) is the same tracked visitor as one
+  // who hits the gate directly on /notemapper.
+  if (!context.cookies.get('nm_uid')?.value) {
+    context.cookies.set('nm_uid', crypto.randomUUID(), {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 365,
+    });
+  }
+
   // getUser() revalidates the token against Supabase's auth server rather than
   // trusting whatever is in the cookie — do not swap this for getSession().
   // Client construction is wrapped here too, not just the getUser() call:

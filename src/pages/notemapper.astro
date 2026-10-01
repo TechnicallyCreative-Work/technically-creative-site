@@ -6,17 +6,8 @@ import { getOrCreateUsageRow } from '~/lib/notemapper-usage';
 
 const { user, supabase } = Astro.locals;
 
-let anonId = Astro.cookies.get('nm_uid')?.value;
-if (!anonId) {
-  anonId = crypto.randomUUID();
-  Astro.cookies.set('nm_uid', anonId, {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'lax',
-    path: '/',
-    maxAge: 60 * 60 * 24 * 365,
-  });
-}
+// middleware.ts sets this on every non-prerendered request — guaranteed present here.
+const anonId = Astro.cookies.get('nm_uid')!.value;
 
 let isPaidMember = false;
 if (user) {
