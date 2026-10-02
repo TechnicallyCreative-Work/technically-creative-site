@@ -1,0 +1,1124 @@
+---
+// Tape — ambient notification ticker. Standalone full-viewport app (no site
+// header/footer). Data is mocked client-side; see the <script> for state,
+// rule evaluation and rendering. Settings + rules persist in localStorage.
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Tape</title>
+    <link rel="manifest" href="/tape/manifest.webmanifest" />
+    <link rel="icon" href="/tape/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/tape/icon-192.png" />
+    <meta name="theme-color" content="#0a0b0d" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+    />
+  </head>
+  <body>
+    <div id="tape-root"></div>
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --bg: #0a0b0d;
+    --panel: #121418;
+    --line: #242932;
+    --fg: #f2f0e8;
+    --mute: #98a0ae;
+    --acc: #ffb000;
+  }
+  html,
+  body {
+    margin: 0;
+    height: 100%;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'IBM Plex Sans', sans-serif;
+  }
+  #tape-root {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    overflow: hidden;
+  }
+  #tape-root button {
+    font-family: inherit;
+    color: inherit;
+  }
+  #tape-root button:hover {
+    opacity: 0.85;
+  }
+  #tape-root input[type='range'] {
+    accent-color: var(--acc);
+    width: 100%;
+  }
+  .t-mono {
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .t-label {
+    font: 600 11px 'IBM Plex Mono', monospace;
+    letter-spacing: 0.16em;
+    color: var(--mute);
+  }
+  .t-nav {
+    width: 84px;
+    flex: none;
+    border-right: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0;
+    gap: 6px;
+  }
+  .t-nav .brand {
+    font: 600 15px 'IBM Plex Mono', monospace;
+    letter-spacing: 0.14em;
+    color: var(--acc);
+    margin-bottom: 18px;
+  }
+  .t-nav button {
+    width: 64px;
+    padding: 10px 0;
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+    background: transparent;
+    color: var(--mute);
+    font: 500 11px 'IBM Plex Mono', monospace;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .t-nav button.on {
+    background: var(--panel);
+    color: var(--acc);
+  }
+  .t-nav .live {
+    margin-top: auto;
+    font: 400 11px 'IBM Plex Mono', monospace;
+    color: var(--mute);
+    text-align: center;
+    line-height: 1.5;
+  }
+  .t-nav .live i {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #3ec28f;
+    margin-right: 4px;
+  }
+  .t-main {
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .t-head {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 28px;
+    border-bottom: 1px solid var(--line);
+    flex: none;
+    min-width: 0;
+  }
+  .t-head h1 {
+    font: 600 20px 'IBM Plex Sans', sans-serif;
+    margin: 0 auto 0 0;
+    white-space: nowrap;
+  }
+  .t-head h1 small {
+    font: 400 13px 'IBM Plex Mono', monospace;
+    color: var(--mute);
+    margin-left: 10px;
+  }
+  .t-sub {
+    font: 400 13px 'IBM Plex Sans', sans-serif;
+    color: var(--mute);
+    margin-top: 4px;
+  }
+  .t-seg {
+    display: flex;
+    gap: 4px;
+    padding: 3px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+  }
+  .t-seg button {
+    border: 0;
+    border-radius: 7px;
+    padding: 8px 14px;
+    cursor: pointer;
+    background: transparent;
+    color: var(--mute);
+    font: 500 12px 'IBM Plex Mono', monospace;
+    letter-spacing: 0.04em;
+  }
+  .t-seg button.on {
+    background: var(--acc);
+    color: var(--bg);
+  }
+  .t-outline {
+    border: 1px solid var(--acc);
+    background: transparent;
+    color: var(--acc) !important;
+    border-radius: 8px;
+    padding: 9px 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    font: 500 12px 'IBM Plex Mono', monospace;
+  }
+  .t-stage {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .t-hint {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--mute);
+    font: 400 13px 'IBM Plex Mono', monospace;
+    padding: 30px;
+    text-align: center;
+    line-height: 1.7;
+  }
+  .t-bar {
+    display: flex;
+    align-items: stretch;
+    border-top: 1px solid var(--line);
+    background: var(--panel);
+    flex: none;
+  }
+  .t-vip {
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    padding: 0 24px;
+    border-right: 2px solid var(--acc);
+    max-width: 34%;
+    overflow: hidden;
+  }
+  .t-vip .label {
+    font: 600 11px 'IBM Plex Mono', monospace;
+    letter-spacing: 0.16em;
+    color: var(--acc);
+  }
+  .t-track-wrap {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .t-track {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    will-change: transform;
+  }
+  .t-fade {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    pointer-events: none;
+  }
+  .t-fade.l {
+    left: 0;
+    width: 48px;
+    background: linear-gradient(90deg, var(--panel), transparent);
+  }
+  .t-fade.r {
+    right: 0;
+    width: 72px;
+    background: linear-gradient(270deg, var(--panel), transparent);
+  }
+  .t-item {
+    all: unset;
+    cursor: pointer;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .t-item .dot {
+    border-radius: 3px;
+    align-self: center;
+    flex: none;
+  }
+  .t-item .s {
+    font-weight: 600;
+  }
+  .t-item .p {
+    font-weight: 400;
+    color: var(--mute);
+  }
+  .t-item .src {
+    font: 500 14px 'IBM Plex Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+  .t-ell {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .t-panel {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  }
+  .t-panel section,
+  .t-panel aside {
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 0;
+  }
+  .t-panel section {
+    border-right: 1px solid var(--line);
+  }
+  .t-panel aside {
+    overflow: auto;
+  }
+  .t-card {
+    all: unset;
+    cursor: pointer;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 16px 24px;
+    border-radius: 14px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-left-width: 6px;
+    transition: all 0.6s ease;
+  }
+  .t-card .meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font: 500 12px 'IBM Plex Mono', monospace;
+    letter-spacing: 0.06em;
+  }
+  .t-card .meta span {
+    margin-left: auto;
+    color: var(--mute);
+  }
+  .t-card .snd {
+    font-weight: 600;
+    line-height: 1.1;
+  }
+  .t-card .prv {
+    color: var(--mute);
+    line-height: 1.35;
+  }
+  .t-vipcard {
+    all: unset;
+    cursor: pointer;
+    box-sizing: border-box;
+    padding: 16px 18px;
+    border-radius: 12px;
+    border: 1px solid var(--acc);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .t-vipcard .snd {
+    font: 600 22px 'IBM Plex Sans', sans-serif;
+  }
+  .t-vipcard .prv {
+    font: 400 15px/1.35 'IBM Plex Sans', sans-serif;
+    color: var(--mute);
+  }
+  .t-vipcard .meta {
+    font: 500 11px 'IBM Plex Mono', monospace;
+    margin-top: 4px;
+  }
+  .t-calm {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+    padding: 30px;
+    text-align: center;
+  }
+  .t-calm .num {
+    font: 500 220px/1 'IBM Plex Mono', monospace;
+  }
+  .t-calm .cap {
+    font: 400 16px 'IBM Plex Mono', monospace;
+    color: var(--mute);
+    letter-spacing: 0.1em;
+  }
+  .t-calm .vipbtn {
+    all: unset;
+    cursor: pointer;
+    max-width: 760px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    align-items: center;
+  }
+  .t-calm .pill {
+    font: 400 12px 'IBM Plex Mono', monospace;
+    color: var(--mute);
+    border: 1px solid var(--line);
+    padding: 6px 12px;
+    border-radius: 99px;
+    margin-top: 10px;
+  }
+  .t-page {
+    flex: 1;
+    overflow: auto;
+    padding: 28px;
+  }
+  .t-rules {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: 32px;
+    align-content: start;
+  }
+  .t-col {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+  }
+  .t-rule {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--panel);
+  }
+  .t-rule.off {
+    opacity: 0.5;
+  }
+  .t-badge {
+    font: 600 10px 'IBM Plex Mono', monospace;
+    letter-spacing: 0.1em;
+    padding: 4px 8px;
+    border-radius: 5px;
+    background: var(--acc);
+    color: var(--bg);
+    flex: none;
+  }
+  .t-badge.mute {
+    background: var(--line);
+    color: var(--mute);
+  }
+  .t-rule .txt {
+    font: 500 15px 'IBM Plex Sans', sans-serif;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .t-rule .txt em {
+    font-style: normal;
+    color: var(--mute);
+  }
+  .t-sw {
+    border: 0;
+    cursor: pointer;
+    background: var(--line);
+    position: relative;
+    flex: none;
+    width: 40px;
+    height: 22px;
+    border-radius: 11px;
+  }
+  .t-sw i {
+    position: absolute;
+    top: 3px;
+    left: 4px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--bg);
+    transition: left 0.2s;
+  }
+  .t-sw.on {
+    background: var(--acc);
+  }
+  .t-sw.on i {
+    left: 20px;
+  }
+  .t-sw.lg {
+    width: 44px;
+    height: 24px;
+    border-radius: 12px;
+  }
+  .t-sw.lg i {
+    top: 4px;
+  }
+  .t-sw.lg.on i {
+    left: 24px;
+  }
+  .t-x {
+    border: 0;
+    background: transparent;
+    color: var(--mute) !important;
+    cursor: pointer;
+    font: 400 18px sans-serif;
+  }
+  .t-x:hover {
+    color: var(--fg) !important;
+  }
+  .t-new {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px;
+    border: 1px dashed var(--line);
+    border-radius: 14px;
+    align-self: start;
+  }
+  .t-kind {
+    text-align: left;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 1px solid var(--line);
+    background: transparent;
+    font: 500 13px 'IBM Plex Sans', sans-serif;
+  }
+  .t-kind.on {
+    border-color: var(--acc);
+  }
+  .t-kind small {
+    display: block;
+    font: 400 12px 'IBM Plex Sans', sans-serif;
+    color: var(--mute);
+    margin-top: 2px;
+  }
+  .t-input {
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--fg);
+    font: 400 15px 'IBM Plex Sans', sans-serif;
+    outline: none;
+  }
+  .t-input:focus-visible {
+    border-color: var(--acc);
+  }
+  .t-add {
+    padding: 12px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--acc);
+    color: var(--bg) !important;
+    font: 600 13px 'IBM Plex Mono', monospace;
+    cursor: pointer;
+    letter-spacing: 0.06em;
+  }
+  .t-sources {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    align-content: start;
+  }
+  .t-src {
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--panel);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .t-src.off {
+    opacity: 0.6;
+  }
+  .t-src .ico {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    color: #0a0b0d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font: 600 16px 'IBM Plex Mono', monospace;
+  }
+  .t-src .nm {
+    font: 600 16px 'IBM Plex Sans', sans-serif;
+  }
+  .t-src .st {
+    font: 400 12px 'IBM Plex Mono', monospace;
+    color: var(--mute);
+    margin-top: 2px;
+  }
+  .t-src button {
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--mute);
+    font: 500 12px 'IBM Plex Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+  .t-src.off button {
+    background: var(--acc);
+    border-color: var(--acc);
+    color: var(--bg);
+  }
+  .t-settings {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    max-width: 720px;
+  }
+  .t-opts {
+    display: flex;
+    gap: 8px;
+  }
+  .t-opts button {
+    flex: 1;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--mute);
+    font: 500 13px 'IBM Plex Mono', monospace;
+  }
+  .t-opts button.on {
+    background: var(--acc);
+    border-color: var(--acc);
+    color: var(--bg);
+  }
+  .t-toggle {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+  }
+  .t-toggle .l {
+    font: 500 15px 'IBM Plex Sans', sans-serif;
+  }
+  .t-toggle .h {
+    font: 400 12px 'IBM Plex Mono', monospace;
+    color: var(--mute);
+    margin-top: 2px;
+  }
+  .t-qh {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font: 500 13px 'IBM Plex Mono', monospace;
+    color: var(--mute);
+  }
+  .t-qh input {
+    width: 70px;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--fg);
+    font: inherit;
+    text-align: center;
+  }
+  .t-qh input.bad {
+    border-color: #e5484d;
+  }
+  @media (max-width: 760px) {
+    .t-nav {
+      width: 64px;
+    }
+    .t-nav button {
+      width: 52px;
+      font-size: 9px;
+    }
+    .t-head {
+      flex-wrap: wrap;
+      padding: 14px 16px;
+    }
+    .t-page {
+      padding: 16px;
+    }
+    .t-panel,
+    .t-rules {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .t-panel section {
+      border-right: 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .t-calm .num {
+      font-size: 120px;
+    }
+  }
+</style>
+
+<script>
+  type Tier = 'vip' | 'normal' | 'noise';
+  type SrcKey = 'gmail' | 'slack' | 'cal' | 'msg' | 'gh' | 'lin';
+  type RuleKind = 'vip' | 'keyword' | 'mute';
+  interface Item {
+    id: string;
+    sender: string;
+    preview: string;
+    src: SrcKey;
+    time: string;
+    vip?: boolean;
+  }
+  interface Rule {
+    id: number;
+    kind: RuleKind;
+    value: string;
+    on: boolean;
+  }
+  type View = 'display' | 'rules' | 'sources' | 'settings';
+  type Mode = 'ticker' | 'panel' | 'calm';
+  type Density = 'Compact' | 'Comfortable' | 'Large';
+  type ThemeKey = 'terminal' | 'midnight' | 'paper';
+
+  const THEMES: Record<ThemeKey, Record<string, string>> = {
+    terminal: { bg: '#0a0b0d', panel: '#121418', line: '#242932', fg: '#f2f0e8', mute: '#98a0ae', acc: '#ffb000' },
+    midnight: { bg: '#0b1020', panel: '#111933', line: '#222c52', fg: '#eaf0ff', mute: '#94a1c8', acc: '#5ee0c0' },
+    paper: { bg: '#f4f1ea', panel: '#ffffff', line: '#dcd6c8', fg: '#16140f', mute: '#5f5a4e', acc: '#b84300' },
+  };
+  const SRC: Record<SrcKey, { name: string; color: string; glyph: string; s: string }> = {
+    gmail: { name: 'Gmail', color: '#ef7a6b', glyph: 'M', s: '3 accounts' },
+    slack: { name: 'Slack', color: '#c07ee8', glyph: '#', s: '2 workspaces' },
+    cal: { name: 'Calendar', color: '#6ea2fa', glyph: '31', s: 'Work · Personal' },
+    msg: { name: 'Messages', color: '#4fd1a0', glyph: '●', s: 'iMessage relay' },
+    gh: { name: 'GitHub', color: '#aab4c4', glyph: 'GH', s: '12 repos' },
+    lin: { name: 'Linear', color: '#8f8ff5', glyph: 'L', s: 'Not connected' },
+  };
+  const ITEMS: Item[] = (
+    [
+      ['a1', 'Maya Chen', 'Invoice #2041 is overdue, can you resend?', 'gmail', '2m'],
+      ['a2', '#design-crit', 'Priya: new onboarding frames are up', 'slack', '4m'],
+      ['a3', 'Standup', 'Starts in 10 min · Room 4', 'cal', '10m'],
+      ['a4', 'Dad', 'Call me when you get a sec', 'msg', '12m'],
+      ['a5', 'GitHub', 'CI failed on main · build #884', 'gh', '15m'],
+      ['a6', 'Stripe', 'Payout of $2,480.00 is on its way', 'gmail', '22m'],
+      ['a7', 'Newsletter', 'Ten tools you did not need this week', 'gmail', '31m'],
+      ['a8', '#random', 'Someone posted a dog photo', 'slack', '35m'],
+      ['a9', 'Jordan Park', 'Contract signed, sending PDF now', 'gmail', '41m'],
+      ['a10', 'Promo', '48 hours left: 20% off everything', 'gmail', '1h'],
+      ['a11', 'Dentist', 'Reminder: Thursday 9:30', 'cal', '1h'],
+    ] as const
+  ).map(([id, sender, preview, src, time]) => ({ id, sender, preview, src, time }));
+  const LIVE: Pick<Item, 'sender' | 'preview' | 'src'>[] = [
+    { sender: 'Priya Nair', preview: 'Can you jump on a call now?', src: 'msg' },
+    { sender: 'CEO', preview: 'Board deck needs your sign-off', src: 'slack' },
+    { sender: 'Dr. Alvarez', preview: 'Results are in, please call', src: 'gmail' },
+  ];
+  const KINDS: { k: RuleKind; label: string; hint: string; ph: string }[] = [
+    { k: 'vip', label: 'Pin sender as VIP', hint: 'Name contains…', ph: 'e.g. Maya' },
+    { k: 'keyword', label: 'Promote keyword', hint: 'Anything mentioning… becomes VIP', ph: 'e.g. invoice' },
+    { k: 'mute', label: 'Mute sender or source', hint: 'Fade to noise', ph: 'e.g. newsletter' },
+  ];
+  const DENSITY: Record<Density, { sender: number; preview: number; small: number; gap: number; dot: number; h: number }> = {
+    Compact: { sender: 20, preview: 18, small: 12, gap: 22, dot: 10, h: 72 },
+    Comfortable: { sender: 28, preview: 24, small: 14, gap: 30, dot: 14, h: 96 },
+    Large: { sender: 40, preview: 34, small: 18, gap: 44, dot: 20, h: 132 },
+  };
+  const VERB: Record<RuleKind, string> = { vip: 'VIP', keyword: 'PROMOTE', mute: 'MUTE' };
+  const KIND_LABEL: Record<RuleKind, string> = { vip: 'Sender is', keyword: 'Mentions', mute: 'Matches' };
+  const STORE_KEY = 'tape:v1';
+  const TIME_RE = /^([01]?\d|2[0-3]):([0-5]\d)$/;
+
+  const state = {
+    view: 'display' as View,
+    mode: 'ticker' as Mode,
+    speed: 45,
+    density: 'Comfortable' as Density,
+    theme: 'terminal' as ThemeKey,
+    quiet: true,
+    showNoise: true,
+    wake: true,
+    qFrom: '22:00',
+    qTo: '07:00',
+    rules: [
+      { id: 1, kind: 'vip', value: 'Maya', on: true },
+      { id: 2, kind: 'vip', value: 'Jordan', on: true },
+      { id: 3, kind: 'keyword', value: 'invoice', on: true },
+      { id: 4, kind: 'mute', value: 'newsletter', on: true },
+      { id: 5, kind: 'mute', value: 'promo', on: true },
+    ] as Rule[],
+    off: { lin: true } as Partial<Record<SrcKey, boolean>>,
+    gone: [] as string[],
+    extra: [] as Item[],
+    idx: 0,
+    kind: 'keyword' as RuleKind,
+    nv: '',
+  };
+
+  // Persisted locally: settings + rules + source connections. Items and
+  // read-state are mock data here; a backend would own them.
+  const PERSIST = ['view', 'mode', 'speed', 'density', 'theme', 'quiet', 'showNoise', 'wake', 'qFrom', 'qTo', 'rules', 'off'] as const;
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORE_KEY) || 'null');
+    if (saved && typeof saved === 'object') {
+      for (const k of PERSIST) if (k in saved && typeof saved[k] === typeof (state as any)[k]) (state as any)[k] = saved[k];
+      if (!THEMES[state.theme]) state.theme = 'terminal';
+      if (!DENSITY[state.density]) state.density = 'Comfortable';
+    }
+  } catch {}
+  const save = () => {
+    try {
+      const out: Record<string, unknown> = {};
+      for (const k of PERSIST) out[k] = state[k];
+      localStorage.setItem(STORE_KEY, JSON.stringify(out));
+    } catch {}
+  };
+
+  const root = document.getElementById('tape-root')!;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let tickOffset = 0;
+  let paused = false;
+
+  const esc = (s: string) =>
+    s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+  const has = (hay: string, needle: string) => hay.toLowerCase().includes(needle.toLowerCase());
+  const toMin = (t: string) => {
+    const m = TIME_RE.exec(t.trim());
+    return m ? +m[1] * 60 + +m[2] : null;
+  };
+
+  function quietNow(): boolean {
+    if (!state.quiet) return false;
+    const a = toMin(state.qFrom);
+    const b = toMin(state.qTo);
+    if (a === null || b === null || a === b) return false;
+    const d = new Date();
+    const n = d.getHours() * 60 + d.getMinutes();
+    return a < b ? n >= a && n < b : n >= a || n < b; // window may cross midnight
+  }
+
+  type TItem = Item & { tier: Tier };
+  function items(): TItem[] {
+    const rs = state.rules.filter((r) => r.on);
+    return [...state.extra, ...ITEMS]
+      .filter((i) => !state.gone.includes(i.id) && !state.off[i.src])
+      .map((i) => {
+        let tier: Tier = 'normal';
+        if (
+          i.vip ||
+          rs.some((r) => r.kind === 'vip' && has(i.sender, r.value)) ||
+          rs.some((r) => r.kind === 'keyword' && has(i.sender + ' ' + i.preview, r.value))
+        )
+          tier = 'vip';
+        else if (rs.some((r) => r.kind === 'mute' && (has(i.sender, r.value) || has(i.preview, r.value) || has(SRC[i.src].name, r.value))))
+          tier = 'noise';
+        return { ...i, tier };
+      });
+  }
+
+  const ago = (t: string) => (t === 'now' ? 'now' : t + ' ago');
+  const dismissAttr = (id: string) => `data-dismiss="${esc(id)}"`;
+
+  function renderDisplay(all: TItem[]): string {
+    const vip = all.filter((i) => i.tier === 'vip');
+    const norm = all.filter((i) => i.tier === 'normal');
+    const noise = all.filter((i) => i.tier === 'noise');
+    const pinned = vip.length ? vip[state.idx % vip.length] : null;
+    const D = DENSITY[state.density];
+
+    const head = `<header class="t-head">
+      <h1>Display <small>${all.length} items · ${vip.length} VIP</small></h1>
+      <div class="t-seg">${(['ticker', 'panel', 'calm'] as Mode[])
+        .map((m) => `<button data-mode="${m}" class="${state.mode === m ? 'on' : ''}">${m[0].toUpperCase() + m.slice(1)}</button>`)
+        .join('')}</div>
+      <button class="t-outline" data-act="simulate">+ Simulate VIP</button>
+    </header>`;
+
+    let body = '';
+    if (state.mode === 'ticker') {
+      const scroll = [...norm, ...(state.showNoise ? noise : [])];
+      const itemHtml = (i: TItem) => {
+        const c = SRC[i.src];
+        return `<button class="t-item" ${dismissAttr(i.id)} style="padding:0 ${D.gap}px;opacity:${i.tier === 'noise' ? 0.35 : 1}">
+          <span class="dot" style="width:${D.dot}px;height:${D.dot}px;background:${c.color}"></span>
+          <span class="s" style="font-size:${D.sender}px">${esc(i.sender)}</span>
+          <span class="p" style="font-size:${D.preview}px">${esc(i.preview)}</span>
+          <span class="src" style="font-size:${D.small}px;color:${c.color}">${c.name.toUpperCase()}</span></button>`;
+      };
+      const once = scroll.map(itemHtml).join('');
+      body = `<div class="t-hint">Your screen, your apps.<br>Tape runs along the bottom edge.<br><span style="opacity:.6">Click any item to mark it read.</span></div>
+        <div class="t-bar" style="height:${D.h + 24}px">
+          <div class="t-vip"><div class="label">VIP · ${vip.length}</div>
+            ${
+              pinned
+                ? `<button ${dismissAttr(pinned.id)} style="all:unset;cursor:pointer;display:block;min-width:0">
+                    <div class="t-ell" style="font:600 ${D.sender}px/1.15 'IBM Plex Sans',sans-serif">${esc(pinned.sender)}</div>
+                    <div class="t-ell" style="font:400 ${D.small}px/1.3 'IBM Plex Sans',sans-serif;color:var(--mute)">${esc(pinned.preview)}</div></button>`
+                : `<div class="t-mono" style="font-size:${D.small}px;color:var(--mute)">all clear</div>`
+            }
+          </div>
+          <div class="t-track-wrap" id="tape-wrap">
+            <div class="t-track" id="tape-track">${once}<span aria-hidden="true" style="display:contents">${once}</span></div>
+            <div class="t-fade l"></div><div class="t-fade r"></div>
+          </div></div>`;
+    } else if (state.mode === 'panel') {
+      const rot = [...norm, ...vip];
+      const cyc = rot.length ? rot.map((_, k) => rot[(state.idx + k) % rot.length]).slice(0, Math.min(3, rot.length)) : [];
+      const stack = cyc
+        .map((i, k) => {
+          const c = SRC[i.src];
+          const pad = k ? 16 : 28;
+          return `<button class="t-card" ${dismissAttr(i.id)} style="padding:${pad}px 24px;border-left-color:${c.color};opacity:${k ? (k === 1 ? 0.6 : 0.35) : 1}">
+            <div class="meta" style="color:${c.color}">${c.glyph} ${c.name.toUpperCase()}<span>${ago(i.time)}</span></div>
+            <div class="snd" style="font-size:${k ? 22 : 40}px">${esc(i.sender)}</div>
+            <div class="prv" style="font-size:${k ? 15 : 22}px">${esc(i.preview)}</div></button>`;
+        })
+        .join('');
+      body = `<div class="t-panel">
+        <section><div class="t-label">NOW CYCLING · ${rot.length} ITEMS</div>
+          ${stack || `<div class="t-mono" style="color:var(--mute);font-size:14px;padding:40px 0">Nothing in the queue.</div>`}</section>
+        <aside><div class="t-label" style="color:var(--acc)">★ VIP LANE · PINNED</div>
+          ${
+            vip
+              .map((i) => {
+                const c = SRC[i.src];
+                return `<button class="t-vipcard" ${dismissAttr(i.id)}><div class="snd">${esc(i.sender)}</div><div class="prv">${esc(i.preview)}</div>
+                  <div class="meta" style="color:${c.color}">${c.name.toUpperCase()} · ${ago(i.time)}</div></button>`;
+              })
+              .join('') || `<div class="t-mono" style="color:var(--mute);font-size:13px">No VIP items.</div>`
+          }
+          <div class="t-label" style="margin-top:10px">NOISE · ${noise.length} ${state.showNoise ? '· faded in ticker' : '· hidden'}</div></aside></div>`;
+    } else {
+      // Calm: VIP always breaks through; otherwise just the count.
+      body = `<div class="t-calm">${
+        pinned
+          ? `<button class="vipbtn" ${dismissAttr(pinned.id)}>
+              <div class="t-mono" style="font-weight:600;font-size:12px;letter-spacing:.2em;color:var(--acc)">★ VIP · ${SRC[pinned.src].name.toUpperCase()} · ${ago(pinned.time)}</div>
+              <div style="font:600 64px/1.05 'IBM Plex Sans',sans-serif">${esc(pinned.sender)}</div>
+              <div style="font:400 28px/1.35 'IBM Plex Sans',sans-serif;color:var(--mute)">${esc(pinned.preview)}</div>
+              <div class="pill">tap to mark read</div></button>`
+          : `<div class="num">${all.length}</div><div class="cap">UNREAD · ${quietNow() ? 'QUIET HOURS' : 'NOTHING URGENT'}</div>`
+      }</div>`;
+    }
+    return head + `<div class="t-stage">${body}</div>`;
+  }
+
+  function renderRules(all: TItem[]): string {
+    const noise = all.filter((i) => i.tier === 'noise').length;
+    const shown = all.length - (state.showNoise ? 0 : noise);
+    return `<header class="t-head" style="display:block"><h1 style="margin:0">Rules</h1>
+      <div class="t-sub">Evaluated top to bottom. Result: ${shown} of ${all.length} items shown.</div></header>
+      <div class="t-page"><div class="t-rules">
+        <section class="t-col">${state.rules
+          .map(
+            (r) => `<div class="t-rule ${r.on ? '' : 'off'}">
+              <span class="t-badge ${r.kind === 'mute' ? 'mute' : ''}">${VERB[r.kind]}</span>
+              <span class="txt"><em>${KIND_LABEL[r.kind]}</em> “${esc(r.value)}”</span>
+              <button class="t-sw ${r.on ? 'on' : ''}" role="switch" aria-checked="${r.on}" aria-label="Enable rule" data-rule-toggle="${r.id}"><i></i></button>
+              <button class="t-x" aria-label="Delete rule" data-rule-del="${r.id}">×</button></div>`,
+          )
+          .join('')}</section>
+        <section class="t-new"><div class="t-label" style="color:var(--acc)">NEW RULE</div>
+          <div class="t-col" style="gap:6px">${KINDS.map(
+            (k) => `<button class="t-kind ${state.kind === k.k ? 'on' : ''}" data-kind="${k.k}">${k.label}<small>${k.hint}</small></button>`,
+          ).join('')}</div>
+          <input class="t-input" id="tape-nv" value="${esc(state.nv)}" placeholder="${KINDS.find((k) => k.k === state.kind)!.ph}" aria-label="Rule value" />
+          <button class="t-add" data-act="add-rule">ADD RULE</button></section>
+      </div></div>`;
+  }
+
+  function renderSources(): string {
+    return `<header class="t-head" style="display:block"><h1 style="margin:0">Sources</h1>
+      <div class="t-sub">Read or clear on any device and it leaves Tape.</div></header>
+      <div class="t-page"><div class="t-sources">${(Object.keys(SRC) as SrcKey[])
+        .map((k) => {
+          const c = SRC[k];
+          const on = !state.off[k];
+          return `<div class="t-src ${on ? '' : 'off'}"><div style="display:flex;align-items:center;gap:12px">
+            <span class="ico" style="background:${c.color}">${c.glyph}</span>
+            <div><div class="nm">${c.name}</div><div class="st">${on ? '● Connected · ' + c.s : '○ Not connected'}</div></div></div>
+            <button data-src="${k}">${on ? 'DISCONNECT' : 'CONNECT'}</button></div>`;
+        })
+        .join('')}</div></div>`;
+  }
+
+  function renderSettings(): string {
+    const opts = (label: string, list: string[], cur: string, attr: string) =>
+      `<div class="t-col"><div class="t-label">${label}</div><div class="t-opts">${list
+        .map((o) => `<button data-${attr}="${o.toLowerCase()}" class="${cur.toLowerCase() === o.toLowerCase() ? 'on' : ''}">${o}</button>`)
+        .join('')}</div></div>`;
+    const toggle = (label: string, hint: string, key: 'quiet' | 'showNoise' | 'wake') =>
+      `<div class="t-toggle"><div style="flex:1"><div class="l">${label}</div><div class="h">${hint}</div></div>
+        <button class="t-sw lg ${state[key] ? 'on' : ''}" role="switch" aria-checked="${state[key]}" aria-label="${label}" data-toggle="${key}"><i></i></button></div>`;
+    return `<header class="t-head"><h1>Settings</h1></header>
+      <div class="t-page"><div class="t-settings">
+        <div class="t-col"><div class="t-label" style="display:flex"><span style="flex:1">SCROLL SPEED</span><span id="tape-speed-val" style="color:var(--acc)">${state.speed} px/s</span></div>
+          <input type="range" id="tape-speed" min="10" max="120" value="${state.speed}" aria-label="Scroll speed" /></div>
+        ${opts('DENSITY', ['Compact', 'Comfortable', 'Large'], state.density, 'density')}
+        ${opts('THEME', ['Terminal', 'Midnight', 'Paper'], state.theme, 'theme')}
+        <div class="t-col">
+          ${toggle('Quiet hours', 'Calm mode shows count only; VIP breaks through', 'quiet')}
+          ${toggle('Show noise, faded', 'Off hides noise entirely', 'showNoise')}
+          ${toggle('Keep screen awake', 'Always-on display; needs a browser that supports wake lock', 'wake')}
+          <div class="t-qh">Quiet hours
+            <input id="tape-qfrom" value="${esc(state.qFrom)}" placeholder="HH:MM" aria-label="Quiet hours from" class="${toMin(state.qFrom) === null ? 'bad' : ''}" /> to
+            <input id="tape-qto" value="${esc(state.qTo)}" placeholder="HH:MM" aria-label="Quiet hours to" class="${toMin(state.qTo) === null ? 'bad' : ''}" /></div>
+        </div></div></div>`;
+  }
+
+  const clockText = () => new Date().toTimeString().slice(0, 5);
+
+  function render() {
+    const t = THEMES[state.theme];
+    for (const k in t) document.documentElement.style.setProperty('--' + k, t[k]);
+    const all = items();
+    const nav = ([['display', 'Display'], ['rules', 'Rules'], ['sources', 'Sources'], ['settings', 'Settings']] as [View, string][])
+      .map(([k, l]) => `<button data-view="${k}" class="${state.view === k ? 'on' : ''}">${l}</button>`)
+      .join('');
+    const page =
+      state.view === 'display' ? renderDisplay(all) : state.view === 'rules' ? renderRules(all) : state.view === 'sources' ? renderSources() : renderSettings();
+    root.innerHTML = `<nav class="t-nav"><div class="brand">TAPE</div>${nav}
+      <div class="live"><i></i>LIVE<br><span id="tape-clock">${clockText()}</span></div></nav><main class="t-main">${page}</main>`;
+  }
+
+  // Re-render but keep the text field focused/caret intact where relevant.
+  function update() {
+    save();
+    render();
+  }
+
+  root.addEventListener('click', (e) => {
+    const el = (e.target as HTMLElement).closest<HTMLElement>('[data-view],[data-mode],[data-dismiss],[data-act],[data-rule-toggle],[data-rule-del],[data-kind],[data-src],[data-density],[data-theme],[data-toggle]');
+    if (!el) return;
+    const d = el.dataset;
+    if (d.view) state.view = d.view as View;
+    else if (d.mode) {
+      state.mode = d.mode as Mode;
+      state.idx = 0;
+    } else if (d.dismiss) state.gone.push(d.dismiss);
+    else if (d.act === 'simulate') {
+      const n = LIVE[state.extra.length % LIVE.length];
+      state.extra.unshift({ id: 'x' + Date.now(), ...n, time: 'now', vip: true });
+      state.idx = 0;
+    } else if (d.act === 'add-rule') {
+      const v = state.nv.trim();
+      if (!v) return;
+      state.rules.push({ id: Date.now(), kind: state.kind, value: v, on: true });
+      state.nv = '';
+    } else if (d.ruleToggle) {
+      const r = state.rules.find((x) => x.id === +d.ruleToggle!);
+      if (r) r.on = !r.on;
+    } else if (d.ruleDel) state.rules = state.rules.filter((x) => x.id !== +d.ruleDel!);
+    else if (d.kind) state.kind = d.kind as RuleKind;
+    else if (d.src) {
+      const k = d.src as SrcKey;
+      state.off[k] = !state.off[k];
+    } else if (d.density) state.density = (d.density[0].toUpperCase() + d.density.slice(1)) as Density;
+    else if (d.theme) state.theme = d.theme as ThemeKey;
+    else if (d.toggle) (state as any)[d.toggle] = !(state as any)[d.toggle];
+    update();
+    if (d.toggle === 'wake') syncWakeLock();
+    if (d.kind) document.getElementById('tape-nv')?.focus();
+  });
+
+  root.addEventListener('input', (e) => {
+    const el = e.target as HTMLInputElement;
+    if (el.id === 'tape-nv') state.nv = el.value;
+    else if (el.id === 'tape-speed') {
+      state.speed = +el.value;
+      document.getElementById('tape-speed-val')!.textContent = state.speed + ' px/s';
+      save();
+    } else if (el.id === 'tape-qfrom' || el.id === 'tape-qto') {
+      if (el.id === 'tape-qfrom') state.qFrom = el.value;
+      else state.qTo = el.value;
+      el.classList.toggle('bad', toMin(el.value) === null);
+      save();
+    }
+  });
+  root.addEventListener('keydown', (e) => {
+    if ((e.target as HTMLElement).id === 'tape-nv' && e.key === 'Enter') root.querySelector<HTMLElement>('[data-act="add-rule"]')?.click();
+  });
+  // Pause the ticker while hovered / touched so items can be read and tapped.
+  root.addEventListener('pointerover', (e) => {
+    if ((e.target as HTMLElement).closest('#tape-wrap')) paused = true;
+  });
+  root.addEventListener('pointerout', (e) => {
+    if ((e.target as HTMLElement).closest('#tape-wrap')) paused = false;
+  });
+
+  // Screen Wake Lock: released automatically when the tab is hidden, so
+  // re-acquire on return to visible.
+  let wakeLock: WakeLockSentinel | null = null;
+  async function syncWakeLock() {
+    try {
+      if (state.wake && document.visibilityState === 'visible' && 'wakeLock' in navigator) {
+        if (!wakeLock || wakeLock.released) {
+          wakeLock = await navigator.wakeLock.request('screen');
+          wakeLock.addEventListener('release', () => (wakeLock = null));
+        }
+      } else if (wakeLock) {
+        await wakeLock.release();
+        wakeLock = null;
+      }
+    } catch {
+      wakeLock = null; // denied (e.g. low battery) — ignore, retry on next trigger
+    }
+  }
+  document.addEventListener('visibilitychange', syncWakeLock);
+  root.addEventListener('pointerdown', syncWakeLock, { once: true }); // fallback if the browser wanted a gesture
+
+  render();
+  syncWakeLock();
+  setInterval(() => {
+    const c = document.getElementById('tape-clock');
+    if (c) c.textContent = clockText();
+  }, 20000);
+  // Panel cards / pinned VIP rotate every 4s. Only re-render when the
+  // rotation actually changes something on screen.
+  setInterval(() => {
+    if (state.view !== 'display') return;
+    const all = items();
+    const vips = all.filter((i) => i.tier === 'vip').length;
+    const rotates = state.mode === 'panel' ? all.filter((i) => i.tier !== 'noise').length > 1 : vips > 1;
+    if (!rotates) return;
+    state.idx++;
+    render();
+  }, 4000);
+
+  let last = performance.now();
+  const frame = (now: number) => {
+    const dt = (now - last) / 1000;
+    last = now;
+    const el = document.getElementById('tape-track');
+    if (el) {
+      if (!paused && !reduceMotion.matches) {
+        const half = el.scrollWidth / 2;
+        tickOffset = (tickOffset + state.speed * dt) % (half || 1);
+      }
+      el.style.transform = `translateX(${-tickOffset}px)`;
+    }
+    requestAnimationFrame(frame);
+  };
+  requestAnimationFrame(frame);
+</script>
