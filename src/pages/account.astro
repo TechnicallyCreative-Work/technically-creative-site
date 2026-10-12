@@ -7,15 +7,35 @@ import BrandBanner from '~/components/widgets/BrandBanner.astro';
 import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
 import { Icon } from 'astro-icon/components';
 import { headerData, DISCORD_INVITE_URL } from '~/navigation';
+import { setNewsletterSubscription } from '~/lib/newsletter';
 
 // Guaranteed non-null here — src/middleware.ts redirects unauthenticated
 // requests to /login before this page ever renders.
 const { user, supabase } = Astro.locals;
 
-const { data: profile } = await supabase.from('profiles').select('membership_tier').eq('id', user!.id).single();
+const { data: profile } = await supabase
+  .from('profiles')
+  .select('membership_tier, newsletter_opt_in, newsletter_synced_at')
+  .eq('id', user!.id)
+  .single();
+
+const newsletterOptIn = profile?.newsletter_opt_in === true;
+
+// One-time hand-off of the signup form's newsletter checkbox to MailerLite. It
+// happens here (the first page a confirmed user reaches) rather than at signup
+// so nobody can subscribe an address they haven't proven they own. A failure
+// leaves newsletter_synced_at empty, so the next visit simply tries again.
+if (newsletterOptIn && !profile?.newsletter_synced_at && user!.email) {
+  try {
+    await setNewsletterSubscription(user!.id, user!.email, true, { explicit: false });
+  } catch (err) {
+    console.error('Newsletter signup sync failed', err);
+  }
+}
 
 const isPaid = profile?.membership_tier === 'paid';
 const checkoutState = Astro.url.searchParams.get('checkout');
+const passwordUpdated = Astro.url.searchParams.get('notice') === 'password_updated';
 
 const metadata = {
   title: 'My Account — Technically Creative LLC',
@@ -35,6 +55,13 @@ const metadata = {
   </div>
 
   <WidgetWrapper containerClass="max-w-md mx-auto py-4 md:py-8">
+    {
+      passwordUpdated && (
+        <div class="mb-4 rounded-lg bg-emerald-500/10 px-4 py-3 text-sm text-emerald-600">
+          Your password has been updated.
+        </div>
+      )
+    }
     {
       checkoutState === 'success' && (
         <div class="mb-4 rounded-lg bg-emerald-500/10 px-4 py-3 text-sm text-emerald-600">
@@ -108,7 +135,23 @@ const metadata = {
         )
       }
 
-      <form method="POST" action="/api/auth/logout" class="mt-3">
+      <div class="mt-5 border-t border-gray-200 pt-4 dark:border-gray-700">
+        <label class="flex cursor-pointer items-start gap-2.5 text-sm text-slate-700 dark:text-slate-300">
+          <input
+            id="newsletter-toggle"
+            type="checkbox"
+            checked={newsletterOptIn}
+            class="mt-0.5 h-4 w-4 shrink-0 rounded border-gray-300 text-primary focus:ring-primary disabled:opacity-60"
+          />
+          <span>
+            <span class="font-semibold text-slate-900 dark:text-white">Newsletter</span><br />
+            Tips, tools and updates from Technically Creative. Untick to unsubscribe.
+          </span>
+        </label>
+        <p id="newsletter-status" class="mt-2 hidden text-sm"></p>
+      </div>
+
+      <form method="POST" action="/api/auth/logout" class="mt-4">
         <button
           type="submit"
           class="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-gray-50 dark:border-gray-700 dark:text-slate-300 dark:hover:bg-slate-800"
@@ -141,6 +184,38 @@ const metadata = {
       button.disabled = false;
     }
   }
+
+  const newsletterToggle = document.getElementById('newsletter-toggle') as HTMLInputElement;
+  const newsletterStatus = document.getElementById('newsletter-status') as HTMLParagraphElement;
+
+  newsletterToggle.addEventListener('change', async () => {
+    const subscribed = newsletterToggle.checked;
+    newsletterToggle.disabled = true;
+    newsletterStatus.classList.add('hidden');
+
+    try {
+      const res = await fetch('/api/newsletter/preference', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subscribed }),
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        throw new Error(data.error ?? 'Something went wrong');
+      }
+
+      newsletterStatus.textContent = subscribed ? "You're subscribed." : "You've been unsubscribed.";
+      newsletterStatus.className = 'mt-2 text-sm text-emerald-600';
+    } catch (err) {
+      // Put the box back so it always reflects what's actually saved.
+      newsletterToggle.checked = !subscribed;
+      newsletterStatus.textContent = err instanceof Error ? err.message : 'Something went wrong';
+      newsletterStatus.className = 'mt-2 text-sm text-rose-600';
+    } finally {
+      newsletterToggle.disabled = false;
+    }
+  });
 
   document.getElementById('upgrade-btn')?.addEventListener('click', (e) => {
     goToStripe('/api/stripe/create-checkout-session', e.currentTarget as HTMLButtonElement);

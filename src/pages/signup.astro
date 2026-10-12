@@ -52,12 +52,44 @@ const metadata = {
           class="mt-1 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-slate-900"
         />
       </div>
+      <label class="mb-4 flex cursor-pointer items-start gap-2.5 text-sm text-slate-700 dark:text-slate-300">
+        <input
+          id="newsletter"
+          name="newsletter"
+          type="checkbox"
+          class="mt-0.5 h-4 w-4 shrink-0 rounded border-gray-300 text-primary focus:ring-primary"
+        />
+        <span>
+          Send me the Technically Creative newsletter — tips, tools and updates. Optional; unsubscribe any time from
+          your account page.
+        </span>
+      </label>
       <p id="signup-error" class="mb-4 hidden text-sm text-rose-600"></p>
-      <p id="signup-success" class="mb-4 hidden text-sm text-emerald-600"></p>
+      <p id="signup-exists" class="mb-4 hidden text-sm text-amber-700 dark:text-amber-400">
+        An account with this email already exists.
+        <a href={getPermalink('/login')} class="font-semibold underline">Log in</a> or
+        <a href={getPermalink('/forgot-password')} class="font-semibold underline">reset your password</a>.
+      </p>
+      <div id="signup-success" class="mb-4 hidden text-sm text-emerald-600">
+        <p>
+          Almost there! We sent a confirmation link to <strong id="signup-sent-to"></strong>. Click it, then log in.
+        </p>
+        <p class="mt-2 text-slate-600 dark:text-slate-400">
+          Nothing after a minute? Check your spam folder, or
+          <button
+            type="button"
+            id="signup-resend"
+            class="font-semibold text-primary underline disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            resend the email
+          </button>.
+        </p>
+        <p id="signup-resend-status" class="mt-1 hidden"></p>
+      </div>
       <button
         type="submit"
         id="signup-submit"
-        class="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primary/90"
+        class="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
       >
         Sign up
       </button>
@@ -72,10 +104,15 @@ const metadata = {
 
 <script>
   import { createSupabaseBrowserClient } from '~/lib/supabase-client';
+  import { friendlyAuthError } from '~/lib/auth-messages';
 
   const form = document.getElementById('signup-form') as HTMLFormElement;
   const errorEl = document.getElementById('signup-error') as HTMLParagraphElement;
-  const successEl = document.getElementById('signup-success') as HTMLParagraphElement;
+  const existsEl = document.getElementById('signup-exists') as HTMLParagraphElement;
+  const successEl = document.getElementById('signup-success') as HTMLDivElement;
+  const sentToEl = document.getElementById('signup-sent-to') as HTMLElement;
+  const resendBtn = document.getElementById('signup-resend') as HTMLButtonElement;
+  const resendStatus = document.getElementById('signup-resend-status') as HTMLParagraphElement;
   const submitBtn = document.getElementById('signup-submit') as HTMLButtonElement;
 
   // Constructed defensively: if this throws (e.g. Supabase env vars missing
@@ -89,9 +126,13 @@ const metadata = {
     console.error('Failed to initialize Supabase client', err);
   }
 
+  const redirectTo = `${window.location.origin}/api/auth/callback`;
+  let pendingEmail = '';
+
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     errorEl.classList.add('hidden');
+    existsEl.classList.add('hidden');
     successEl.classList.add('hidden');
 
     if (!supabase) {
@@ -101,26 +142,74 @@ const metadata = {
     }
 
     const formData = new FormData(form);
-    const email = String(formData.get('email') ?? '');
+    const email = String(formData.get('email') ?? '').trim();
     const password = String(formData.get('password') ?? '');
+    const newsletter = formData.get('newsletter') === 'on';
 
-    const { error } = await supabase.auth.signUp({
+    // Disabled while in flight so a double-click can't fire two signups (the
+    // second would hit Supabase's email rate limit and show a scary error).
+    submitBtn.disabled = true;
+
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/api/auth/callback`,
+        emailRedirectTo: redirectTo,
+        // Stored on the user; the handle_new_user trigger copies it to
+        // profiles.newsletter_opt_in. MailerLite is only told once the email
+        // is confirmed (see the account page), so nobody can subscribe an
+        // address they don't own.
+        data: { newsletter_opt_in: newsletter },
       },
     });
 
     if (error) {
-      errorEl.textContent = error.message;
+      submitBtn.disabled = false;
+      errorEl.textContent = friendlyAuthError(error);
       errorEl.classList.remove('hidden');
       return;
     }
 
-    successEl.textContent = 'Check your email to confirm your account, then log in.';
+    // Email confirmation turned off in Supabase: the signup already has a session.
+    if (data.session) {
+      window.location.href = '/account';
+      return;
+    }
+
+    // For an address that is already registered, Supabase answers "success" with
+    // an empty identities list and sends no email — say so instead of promising
+    // an email that will never arrive.
+    if (data.user && data.user.identities?.length === 0) {
+      submitBtn.disabled = false;
+      existsEl.classList.remove('hidden');
+      return;
+    }
+
+    pendingEmail = email;
+    sentToEl.textContent = email;
     successEl.classList.remove('hidden');
     form.reset();
-    submitBtn.disabled = true;
+    // Re-enable after a short pause rather than leaving the form dead: a typo'd
+    // email needs a way to try again.
+    setTimeout(() => (submitBtn.disabled = false), 5000);
+  });
+
+  resendBtn.addEventListener('click', async () => {
+    if (!supabase || !pendingEmail) return;
+
+    resendStatus.classList.add('hidden');
+    resendBtn.disabled = true;
+
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email: pendingEmail,
+      options: { emailRedirectTo: redirectTo },
+    });
+
+    resendStatus.textContent = error ? friendlyAuthError(error) : 'Sent again! Check your inbox and spam folder.';
+    resendStatus.classList.toggle('text-rose-600', !!error);
+    resendStatus.classList.remove('hidden');
+    // Cooldown so repeated clicks don't burn through Supabase's email rate limit.
+    setTimeout(() => (resendBtn.disabled = false), 60_000);
   });
 </script>

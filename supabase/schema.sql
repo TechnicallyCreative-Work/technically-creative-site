@@ -8,8 +8,14 @@ create table if not exists public.profiles (
   stripe_customer_id text,
   stripe_subscription_id text,
   subscription_status text,
+  newsletter_opt_in boolean not null default false,
+  newsletter_synced_at timestamptz,
   created_at timestamptz not null default now()
 );
+
+-- For databases created before the newsletter feature (create table above is a no-op there).
+alter table public.profiles add column if not exists newsletter_opt_in boolean not null default false;
+alter table public.profiles add column if not exists newsletter_synced_at timestamptz;
 
 alter table public.profiles enable row level security;
 
@@ -18,14 +24,14 @@ create policy "Users can view own profile"
   on public.profiles for select
   using (auth.uid() = id);
 
+-- Browser-role clients may only READ their own row. An update policy here would let
+-- any signed-in user rewrite their own membership_tier (free -> paid) straight from
+-- the browser with the public anon key. Every write goes through a server route using
+-- the service-role key instead (Stripe webhook, /api/newsletter/preference), and rows
+-- are created by the trigger below (as the table owner).
 drop policy if exists "Users can update own profile" on public.profiles;
-create policy "Users can update own profile"
-  on public.profiles for update
-  using (auth.uid() = id);
-
--- No insert/delete policy for regular users on purpose — rows are created by the
--- trigger below (as the table owner) and updated by the Stripe webhook using the
--- service-role key, which bypasses RLS entirely.
+revoke all on public.profiles from anon, authenticated;
+grant select on public.profiles to authenticated;
 
 create or replace function public.handle_new_user()
 returns trigger
@@ -34,8 +40,16 @@ security definer
 set search_path = public
 as $$
 begin
-  insert into public.profiles (id, email)
-  values (new.id, new.email);
+  -- newsletter_opt_in comes from the signup form's checkbox (signUp options.data).
+  -- Compared as text so malformed metadata can never make this insert — and with
+  -- it the whole signup — fail. on conflict keeps the trigger from ever aborting.
+  insert into public.profiles (id, email, newsletter_opt_in)
+  values (
+    new.id,
+    new.email,
+    lower(coalesce(new.raw_user_meta_data ->> 'newsletter_opt_in', '')) = 'true'
+  )
+  on conflict (id) do nothing;
   return new;
 end;
 $$;
@@ -44,6 +58,13 @@ drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
+
+-- Backfill: give any pre-existing auth user without a profile row one (e.g. a row that
+-- was deleted by hand while testing), so the account page never has a missing profile.
+insert into public.profiles (id, email)
+select u.id, u.email from auth.users u
+where not exists (select 1 from public.profiles p where p.id = u.id)
+on conflict (id) do nothing;
 
 -- NoteMapper — usage-gate + paid-save schema
 -- One row per visitor (anonymous or linked to an account) tracking the
