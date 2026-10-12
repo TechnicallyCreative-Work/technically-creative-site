@@ -1,0 +1,17 @@
+{
+  "name": "Tape",
+  "short_name": "Tape",
+  "description": "Ambient notification ticker with rule-based filters.",
+  "start_url": "/tape",
+  "scope": "/tape",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0a0b0d",
+  "theme_color": "#0a0b0d",
+  "icons": [
+    { "src": "/tape/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/tape/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/tape/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "/tape/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
