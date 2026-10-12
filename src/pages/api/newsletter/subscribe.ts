@@ -1,7 +1,7 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
-import { NEWSLETTER_GROUP_ID as MAILERLITE_GROUP_ID } from '~/lib/mailerlite';
+import { NEWSLETTER_GROUP_ID, subscribeToMailerLite } from '~/lib/mailerlite';
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -33,17 +33,10 @@ export const POST: APIRoute = async ({ request }) => {
     });
   }
 
-  const mailerliteResponse = await fetch('https://connect.mailerlite.com/api/subscribers', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({ email, groups: [MAILERLITE_GROUP_ID] }),
-  });
-
-  if (!mailerliteResponse.ok) {
+  try {
+    await subscribeToMailerLite(email, NEWSLETTER_GROUP_ID);
+  } catch (error) {
+    console.error('Newsletter subscribe failed', error);
     return new Response(JSON.stringify({ error: 'Could not subscribe right now. Please try again later.' }), {
       status: 502,
       headers: { 'Content-Type': 'application/json' },
