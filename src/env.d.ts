@@ -27,6 +27,7 @@ declare global {
     readonly PUBLIC_SITE_URL: string;
     readonly MAILERLITE_API_KEY: string;
     readonly MAILERLITE_GROUP_ID_NOTEMAPPER: string;
+    readonly RESEND_API_KEY: string;
     readonly HUBSPOT_PRIVATE_APP_TOKEN: string;
   }
 

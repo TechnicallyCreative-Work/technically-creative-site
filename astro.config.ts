@@ -33,7 +33,8 @@ export default defineConfig({
     sitemap({
       // Account/auth pages are noindex (see their per-page metadata) —
       // keep them out of the sitemap too rather than submitting noindex URLs.
-      filter: (page) => !/\/(login|signup|account)\/?$/.test(page) && !page.includes('/api/'),
+      filter: (page) =>
+        !/\/(login|signup|account|forgot-password|reset-password)\/?$/.test(page) && !page.includes('/api/'),
     }),
     mdx(),
     icon({

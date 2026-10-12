@@ -47,7 +47,7 @@ export const POST: APIRoute = async ({ request, cookies, locals }) => {
   // gate state, so a MailerLite/HubSpot hiccup shouldn't block the visitor.
   const results = await Promise.allSettled([
     subscribeToMailerLite(email, import.meta.env.MAILERLITE_GROUP_ID_NOTEMAPPER),
-    upsertHubspotContact(email, { referralSource: 'NoteMapper' }),
+    upsertHubspotContact(email, { leadSource: 'NoteMapper' }),
   ]);
   results.forEach((result) => {
     if (result.status === 'rejected') {

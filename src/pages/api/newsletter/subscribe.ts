@@ -1,9 +1,8 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
+import { NEWSLETTER_GROUP_ID as MAILERLITE_GROUP_ID } from '~/lib/mailerlite';
 
-// "TechCre8 General" group in MailerLite — same list used by the contact page's newsletter form.
-const MAILERLITE_GROUP_ID = '189906690472150665';
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export const POST: APIRoute = async ({ request }) => {

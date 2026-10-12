@@ -49,14 +49,35 @@ const metadata = {
           class="mt-1 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-slate-900"
         />
       </div>
+      <p
+        id="login-notice"
+        class="mb-4 hidden rounded-lg bg-sky-500/10 px-3 py-2 text-sm text-sky-700 dark:text-sky-300"
+      >
+      </p>
       <p id="login-error" class="mb-4 hidden text-sm text-rose-600"></p>
+      <div id="resend-box" class="mb-4 hidden">
+        <button
+          type="button"
+          id="resend-btn"
+          class="text-sm font-semibold text-primary hover:underline disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          Resend confirmation email
+        </button>
+        <p id="resend-status" class="mt-1 hidden text-sm text-emerald-600"></p>
+      </div>
       <button
+        id="login-submit"
         type="submit"
-        class="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primary/90"
+        class="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
       >
         Log in
       </button>
-      <p class="mt-4 text-center text-sm text-muted dark:text-slate-400">
+      <p class="mt-4 text-center text-sm">
+        <a href={getPermalink('/forgot-password')} class="font-semibold text-primary hover:underline"
+          >Forgot your password?</a
+        >
+      </p>
+      <p class="mt-2 text-center text-sm text-muted dark:text-slate-400">
         No account yet? <a href={getPermalink('/signup')} class="font-semibold text-primary hover:underline">Sign up</a>
       </p>
     </form>
@@ -65,9 +86,15 @@ const metadata = {
 
 <script>
   import { createSupabaseBrowserClient } from '~/lib/supabase-client';
+  import { friendlyAuthError, LOGIN_FLAG_MESSAGES } from '~/lib/auth-messages';
 
   const form = document.getElementById('login-form') as HTMLFormElement;
   const errorEl = document.getElementById('login-error') as HTMLParagraphElement;
+  const noticeEl = document.getElementById('login-notice') as HTMLParagraphElement;
+  const submitBtn = document.getElementById('login-submit') as HTMLButtonElement;
+  const resendBox = document.getElementById('resend-box') as HTMLDivElement;
+  const resendBtn = document.getElementById('resend-btn') as HTMLButtonElement;
+  const resendStatus = document.getElementById('resend-status') as HTMLParagraphElement;
 
   // Constructed defensively: if this throws (e.g. Supabase env vars missing
   // at build time), the addEventListener below must still run so the form
@@ -80,9 +107,28 @@ const metadata = {
     console.error('Failed to initialize Supabase client', err);
   }
 
+  // Messages from /api/auth/callback (expired / cross-device confirmation links)
+  // and the password-reset flow. Looked up by key, never echoed from the URL.
+  const params = new URLSearchParams(window.location.search);
+  const flag = LOGIN_FLAG_MESSAGES[params.get('error') ?? ''];
+  if (flag) {
+    const el = flag.kind === 'error' ? errorEl : noticeEl;
+    el.textContent = flag.text;
+    el.classList.remove('hidden');
+  }
+
+  function safeNext(): string {
+    const next = params.get('next');
+    // Same-site absolute paths only: "//evil.com" and "/\evil.com" are other origins.
+    return next && next.startsWith('/') && !next.startsWith('//') && !next.startsWith('/\\') ? next : '/account';
+  }
+
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     errorEl.classList.add('hidden');
+    noticeEl.classList.add('hidden');
+    resendBox.classList.add('hidden');
+    resendStatus.classList.add('hidden');
 
     if (!supabase) {
       errorEl.textContent = 'Sign-in is temporarily unavailable. Please try again shortly.';
@@ -91,18 +137,55 @@ const metadata = {
     }
 
     const formData = new FormData(form);
-    const email = String(formData.get('email') ?? '');
+    const email = String(formData.get('email') ?? '').trim();
     const password = String(formData.get('password') ?? '');
 
+    submitBtn.disabled = true;
     const { error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
-      errorEl.textContent = error.message;
+      submitBtn.disabled = false;
+      errorEl.textContent = friendlyAuthError(error);
+      errorEl.classList.remove('hidden');
+      // Signed up but never clicked the link (or it expired): offer a fresh one
+      // right here instead of leaving them stuck.
+      if (error.code === 'email_not_confirmed') {
+        resendBox.classList.remove('hidden');
+      }
+      return;
+    }
+
+    window.location.href = safeNext();
+  });
+
+  resendBtn.addEventListener('click', async () => {
+    const email = String(new FormData(form).get('email') ?? '').trim();
+    resendStatus.classList.add('hidden');
+    errorEl.classList.add('hidden');
+
+    if (!supabase || !email) {
+      errorEl.textContent = 'Enter your email above first.';
       errorEl.classList.remove('hidden');
       return;
     }
 
-    const next = new URLSearchParams(window.location.search).get('next');
-    window.location.href = next && next.startsWith('/') ? next : '/account';
+    resendBtn.disabled = true;
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email,
+      options: { emailRedirectTo: `${window.location.origin}/api/auth/callback` },
+    });
+
+    if (error) {
+      resendBtn.disabled = false;
+      errorEl.textContent = friendlyAuthError(error);
+      errorEl.classList.remove('hidden');
+      return;
+    }
+
+    resendStatus.textContent = 'Sent! Check your inbox (and spam folder).';
+    resendStatus.classList.remove('hidden');
+    // Cooldown so repeated clicks don't burn through Supabase's email rate limit.
+    setTimeout(() => (resendBtn.disabled = false), 60_000);
   });
 </script>
