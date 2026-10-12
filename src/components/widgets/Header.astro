@@ -77,21 +77,18 @@ const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
       <a class="flex items-center" href={getHomePermalink()}>
         <Logo />
       </a>
-      {
-        loginAction && (
-          <a
-            href={loginAction.href}
-            aria-label={loginAction.text}
-            class="header-nav-link relative inline-flex items-center justify-center rounded-full p-2.5 ml-2 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
-          >
-            {loginAction.icon && <Icon name={loginAction.icon} class="w-5 h-5" />}
-            <span class="nav-tooltip" role="tooltip">
-              {loginAction.text}
-            </span>
-          </a>
-        )
-      }
-      <div class="flex items-center md:hidden">
+      <div class="flex items-center gap-2 md:hidden">
+        {
+          loginAction && (
+            <a
+              href={loginAction.href}
+              aria-label={loginAction.text}
+              class="relative inline-flex items-center justify-center rounded-full p-2.5 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
+            >
+              {loginAction.icon && <Icon name={loginAction.icon} class="w-5 h-5" />}
+            </a>
+          )
+        }
         <ToggleMenu />
       </div>
     </div>
@@ -193,8 +190,22 @@ const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
           }
         </div>
         {
+          loginAction && (
+            <a
+              href={loginAction.href}
+              aria-label={loginAction.text}
+              class="header-nav-link relative hidden md:inline-flex items-center justify-center rounded-full p-2.5 ml-4 rtl:ml-0 rtl:mr-4 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
+            >
+              {loginAction.icon && <Icon name={loginAction.icon} class="w-5 h-5" />}
+              <span class="nav-tooltip" role="tooltip">
+                {loginAction.text}
+              </span>
+            </a>
+          )
+        }
+        {
           actions?.length ? (
-            <span class="ml-4 rtl:ml-0 rtl:mr-4 flex items-center">
+            <span class="ml-2 rtl:ml-0 rtl:mr-2 flex items-center">
               {actions.map((btnProps) => (
                 <a
                   href={btnProps.href}
