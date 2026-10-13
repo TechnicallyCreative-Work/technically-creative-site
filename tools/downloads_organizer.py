@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
-"""
+r"""
 Downloads Organizer
 -------------------
 Sorts files out of your Downloads folder:
 
-    apps / installers  -> Documents
+    apps / installers  -> Documents\_Installers
+    game ROMs / disks  -> Documents\_Games&Roms
+    scripts            -> Documents\_Scripts
+    document templates -> Documents\_Doc Templates
     videos             -> Videos
     images             -> Pictures
     other documents    -> Documents
@@ -46,10 +49,15 @@ except ImportError:
 # Settings you might want to tweak
 # --------------------------------------------------------------------------
 
-# Optional subfolder inside the destination ("" = drop straight into it).
-# e.g. set INSTALLERS_SUBFOLDER = "Installers" to keep Documents tidy.
-INSTALLERS_SUBFOLDER = ""
-DOCUMENTS_SUBFOLDER = ""
+# Subfolders inside Documents (match your existing folder names exactly).
+INSTALLERS_SUBFOLDER = "_Installers"
+GAMES_SUBFOLDER = "_Games&Roms"
+SCRIPTS_SUBFOLDER = "_Scripts"
+TEMPLATES_SUBFOLDER = "_Doc Templates"
+DOCUMENTS_SUBFOLDER = ""  # "" = loose documents go straight into Documents
+
+# A document with this word in its filename is treated as a template.
+TEMPLATE_NAME_HINT = "template"
 
 # Don't touch files modified within this many seconds (avoids grabbing a
 # download that's still in progress).
@@ -61,6 +69,20 @@ EXTENSIONS = {
     "installers": {
         ".exe", ".msi", ".msix", ".msixbundle", ".appx", ".appxbundle",
         ".dmg", ".pkg", ".deb", ".rpm", ".apk", ".appimage", ".iso",
+    },
+    "games": {
+        # ROMs and disc images. Left out on purpose: .bin (too generic),
+        # .md (Markdown wins), .iso (installers win), and zips (can't tell).
+        ".nes", ".sfc", ".smc", ".gb", ".gbc", ".gba", ".nds", ".3ds", ".cia",
+        ".n64", ".z64", ".v64", ".gen", ".smd", ".sms", ".gg", ".pce", ".a26",
+        ".cue", ".chd", ".rvz", ".wbfs", ".gcm", ".nsp", ".xci", ".sav", ".srm",
+    },
+    "scripts": {
+        ".py", ".ps1", ".bat", ".cmd", ".sh", ".ahk", ".vbs", ".js", ".sql", ".lua",
+    },
+    "templates": {
+        ".dotx", ".dotm", ".dot", ".xltx", ".xltm", ".xlt", ".potx", ".potm", ".pot",
+        ".ott", ".ots", ".otp",
     },
     "videos": {
         ".mp4", ".mkv", ".mov", ".avi", ".wmv", ".webm", ".flv", ".m4v",
@@ -122,14 +144,23 @@ def user_folder(name: str) -> Path:
 def classify(path: Path):
     """Return (destination folder, label) for a file, or None to leave it."""
     ext = path.suffix.lower()
+    docs = user_folder("Documents")
     if ext in EXTENSIONS["installers"]:
-        return user_folder("Documents") / INSTALLERS_SUBFOLDER, "installer"
+        return docs / INSTALLERS_SUBFOLDER, "installer"
+    if ext in EXTENSIONS["games"]:
+        return docs / GAMES_SUBFOLDER, "game/rom"
+    if ext in EXTENSIONS["scripts"]:
+        return docs / SCRIPTS_SUBFOLDER, "script"
+    if ext in EXTENSIONS["templates"] or (
+        ext in EXTENSIONS["documents"] and TEMPLATE_NAME_HINT in path.stem.lower()
+    ):
+        return docs / TEMPLATES_SUBFOLDER, "template"
     if ext in EXTENSIONS["videos"]:
         return user_folder("Videos"), "video"
     if ext in EXTENSIONS["images"]:
         return user_folder("Pictures"), "image"
     if ext in EXTENSIONS["documents"]:
-        return user_folder("Documents") / DOCUMENTS_SUBFOLDER, "document"
+        return docs / DOCUMENTS_SUBFOLDER, "document"
     return None
 
 
