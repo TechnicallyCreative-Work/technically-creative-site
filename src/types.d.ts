@@ -304,6 +304,8 @@ export interface HubspotBridgeConfig {
   region?: string;
   fieldMapping?: Record<string, string>;
   loadingText?: string;
+  /** Optional: also POST each submission (human-readable labels) to this lead-intake webhook. */
+  leadWebhookUrl?: string;
 }
 
 export interface Contact extends Omit<Headline, 'classes'>, Form, Widget {

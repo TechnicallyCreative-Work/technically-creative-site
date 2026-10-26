@@ -47,6 +47,7 @@ const portalId = hubspot?.portalId?.trim() ?? '';
 const formGuid = hubspot?.formId?.trim() ?? '';
 const region = hubspot?.region ?? 'na1';
 const loadingText = hubspot?.loadingText ?? 'Sending…';
+const leadWebhookUrl = hubspot?.leadWebhookUrl?.trim() ?? '';
 
 const fieldMapping = {
   ...inferredFieldMapping,
@@ -115,6 +116,7 @@ const hasHubspotBridge = Boolean(portalId && formGuid);
       successMessage,
       errorMessage,
       region,
+      leadWebhookUrl,
     }}
   >
     const scriptId = `hs-form-script-${region}-${portalId}`;
@@ -582,6 +584,49 @@ const hasHubspotBridge = Boolean(portalId && formGuid);
       return Array.from(names).map((name) => [name, name]);
     };
 
+    // Label helpers: the n8n quote-request workflow expects human-readable values
+    // (e.g. "Social Media (IG, YouTube, etc.)"), not the option slugs HubSpot gets.
+    const fieldLabels = (form, name) =>
+      Array.from(form.querySelectorAll(`[name="${name}"]`))
+        .map((el) => {
+          if (el.tagName === 'SELECT') {
+            const opt = el.selectedOptions[0];
+            return opt && opt.value ? opt.textContent.trim() : '';
+          }
+          if (el.type === 'checkbox' || el.type === 'radio') {
+            return el.checked ? (el.parentElement?.querySelector('span')?.textContent ?? el.value).trim() : '';
+          }
+          return (el.value ?? '').trim();
+        })
+        .filter(Boolean);
+
+    // Fire-and-forget: a webhook failure must never block or fail the HubSpot submission.
+    const sendLeadWebhook = (form) => {
+      if (!leadWebhookUrl) return;
+      try {
+        const one = (name) => fieldLabels(form, name).join(', ');
+        const body = {
+          name: one('name'),
+          email: one('email'),
+          service_interest: [one('project_type'), one('service_interest')].filter(Boolean).join(' | '),
+          project_description: one('message'),
+          budget_range: one('budget_range'),
+          timeline: one('timeline_urgency'),
+          how_heard: one('referral_source'),
+          source_page: window.location.href,
+        };
+        fetch(leadWebhookUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+          keepalive: true,
+          credentials: 'omit',
+        }).catch((error) => console.warn('Lead webhook failed', error));
+      } catch (error) {
+        console.warn('Lead webhook failed', error);
+      }
+    };
+
     const handleSubmit = (event) => {
       const form = event.currentTarget;
       event.preventDefault();
@@ -626,6 +671,8 @@ const hasHubspotBridge = Boolean(portalId && formGuid);
         showMessage(errorEl, wrapper, 'Please complete the required fields.');
         return;
       }
+
+      sendLeadWebhook(form);
 
       const payload = {
         fields,
