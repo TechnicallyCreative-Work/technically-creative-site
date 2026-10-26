@@ -21,6 +21,8 @@ const hubspotForm = {
   formId: 'b5b6ae47-3af4-4bb3-8276-67c891793038',
   region: 'na2',
   loadingText: 'Sending…',
+  // Also routes each submission to n8n (creates a ClickUp lead task + Telegram alert).
+  leadWebhookUrl: 'https://technicallycreative.app.n8n.cloud/webhook/quote-request',
 };
 ---
 
