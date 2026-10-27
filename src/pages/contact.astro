@@ -2,8 +2,6 @@
 import Layout from '~/layouts/PageLayout.astro';
 import Header from '~/components/widgets/Header.astro';
 import BrandBanner from '~/components/widgets/BrandBanner.astro';
-import ContactUs from '~/components/widgets/Contact.astro';
-import Features2 from '~/components/widgets/Features2.astro';
 import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
 import { Icon } from 'astro-icon/components';
 import { headerData } from '~/navigation';
@@ -16,14 +14,13 @@ const metadata = {
     'Get in touch with Technically Creative — Indianapolis-based mixing, sound design, project management, and workflow automation for artists and teams that need reliable delivery.',
 };
 
-const hubspotForm = {
-  portalId: '243565281',
-  formId: 'b5b6ae47-3af4-4bb3-8276-67c891793038',
-  region: 'na2',
-  loadingText: 'Sending…',
-  // Also routes each submission to n8n (creates a ClickUp lead task + Telegram alert).
-  leadWebhookUrl: 'https://technicallycreative.app.n8n.cloud/webhook/quote-request',
-};
+// n8n "Quote Request Intake" workflow: creates the HubSpot contact + ClickUp lead
+// task and sends the Telegram alert, then replies { success: true }.
+const leadWebhookUrl = 'https://technicallycreative.app.n8n.cloud/webhook/quote-request';
+const directEmail = 'contact@technicallycreative.work';
+
+const inputClass =
+  'mt-1 block w-full rounded-lg border border-gray-200 bg-white px-3 py-3 text-base dark:border-gray-700 dark:bg-slate-900';
 ---
 
 <Layout metadata={metadata}>
@@ -34,147 +31,70 @@ const hubspotForm = {
 
   <div class="container pt-10 pb-2 md:pt-14">
     <h1 class="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">Contact Technically Creative — Indianapolis Music Production &amp; PM Consulting</h1>
-    <p class="mt-3 max-w-2xl text-muted dark:text-slate-400">How do we get started?</p>
-    <p class="mt-4 max-w-2xl text-muted dark:text-slate-400">
-      Not ready to reach out yet?
-      <a
-        href="https://preview.mailerlite.io/forms/2414384/197693567645255138/share"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="font-semibold text-primary hover:underline"
-      >
-        Subscribe to the newsletter
-      </a>
-      instead and stay in the loop.
+    <p class="mt-3 max-w-2xl text-muted dark:text-slate-400">
+      Not sure what you need yet? That's normal. Tell me what you're working on — a rough idea is plenty — and we'll
+      figure out the rest together.
     </p>
   </div>
 
-  <ContactUs
-    id="form"
-    title="Fill out this form!"
-    subtitle="Tell me about your project goals, timeline, and any references. Whether you're just starting or scaling up, I'll help guide the entire process."
-    inputs={[
-      {
-        type: 'text',
-        name: 'name',
-        label: 'Name',
-        autocomplete: 'name',
-        required: true,
-      },
-      {
-        type: 'email',
-        name: 'email',
-        label: 'Email',
-        autocomplete: 'email',
-        required: true,
-      },
-      {
-        type: 'select',
-        name: 'project_type',
-        label: 'Project Type',
-        options: [
-          { label: 'Mixing / Mastering', value: 'mixing_mastering' },
-          { label: 'Trailer Sound Design', value: 'trailer_sound_design' },
-          { label: 'AI Workflow Consulting', value: 'ai_workflow_consulting' },
-          { label: 'Other', value: 'other' },
-        ],
-        required: true,
-      },
-      {
-        type: 'select',
-        name: 'budget_range',
-        label: 'Budget Range',
-        options: [
-          { label: 'Under $500', value: 'under_500' },
-          { label: '$500-$1000', value: '500-1000' },
-          { label: '$1,000-$2,500', value: '1000-2500' },
-          { label: '$2,500-$5,000', value: '2500-5000' },
-          { label: '$5000+', value: '5000_plus' },
-        ],
-        required: true,
-      },
-      {
-        type: 'select',
-        name: 'timeline_urgency',
-        label: 'Timeline / Urgency',
-        options: [
-          { label: 'ASAP (Within 1 Month)', value: 'asap' },
-          { label: '1-3 Months', value: '1-3_months' },
-          { label: '3-6 Months', value: '3-6_months' },
-          { label: 'Flexible', value: 'flexible' },
-        ],
-        required: true,
-      },
-      {
-        type: 'checkbox-group',
-        name: 'service_interest',
-        label: 'Service Interest',
-        options: [
-          { label: 'Music Technology (Mixing/Mastering)', value: 'music_technology' },
-          { label: 'Project Management Consulting', value: 'project_management' },
-          { label: 'Creative Training / Workshops', value: 'creative_training' },
-          { label: 'AI & Automation Solutions', value: 'ai_automation' },
-        ],
-      },
-      {
-        type: 'select',
-        name: 'referral_source',
-        label: 'Referral Source',
-        options: [
-          { label: 'LinkedIn', value: 'linkedin' },
-          { label: 'Website / Blog', value: 'website_blog' },
-          { label: 'Word of Mouth / Referral', value: 'word_of_mouth' },
-          { label: 'PMI / AES Network', value: 'pmi_aes_network' },
-          { label: 'Social Media (IG, YouTube, etc.)', value: 'social_media' },
-          { label: 'Other', value: 'other' },
-        ],
-      },
-    ]}
-    textarea={{
-      label: 'Message',
-      name: 'message',
-      required: true,
-    }}
-    disclaimer={{
-      label:
-        'By submitting this contact form, you acknowledge and agree to the collection of your personal information.',
-      name: 'privacy_consent',
-      required: true,
-      value: 'granted',
-    }}
-    button="Send message"
-    description="Technically Creative representative will get back to you as soon as possible typically within 24-48 business hours."
-    successMessage="Thanks! We've received your note and will follow up shortly."
-    errorMessage="We couldn't submit your message. Please double-check the form and try again."
-    hubspot={hubspotForm}
-    classes={{
-      form: 'min-h-[420px]',
-    }}
-  />
+  <WidgetWrapper id="form" containerClass="max-w-xl mx-auto py-4 md:py-8">
+    <form
+      id="contact-form"
+      novalidate
+      class="rounded-2xl border border-primary/30 bg-white/70 p-5 sm:p-8 dark:bg-slate-900/40"
+      data-webhook={leadWebhookUrl}
+    >
+      <div class="mb-4">
+        <label for="contact-name" class="block text-sm font-medium text-slate-900 dark:text-white">Name</label>
+        <input id="contact-name" name="name" type="text" required autocomplete="name" class={inputClass} />
+      </div>
+      <div class="mb-4">
+        <label for="contact-email" class="block text-sm font-medium text-slate-900 dark:text-white">Email</label>
+        <input id="contact-email" name="email" type="email" required autocomplete="email" class={inputClass} />
+      </div>
+      <div class="mb-4">
+        <label for="contact-phone" class="block text-sm font-medium text-slate-900 dark:text-white">
+          Phone <span class="font-normal text-muted dark:text-slate-400">(optional — if you'd rather text or call)</span>
+        </label>
+        <input id="contact-phone" name="phone" type="tel" autocomplete="tel" class={inputClass} />
+      </div>
+      <div class="mb-4">
+        <label for="contact-message" class="block text-sm font-medium text-slate-900 dark:text-white">
+          What's on your mind?
+        </label>
+        <textarea
+          id="contact-message"
+          name="message"
+          rows="4"
+          required
+          placeholder="A song to mix, a messy workflow, a question — anything."
+          class={inputClass}></textarea>
+      </div>
 
-  <!-- Features2 Widget ************** -->
+      <!-- Honeypot: real visitors never see or fill this. -->
+      <div class="hidden" aria-hidden="true">
+        <label for="contact-website">Leave this field empty</label>
+        <input id="contact-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+      </div>
 
-  <Features2
-    title="Selection details"
-    items={[
-      {
-        title: 'Project Type',
-        description: '<ul><li>Mixing / Mastering</li><li>Trailer Sound Design</li><li>AI Workflow Consulting</li><li>Other</li></ul>',
-      },
-      {
-        title: 'Budget Range',
-        description: '<ul><li>Under $500</li><li>$500-$1000</li><li>$1,000-$2,500</li><li>$2,500-$5,000</li><li>$5000+</li></ul>',
-      },
-      {
-        title: 'Timeline / Urgency',
-        description: '<ul><li>ASAP (Within 1 Month)</li><li>1-3 Months</li><li>3-6 Months</li><li>Flexible</li></ul>',
-      },
-      {
-        title: 'Referral Source',
-        description: '<ul><li>LinkedIn</li><li>Website / Blog</li><li>Word of Mouth / Referral</li><li>PMI / AES Network</li><li>Social Media (IG, YouTube, etc.)</li><li>Other</li></ul>',
-      },
-    ]}
-  />
+      <p id="contact-error" class="mb-4 hidden text-sm text-rose-600" role="alert"></p>
+      <p id="contact-success" class="mb-4 hidden text-sm text-emerald-600" role="status">
+        Got it — thanks! I'll reply by email, usually within 24–48 business hours.
+      </p>
+
+      <button
+        type="submit"
+        id="contact-submit"
+        class="w-full rounded-lg bg-primary px-4 py-3 text-base font-semibold text-white transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
+      >
+        Let's talk
+      </button>
+      <p class="mt-4 text-center text-xs text-muted dark:text-slate-400">
+        I only use your details to reply to you. Or email me directly at
+        <a href={`mailto:${directEmail}`} class="font-semibold text-primary hover:underline">{directEmail}</a>.
+      </p>
+    </form>
+  </WidgetWrapper>
 
   <WidgetWrapper id="platforms" containerClass="max-w-4xl mx-auto py-12 md:py-16">
     <div class="text-center">
@@ -267,5 +187,76 @@ const hubspotForm = {
     </div>
   </WidgetWrapper>
 </Layout>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement | null;
+  const errorEl = document.getElementById('contact-error');
+  const successEl = document.getElementById('contact-success');
+  const submitBtn = document.getElementById('contact-submit') as HTMLButtonElement | null;
+  const FALLBACK = "Something went wrong sending that — please email contact@technicallycreative.work and I'll pick it up from there.";
+
+  const show = (el: HTMLElement | null, text?: string) => {
+    if (!el) return;
+    if (text) el.textContent = text;
+    el.classList.remove('hidden');
+  };
+
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    errorEl?.classList.add('hidden');
+    successEl?.classList.add('hidden');
+
+    const data = new FormData(form);
+    const name = String(data.get('name') ?? '').trim();
+    const email = String(data.get('email') ?? '').trim();
+    const phone = String(data.get('phone') ?? '').trim();
+    const message = String(data.get('message') ?? '').trim();
+
+    if (!name || !message || !/^[^s@]+@[^s@]+.[^s@]+$/.test(email)) {
+      show(errorEl, 'Please add your name, a valid email, and a quick note.');
+      return;
+    }
+
+    // Honeypot filled in = a bot. Pretend it worked, send nothing.
+    if (String(data.get('website') ?? '').trim()) {
+      show(successEl);
+      form.reset();
+      return;
+    }
+
+    const originalLabel = submitBtn?.textContent ?? '';
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending…';
+    }
+
+    try {
+      const response = await fetch(form.dataset.webhook ?? '', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name,
+          email,
+          phone,
+          service_interest: 'General inquiry',
+          project_description: message,
+          how_heard: 'Website',
+          source_page: window.location.href,
+        }),
+      });
+      if (!response.ok) throw new Error(`Webhook responded ${response.status}`);
+      show(successEl);
+      form.reset();
+    } catch (error) {
+      console.error('Contact form submission failed', error);
+      show(errorEl, FALLBACK);
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalLabel;
+      }
+    }
+  });
+</script>
 
 
