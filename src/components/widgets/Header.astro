@@ -47,6 +47,10 @@ const {
   position = 'center',
 } = Astro.props;
 
+// One text button in the same spot on every page; /account takes over once signed in.
+const loginLinkClass =
+  'inline-flex items-center rounded-md border border-primary px-3 py-1.5 text-sm font-semibold whitespace-nowrap text-primary hover:bg-primary hover:text-white transition-colors';
+
 const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
 ---
 
@@ -80,12 +84,8 @@ const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
       <div class="flex items-center gap-2 md:hidden">
         {
           loginAction && (
-            <a
-              href={loginAction.href}
-              aria-label={loginAction.text}
-              class="relative inline-flex items-center justify-center rounded-full p-2.5 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
-            >
-              {loginAction.icon && <Icon name={loginAction.icon} class="w-5 h-5" />}
+            <a href={loginAction.href} data-auth-link class:list={[loginLinkClass, 'max-w-[9rem]']}>
+              <span data-auth-label>{loginAction.text}</span>
             </a>
           )
         }
@@ -193,13 +193,10 @@ const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
           loginAction && (
             <a
               href={loginAction.href}
-              aria-label={loginAction.text}
-              class="header-nav-link relative hidden md:inline-flex items-center justify-center rounded-full p-2.5 ml-4 rtl:ml-0 rtl:mr-4 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
+              data-auth-link
+              class:list={[loginLinkClass, 'hidden md:inline-flex ml-4 rtl:ml-0 rtl:mr-4 max-w-[16rem]']}
             >
-              {loginAction.icon && <Icon name={loginAction.icon} class="w-5 h-5" />}
-              <span class="nav-tooltip" role="tooltip">
-                {loginAction.text}
-              </span>
+              <span data-auth-label>{loginAction.text}</span>
             </a>
           )
         }
@@ -227,6 +224,36 @@ const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
     </div>
   </div>
 </header>
+
+<script>
+  // Most pages are prerendered, so the server can't know who is signed in.
+  // Swap the Log In button client-side from the Supabase session cookie.
+  // getSession() only reads local state — display only, never a security check.
+  import { createSupabaseBrowserClient } from '~/lib/supabase-client';
+
+  async function showSignedInState() {
+    try {
+      const { data } = await createSupabaseBrowserClient().auth.getSession();
+      const user = data.session?.user;
+      if (!user) return;
+      const meta = user.user_metadata ?? {};
+      const name = meta.username || meta.full_name || meta.name || user.email?.split('@')[0] || 'Member';
+      document.querySelectorAll<HTMLAnchorElement>('[data-auth-link]').forEach((link) => {
+        link.href = '/account';
+        link.title = 'Go to your account';
+        const label = link.querySelector('[data-auth-label]');
+        if (label) {
+          label.textContent = `${name} logged in`;
+          label.classList.add('truncate');
+        }
+      });
+    } catch {
+      // Stay on the default Log In button.
+    }
+  }
+
+  showSignedInState();
+</script>
 
 <style>
   .nav-tooltip {
