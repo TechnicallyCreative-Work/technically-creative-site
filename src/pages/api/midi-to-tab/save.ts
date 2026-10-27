@@ -50,7 +50,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
   const uploadError = uploads.find((result) => result.error)?.error;
   if (uploadError) {
-    console.error('NoteMapper save upload failed:', uploadError);
+    console.error('Midi to Tab save upload failed:', uploadError);
     return new Response(JSON.stringify({ error: 'Could not upload your files. Please try again.' }), { status: 500 });
   }
 
@@ -64,7 +64,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
   });
 
   if (insertError) {
-    console.error('NoteMapper save row insert failed:', insertError);
+    console.error('Midi to Tab save row insert failed:', insertError);
     return new Response(JSON.stringify({ error: 'Could not save your work. Please try again.' }), { status: 500 });
   }
 

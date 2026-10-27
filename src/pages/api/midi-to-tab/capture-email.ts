@@ -2,7 +2,7 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { createSupabaseServiceRoleClient } from '~/lib/supabase-server';
-import { getOrCreateUsageRow, type NotemapperUsageRow } from '~/lib/notemapper-usage';
+import { getOrCreateUsageRow, type MidiToTabUsageRow } from '~/lib/midi-to-tab-usage';
 import { subscribeToMailerLite } from '~/lib/mailerlite';
 import { upsertHubspotContact } from '~/lib/hubspot';
 
@@ -24,12 +24,12 @@ export const POST: APIRoute = async ({ request, cookies, locals }) => {
   const { user } = locals;
 
   let service: ReturnType<typeof createSupabaseServiceRoleClient>;
-  let row: NotemapperUsageRow;
+  let row: MidiToTabUsageRow;
   try {
     service = createSupabaseServiceRoleClient();
     row = await getOrCreateUsageRow(service, { anonId, userId: user?.id ?? null });
   } catch (err) {
-    console.error('NoteMapper usage row lookup failed:', err);
+    console.error('Midi to Tab usage row lookup failed:', err);
     return new Response(JSON.stringify({ error: 'Something went wrong. Please try again later.' }), { status: 500 });
   }
 
@@ -39,7 +39,7 @@ export const POST: APIRoute = async ({ request, cookies, locals }) => {
     .eq('id', row.id);
 
   if (error) {
-    console.error('NoteMapper usage row update failed:', error);
+    console.error('Midi to Tab usage row update failed:', error);
     return new Response(JSON.stringify({ error: 'Something went wrong. Please try again later.' }), { status: 500 });
   }
 
@@ -51,7 +51,7 @@ export const POST: APIRoute = async ({ request, cookies, locals }) => {
   ]);
   results.forEach((result) => {
     if (result.status === 'rejected') {
-      console.error('NoteMapper lead routing failed:', result.reason);
+      console.error('Midi to Tab lead routing failed:', result.reason);
     }
   });
 

@@ -57,7 +57,7 @@ export async function subscribeToMailerLite(email: string, groupId?: string, opt
 }
 
 // Removes the subscriber from one group only (they stay in MailerLite and in any
-// other lists, e.g. the NoteMapper group). A subscriber MailerLite has never
+// other lists, e.g. the Midi to Tab group). A subscriber MailerLite has never
 // heard of is already "not subscribed", so that is treated as success.
 export async function removeFromMailerLiteGroup(email: string, groupId: string) {
   const lookup = await fetch(`https://connect.mailerlite.com/api/subscribers/${encodeURIComponent(email)}`, {
