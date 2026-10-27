@@ -30,7 +30,21 @@ const metadata = {
   <WidgetWrapper containerClass="max-w-md mx-auto py-4 md:py-8">
     <form id="signup-form" class="rounded-2xl border border-primary/30 bg-white/70 p-6 dark:bg-slate-900/40">
       <div class="mb-4">
-        <label for="email" class="block text-sm font-medium text-slate-900 dark:text-white">Email</label>
+        <label for="username" class="block text-sm font-medium text-slate-900 dark:text-white">Username</label>
+        <input
+          id="username"
+          name="username"
+          type="text"
+          required
+          minlength="3"
+          maxlength="30"
+          autocomplete="username"
+          class="mt-1 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-slate-900"
+        />
+        <p class="mt-1 text-xs text-muted dark:text-slate-400">Shown in the site header when you're logged in.</p>
+      </div>
+      <div class="mb-4">
+        <label for="email"class="block text-sm font-medium text-slate-900 dark:text-white">Email</label>
         <input
           id="email"
           name="email"
@@ -142,6 +156,7 @@ const metadata = {
     }
 
     const formData = new FormData(form);
+    const username = String(formData.get('username') ?? '').trim();
     const email = String(formData.get('email') ?? '').trim();
     const password = String(formData.get('password') ?? '');
     const newsletter = formData.get('newsletter') === 'on';
@@ -159,7 +174,8 @@ const metadata = {
         // profiles.newsletter_opt_in. MailerLite is only told once the email
         // is confirmed (see the account page), so nobody can subscribe an
         // address they don't own.
-        data: { newsletter_opt_in: newsletter },
+        // username is display-only (header "name logged in"), kept in user metadata.
+        data: { newsletter_opt_in: newsletter, username },
       },
     });
 
