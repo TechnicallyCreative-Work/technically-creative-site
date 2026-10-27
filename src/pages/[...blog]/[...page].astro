@@ -7,6 +7,7 @@ import BlogList from '~/components/blog/List.astro';
 import Headline from '~/components/blog/Headline.astro';
 import Pagination from '~/components/blog/Pagination.astro';
 import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
+import SocialFeed from '~/components/widgets/SocialFeed.astro';
 // import PostTags from "~/components/blog/Tags.astro";
 
 import { blogListRobots, getStaticPathsBlogList } from '~/utils/blog';
@@ -156,6 +157,13 @@ const followLinks = [
           )}
         </div>
       </WidgetWrapper>
+
+      <SocialFeed
+        youtubeChannelId="UCDwChFAt-d_WEEnpHdHQNyQ"
+        youtubeChannelUrl="https://www.youtube.com/@rootcauseriff"
+        facebookPageUrl="https://www.facebook.com/people/Technically-Creative/61581256443170/"
+        instagramPostUrls={[]}
+      />
     </>
   )}
 

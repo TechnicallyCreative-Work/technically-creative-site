@@ -1,0 +1,138 @@
+---
+import { Icon } from 'astro-icon/components';
+import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
+
+export interface Props {
+  id?: string;
+  youtubeChannelId?: string;
+  youtubeChannelUrl?: string;
+  facebookPageUrl?: string;
+  // Public Instagram post/reel URLs — Instagram has no keyless feed, so these are pasted in by hand.
+  instagramPostUrls?: string[];
+  videoCount?: number;
+}
+
+const {
+  id = 'social-feed',
+  youtubeChannelId,
+  youtubeChannelUrl,
+  facebookPageUrl,
+  instagramPostUrls = [],
+  videoCount = 3,
+} = Astro.props;
+
+interface Video {
+  id: string;
+  title: string;
+}
+
+// Read from the channel's public RSS at build time (no API key), so the list
+// refreshes on each deploy. Any failure just hides the YouTube block.
+let videos: Video[] = [];
+if (youtubeChannelId) {
+  try {
+    const res = await fetch(`https://www.youtube.com/feeds/videos.xml?channel_id=${youtubeChannelId}`, {
+      signal: AbortSignal.timeout(8000),
+    });
+    if (res.ok) {
+      const xml = await res.text();
+      const decode = (s: string) =>
+        s.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+      videos = [...xml.matchAll(/<entry>[\s\S]*?<yt:videoId>([^<]+)<\/yt:videoId>[\s\S]*?<title>([^<]*)<\/title>/g)]
+        .slice(0, videoCount)
+        .map((m) => ({ id: m[1], title: decode(m[2]).trim() }));
+    }
+  } catch (err) {
+    console.warn('SocialFeed: YouTube feed fetch failed', err);
+  }
+}
+
+const hasInstagram = instagramPostUrls.length > 0;
+const hasAnything = videos.length > 0 || Boolean(facebookPageUrl) || hasInstagram;
+---
+
+{
+  hasAnything && (
+    <WidgetWrapper id={id} containerClass="max-w-4xl mx-auto py-4 md:py-8">
+      <div class="flex items-center gap-3 text-primary">
+        <Icon name="tabler:rss" class="h-6 w-6" />
+        <h2 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-2xl">Social Feed</h2>
+      </div>
+
+      {videos.length > 0 && (
+        <div class="mt-6">
+          <div class="flex items-center justify-between">
+            <h3 class="flex items-center gap-2 font-semibold text-slate-900 dark:text-white">
+              <Icon name="tabler:brand-youtube" class="h-5 w-5" style="color:#FF0000" /> Latest on YouTube
+            </h3>
+            {youtubeChannelUrl && (
+              <a href={youtubeChannelUrl} target="_blank" rel="noopener noreferrer" class="text-sm font-medium text-primary hover:underline">
+                View channel
+              </a>
+            )}
+          </div>
+          <div class="mt-3 grid gap-4 sm:grid-cols-3">
+            {videos.map((video) => (
+              <div class="overflow-hidden rounded-2xl border border-primary/20 bg-white/70 dark:bg-slate-900/40">
+                <iframe
+                  class="aspect-video w-full"
+                  src={`https://www.youtube-nocookie.com/embed/${video.id}`}
+                  title={video.title}
+                  loading="lazy"
+                  allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allowfullscreen
+                />
+                <p class="line-clamp-2 p-3 text-sm font-medium text-slate-900 dark:text-white">{video.title}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {(facebookPageUrl || hasInstagram) && (
+        <div class="mt-8 grid gap-6 md:grid-cols-2">
+          {facebookPageUrl && (
+            <div>
+              <h3 class="flex items-center gap-2 font-semibold text-slate-900 dark:text-white">
+                <Icon name="tabler:brand-facebook" class="h-5 w-5" style="color:#1877F2" /> Facebook
+              </h3>
+              <div class="mt-3 overflow-hidden rounded-2xl border border-primary/20 bg-white/70 dark:bg-slate-900/40">
+                <iframe
+                  title="Technically Creative on Facebook"
+                  src={`https://www.facebook.com/plugins/page.php?href=${encodeURIComponent(facebookPageUrl)}&tabs=timeline&width=500&height=560&small_header=true&adapt_container_width=true&hide_cover=true&show_facepile=false`}
+                  class="h-[560px] w-full"
+                  style="border:none;overflow:hidden"
+                  loading="lazy"
+                  allow="encrypted-media"
+                />
+              </div>
+            </div>
+          )}
+
+          {hasInstagram && (
+            <div>
+              <h3 class="flex items-center gap-2 font-semibold text-slate-900 dark:text-white">
+                <Icon name="tabler:brand-instagram" class="h-5 w-5" style="color:#E1306C" /> Instagram
+              </h3>
+              <div class="mt-3 space-y-4">
+                {instagramPostUrls.map((url) => (
+                  <blockquote
+                    class="instagram-media"
+                    data-instgrm-permalink={url}
+                    data-instgrm-version="14"
+                    style="width:100%;max-width:540px;min-width:280px;margin:0 auto"
+                  >
+                    <a href={url} target="_blank" rel="noopener noreferrer">View this post on Instagram</a>
+                  </blockquote>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </WidgetWrapper>
+  )
+}
+
+{hasInstagram && <script is:inline async src="https://www.instagram.com/embed.js"></script>}
