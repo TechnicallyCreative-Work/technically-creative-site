@@ -7,3 +7,29 @@
   for = "/_astro/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# NoteMapper → TechCre8 Midi to Tab rename. force = true so these win over the
+# SSR function routes. API routes use 308 so POSTs from cached pages keep their method.
+[[redirects]]
+  from = "/notemapper"
+  to = "/midi-to-tab"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/notemapper/*"
+  to = "/midi-to-tab/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/account/notemapper-saves"
+  to = "/account/midi-to-tab-saves"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/api/notemapper/*"
+  to = "/api/midi-to-tab/:splat"
+  status = 308
+  force = true
