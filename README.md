@@ -8,7 +8,7 @@ Built with **[Astro 5](https://astro.build/)** + **[Tailwind CSS](https://tailwi
 
 - **Marketing site** — home, services, portfolio, about, credentials, local services, contact.
 - **Blog** — MDX-powered posts with categories, tags, and RSS feed.
-- **Free tools** — starting with [NoteMapper](https://technicallycreative.work/notemapper), a MIDI-to-guitar-tab converter.
+- **Free tools** — starting with [TechCre8 Midi to Tab](https://technicallycreative.work/midi-to-tab), a MIDI-to-guitar-tab converter.
 - **Membership** — a free tier (email capture, unlimited tool access) and a paid Member tier (Stripe subscription, Discord access), with a Premier tier coming later.
 - **Accounts** — Supabase-backed auth (sign up / log in / account management), gated by `src/middleware.ts`.
 
@@ -28,7 +28,7 @@ Built with **[Astro 5](https://astro.build/)** + **[Tailwind CSS](https://tailwi
 
 ```
 /
-├── public/                  # Static assets served as-is (incl. NoteMapper's vendored Midi.js)
+├── public/                  # Static assets served as-is (incl. Midi to Tab's vendored Midi.js)
 ├── scripts/                 # Internal tooling (daily-log append/ship scripts)
 ├── src/
 │   ├── assets/               # Images, favicons, Tailwind entrypoint
@@ -43,11 +43,11 @@ Built with **[Astro 5](https://astro.build/)** + **[Tailwind CSS](https://tailwi
 │   ├── lib/                   # Server-only clients: Supabase, Stripe, MailerLite, HubSpot
 │   ├── pages/
 │   │   ├── [...blog]/          # Blog index/category/tag routes
-│   │   ├── api/                # Astro API routes (auth, Stripe, NoteMapper, newsletter)
+│   │   ├── api/                # Astro API routes (auth, Stripe, Midi to Tab, newsletter)
 │   │   ├── account/             # Signed-in member pages
 │   │   ├── services/            # Individual service detail pages
 │   │   ├── membership.astro     # Free / Member / Premier pricing tiers
-│   │   ├── notemapper.astro     # Free NoteMapper tool
+│   │   ├── midi-to-tab.astro    # Free TechCre8 Midi to Tab tool
 │   │   └── ...                  # index, about, contact, portfolio, etc.
 │   ├── middleware.ts           # Auth gate + anonymous visitor cookie
 │   ├── navigation.ts           # Header/footer nav data
@@ -80,7 +80,7 @@ See `.env.example` for the full list of required environment variables and where
 
 ## Deployment
 
-Pushes to `master` deploy to Netlify via `.github/workflows/deploy-netlify.yml`. GitHub Pages deployment (`deploy.yml`) is disabled — this site has server-rendered routes (auth, Stripe checkout, NoteMapper's usage gate) that static-only Pages hosting can't serve.
+Pushes to `master` deploy to Netlify via `.github/workflows/deploy-netlify.yml`. GitHub Pages deployment (`deploy.yml`) is disabled — this site has server-rendered routes (auth, Stripe checkout, Midi to Tab's usage gate) that static-only Pages hosting can't serve.
 
 ## Database
 
