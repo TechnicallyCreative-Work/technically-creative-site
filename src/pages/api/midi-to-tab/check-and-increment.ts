@@ -16,9 +16,15 @@ export const POST: APIRoute = async ({ cookies, locals }) => {
   const { user, supabase } = locals;
 
   let isPaidMember = false;
+  let newsletterUnlocked = false;
   if (user) {
-    const { data: profile } = await supabase.from('profiles').select('membership_tier').eq('id', user.id).single();
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('membership_tier, newsletter_opt_in')
+      .eq('id', user.id)
+      .single();
     isPaidMember = profile?.membership_tier === 'paid';
+    newsletterUnlocked = profile?.newsletter_opt_in === true;
   }
 
   let service: ReturnType<typeof createSupabaseServiceRoleClient>;
@@ -31,9 +37,10 @@ export const POST: APIRoute = async ({ cookies, locals }) => {
     return new Response(JSON.stringify({ error: 'Something went wrong. Please try again later.' }), { status: 500 });
   }
 
-  // Paying members and anyone who's already captured an email get unlimited
-  // use — still counted for analytics, but never blocked.
-  if (isPaidMember || row.email_captured_at) {
+  // Paying members, anyone who's already captured an email, and signed-in
+  // accounts opted in to the newsletter get unlimited use — still counted for
+  // analytics, but never blocked.
+  if (isPaidMember || newsletterUnlocked || row.email_captured_at) {
     await service
       .from('notemapper_usage')
       .update({ use_count: row.use_count + 1, updated_at: new Date().toISOString() })

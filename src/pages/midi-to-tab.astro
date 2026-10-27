@@ -12,9 +12,15 @@ const { user, supabase } = Astro.locals;
 const anonId = Astro.cookies.get('nm_uid')!.value;
 
 let isPaidMember = false;
+let newsletterOptIn = false;
 if (user) {
-  const { data: profile } = await supabase.from('profiles').select('membership_tier').eq('id', user.id).single();
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('membership_tier, newsletter_opt_in')
+    .eq('id', user.id)
+    .single();
   isPaidMember = profile?.membership_tier === 'paid';
+  newsletterOptIn = profile?.newsletter_opt_in === true;
 }
 
 // A Supabase hiccup here (or the usage row not existing yet) shouldn't take
@@ -34,6 +40,8 @@ try {
 const midiToTabState = {
   isSignedIn: Boolean(user),
   isPaidMember,
+  // Signed-in account with the newsletter opt-in counts as the free "email" unlock.
+  newsletterUnlocked: Boolean(user) && newsletterOptIn,
   useCount: usageRow.use_count,
   emailCaptured: Boolean(usageRow.email_captured_at),
 };
@@ -466,9 +474,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   const k=localStorage.getItem('tc_api_key');
   if(k){document.getElementById('apiSaved').style.display='block';document.getElementById('apiKeyInput').placeholder='Key saved — paste new key to update';}
   const state=window.__MIDI_TO_TAB_STATE__||{};
-  if(!state.isPaidMember&&!state.emailCaptured){
-    updateUsageBanner(Math.max(0,3-(state.useCount||0)));
-  }
+  updateUsageBanner(Math.max(0,3-(state.useCount||0)));
 });
 
 // ── BPM DETECTION ──────────────────────────────────────────────
@@ -971,7 +977,12 @@ function showStatus(msg,type){
 function updateUsageBanner(remaining){
   const state=window.__MIDI_TO_TAB_STATE__||{};
   const banner=document.getElementById('usageBanner');
-  if(state.isPaidMember||state.emailCaptured||remaining===undefined){
+  if(state.isPaidMember||state.emailCaptured||state.newsletterUnlocked){
+    banner.textContent='Unlimited conversions unlocked.';
+    banner.style.display='block';
+    return;
+  }
+  if(remaining===undefined){
     banner.style.display='none';
     return;
   }
