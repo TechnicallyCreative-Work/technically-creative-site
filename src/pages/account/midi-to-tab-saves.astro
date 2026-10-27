@@ -40,7 +40,7 @@ const savesWithLinks = await Promise.all(
 );
 
 const metadata = {
-  title: 'My NoteMapper Saves — Technically Creative LLC',
+  title: 'My Midi to Tab Saves — Technically Creative LLC',
   robots: { index: false, follow: false },
 };
 ---
@@ -52,10 +52,10 @@ const metadata = {
   <BrandBanner />
 
   <div class="container pt-10 pb-2 md:pt-14">
-    <h1 class="text-3xl font-bold tracking-tight md:text-4xl">My NoteMapper Saves</h1>
+    <h1 class="text-3xl font-bold tracking-tight md:text-4xl">My Midi to Tab Saves</h1>
     <p class="mt-3 max-w-2xl text-muted dark:text-slate-400">
-      Original MIDI files and generated exports saved from <a href="/notemapper" class="text-primary hover:underline"
-        >NoteMapper</a
+      Original MIDI files and generated exports saved from <a href="/midi-to-tab" class="text-primary hover:underline"
+        >Midi to Tab</a
       >.
     </p>
   </div>
@@ -64,7 +64,7 @@ const metadata = {
     {
       !isPaid && (
         <div class="rounded-2xl border border-primary/30 bg-white/70 p-6 text-sm dark:bg-slate-900/40">
-          Saving NoteMapper work requires a paid membership.{' '}
+          Saving Midi to Tab work requires a paid membership.{' '}
           <a href="/account" class="font-semibold text-primary hover:underline">
             Upgrade from your account page
           </a>
@@ -76,7 +76,7 @@ const metadata = {
     {
       isPaid && savesWithLinks.length === 0 && (
         <div class="rounded-2xl border border-primary/30 bg-white/70 p-6 text-sm dark:bg-slate-900/40">
-          No saves yet — convert a file on the NoteMapper tool and click "Save to My Account".
+          No saves yet — convert a file on the Midi to Tab tool and click "Save to My Account".
         </div>
       )
     }

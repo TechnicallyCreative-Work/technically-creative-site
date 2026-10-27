@@ -6,7 +6,7 @@ export async function upsertHubspotContact(email: string, props: { leadSource?: 
     email,
     // notemapper_lead_source is a plain text property, separate from the
     // curated "how did you hear about us" referral_source dropdown (which is
-    // a fixed picklist that rejects arbitrary values like "NoteMapper").
+    // a fixed picklist that rejects arbitrary values like "Midi to Tab").
     ...(props.leadSource ? { notemapper_lead_source: props.leadSource } : {}),
   };
 

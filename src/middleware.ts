@@ -20,10 +20,10 @@ export const onRequest = defineMiddleware(async (context, next) => {
     return next();
   }
 
-  // Anonymous visitor id for the free-tier usage gate (NoteMapper today, other
+  // Anonymous visitor id for the free-tier usage gate (Midi to Tab today, other
   // free tools later) — set here rather than per-page so a visitor who signs
   // up from /membership (or anywhere else) is the same tracked visitor as one
-  // who hits the gate directly on /notemapper.
+  // who hits the gate directly on /midi-to-tab.
   if (!context.cookies.get('nm_uid')?.value) {
     context.cookies.set('nm_uid', crypto.randomUUID(), {
       httpOnly: true,

@@ -2,7 +2,7 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { createSupabaseServiceRoleClient } from '~/lib/supabase-server';
-import { getOrCreateUsageRow, type NotemapperUsageRow } from '~/lib/notemapper-usage';
+import { getOrCreateUsageRow, type MidiToTabUsageRow } from '~/lib/midi-to-tab-usage';
 
 const FREE_USES = 3;
 
@@ -22,12 +22,12 @@ export const POST: APIRoute = async ({ cookies, locals }) => {
   }
 
   let service: ReturnType<typeof createSupabaseServiceRoleClient>;
-  let row: NotemapperUsageRow;
+  let row: MidiToTabUsageRow;
   try {
     service = createSupabaseServiceRoleClient();
     row = await getOrCreateUsageRow(service, { anonId, userId: user?.id ?? null });
   } catch (err) {
-    console.error('NoteMapper usage row lookup failed:', err);
+    console.error('Midi to Tab usage row lookup failed:', err);
     return new Response(JSON.stringify({ error: 'Something went wrong. Please try again later.' }), { status: 500 });
   }
 

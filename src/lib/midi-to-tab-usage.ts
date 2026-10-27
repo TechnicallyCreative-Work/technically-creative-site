@@ -1,6 +1,6 @@
 import type { PostgrestError, SupabaseClient } from '@supabase/supabase-js';
 
-export interface NotemapperUsageRow {
+export interface MidiToTabUsageRow {
   id: string;
   anon_id: string;
   user_id: string | null;
@@ -19,7 +19,7 @@ function isUniqueViolation(error: PostgrestError | null): boolean {
 // Looks up (or creates) the notemapper_usage row for the current visitor,
 // preferring a signed-in user's row and backfilling `user_id` onto an
 // anonymous row from before they had an account — see the "Identity/tracking
-// model" section of the NoteMapper plan for why this ordering matters.
+// model" section of the Midi to Tab plan for why this ordering matters.
 // Expects a service-role client (this table has no client-role RLS policies).
 //
 // `user_id` and `anon_id` both carry unique constraints, and this page is
@@ -31,7 +31,7 @@ function isUniqueViolation(error: PostgrestError | null): boolean {
 export async function getOrCreateUsageRow(
   supabase: SupabaseClient,
   { anonId, userId }: { anonId: string; userId: string | null }
-): Promise<NotemapperUsageRow> {
+): Promise<MidiToTabUsageRow> {
   if (userId) {
     const { data: byUser, error: byUserError } = await supabase
       .from('notemapper_usage')

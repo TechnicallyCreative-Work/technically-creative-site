@@ -51,7 +51,7 @@ const metadata = {
         </div>
         <ul class="mb-6 flex-1 space-y-2 text-left text-sm">
           <li class="flex items-start gap-2">
-            <Icon name="tabler:check" class="mt-0.5 h-4 w-4 shrink-0 text-primary" /> Unlimited NoteMapper conversions
+            <Icon name="tabler:check" class="mt-0.5 h-4 w-4 shrink-0 text-primary" /> Unlimited Midi to Tab conversions
           </li>
           <li class="flex items-start gap-2">
             <Icon name="tabler:check" class="mt-0.5 h-4 w-4 shrink-0 text-primary" /> Unlimited access to future free tools
@@ -186,7 +186,7 @@ const metadata = {
     const email = String(new FormData(form).get('email') ?? '');
 
     try {
-      const res = await fetch('/api/notemapper/capture-email', {
+      const res = await fetch('/api/midi-to-tab/capture-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
@@ -197,7 +197,7 @@ const metadata = {
         throw new Error(data.error ?? 'Something went wrong.');
       }
 
-      // Best-effort general newsletter subscribe alongside the notemapper-gate
+      // Best-effort general newsletter subscribe alongside the Midi to Tab gate
       // capture above — the gate write is what actually unlocks the tool, so a
       // hiccup here shouldn't surface as an error to the visitor.
       fetch('/api/newsletter/subscribe', {
