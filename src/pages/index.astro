@@ -2,6 +2,7 @@
 import Layout from '~/layouts/PageLayout.astro';
 
 import Hero from '~/components/widgets/Hero.astro';
+import SplashScreen from '~/components/widgets/SplashScreen.astro';
 import BrandBanner from '~/components/widgets/BrandBanner.astro';
 import Features2 from '~/components/widgets/Features2.astro';
 import Steps from '~/components/widgets/Steps.astro';
@@ -17,6 +18,7 @@ const metadata = {
 ---
 
 <Layout metadata={metadata}>
+  <SplashScreen />
   <BrandBanner />
 
   <!-- Hero Widget ******************* -->

@@ -12,7 +12,7 @@ const manifest = {
   start_url: '/',
   scope: '/',
   display: 'standalone',
-  background_color: '#0a0a14',
+  background_color: '#07070d',
   theme_color: '#00c8ff',
   icons: [
     {

@@ -1,0 +1,156 @@
+---
+import splashIcon from '~/assets/favicons/icon-256.png';
+---
+
+<div id="splash-screen" aria-hidden="true">
+  <img src={splashIcon.src} width="160" height="160" alt="" class="splash-icon" />
+  <p class="splash-title">TechCre8</p>
+  <div class="splash-bar"><span class="splash-bar-fill"></span></div>
+</div>
+
+<style is:global>
+  #splash-screen {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
+    justify-content: center;
+    /* Dark industrial base: faint grid + vignette over near-black. */
+    background:
+      radial-gradient(ellipse at center, rgba(155, 48, 255, 0.12) 0%, rgba(10, 10, 20, 0) 60%),
+      repeating-linear-gradient(0deg, rgba(0, 200, 255, 0.04) 0 1px, transparent 1px 40px),
+      repeating-linear-gradient(90deg, rgba(0, 200, 255, 0.04) 0 1px, transparent 1px 40px),
+      #07070d;
+    cursor: pointer;
+    transition:
+      opacity 0.7s ease,
+      transform 0.7s ease;
+  }
+  #splash-screen.is-visible {
+    display: flex;
+  }
+  #splash-screen.is-leaving {
+    opacity: 0;
+    transform: scale(1.08);
+    pointer-events: none;
+  }
+  #splash-screen .splash-icon {
+    /* The icon has a pure black background; "lighten" lets the splash color show through. */
+    mix-blend-mode: lighten;
+    width: 160px;
+    height: 160px;
+    animation: splash-in 0.9s ease-out both;
+  }
+  #splash-screen .splash-title {
+    margin: 0;
+    font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 0.4em;
+    text-indent: 0.4em;
+    text-transform: uppercase;
+    color: rgb(0 200 255);
+    text-shadow:
+      0 0 10px rgba(0, 200, 255, 0.7),
+      2px 0 rgba(255, 51, 153, 0.6);
+    animation: splash-in 1.2s ease-out 0.3s both;
+  }
+  #splash-screen .splash-bar {
+    width: min(220px, 55vw);
+    height: 5px;
+    border-radius: 9999px;
+    background: rgba(0, 200, 255, 0.12);
+    border: 1px solid rgba(0, 200, 255, 0.25);
+    overflow: hidden;
+    animation: splash-in 1.2s ease-out 0.3s both;
+  }
+  #splash-screen .splash-bar-fill {
+    display: block;
+    height: 100%;
+    width: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, rgb(0 200 255), rgb(155 48 255), rgb(255 51 153));
+    box-shadow:
+      0 0 12px rgba(155, 48, 255, 0.7),
+      0 0 4px rgba(0, 200, 255, 0.8);
+    transform-origin: left;
+    animation: splash-load 3.4s cubic-bezier(0.45, 0.05, 0.25, 1) 0.6s both;
+  }
+  @keyframes splash-load {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+  @keyframes splash-in {
+    from {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #splash-screen,
+    #splash-screen .splash-icon,
+    #splash-screen .splash-title,
+    #splash-screen .splash-bar,
+    #splash-screen .splash-bar-fill {
+      transition-duration: 0.01s;
+      animation-duration: 0.01s;
+    }
+  }
+</style>
+
+<script is:inline>
+  // Plays once per browser session (sessionStorage clears when the browser is fully closed).
+  (function () {
+    var splash = document.getElementById('splash-screen');
+    if (!splash) return;
+
+    var seen = false;
+    try {
+      seen = sessionStorage.getItem('tc-splash-seen') === '1';
+      sessionStorage.setItem('tc-splash-seen', '1');
+    } catch (e) {}
+
+    // Installed web apps already get the OS launch screen.
+    var standalone =
+      window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    if (seen || standalone) return;
+
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var root = document.documentElement;
+    var prevOverflow = root.style.overflow;
+    root.style.overflow = 'hidden';
+    splash.classList.add('is-visible');
+
+    var done = false;
+    var dismiss = function () {
+      if (done) return;
+      done = true;
+      splash.classList.add('is-leaving');
+      root.style.overflow = prevOverflow;
+      setTimeout(function () {
+        splash.remove();
+      }, reduced ? 50 : 800);
+    };
+
+    splash.addEventListener('click', dismiss);
+    // Leave once the loading bar finishes (with a short beat so it reads as "loaded").
+    var fill = splash.querySelector('.splash-bar-fill');
+    if (fill && !reduced) {
+      fill.addEventListener('animationend', function () {
+        setTimeout(dismiss, 400);
+      });
+    }
+    setTimeout(dismiss, reduced ? 300 : 5000); // safety net
+  })();
+</script>
