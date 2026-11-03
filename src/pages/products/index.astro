@@ -1,0 +1,73 @@
+---
+import SectionPage from '~/layouts/SectionPage.astro';
+import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
+import CategoryGrid from '~/components/ui/CategoryGrid.astro';
+import { getPermalink } from '~/utils/permalinks';
+
+import abtBundle from '~/assets/images/abt-s01-bundle.png';
+import storeNatureSeries from '~/assets/images/store-nature-series.png';
+import storeXenomorph from '~/assets/images/store-xenomorph.png';
+
+const metadata = {
+  title: 'Digital Products — Technically Creative LLC',
+  description: 'Ableton training modules and digital art prints — available instantly on Gumroad.',
+};
+
+const items = [
+  {
+    title: 'Ableton Training',
+    description: 'Ableton Basics Session 01 — buy the full bundle or individual modules, from orientation to your first beat.',
+    href: '/products/ableton-modules',
+    image: abtBundle,
+    icon: 'tabler:device-laptop',
+    meta: '7 products',
+  },
+  {
+    title: 'Digital Art — Nature Series',
+    description: 'Original digital art prints — buy individual pieces or save with the full bundle.',
+    href: '/products/nature-series',
+    image: storeNatureSeries,
+    icon: 'tabler:leaf',
+    meta: '4 products',
+  },
+  {
+    title: 'Digital Art — Dark & Fan Art',
+    description: 'Dark sci-fi, biomechanical, and ink & watercolor digital prints.',
+    href: '/products/dark-art',
+    image: storeXenomorph,
+    icon: 'tabler:skull',
+    meta: '4 prints',
+  },
+];
+
+// Old single-page layout used #anchors (e.g. /products#nature-series). Send those to the new pages.
+const hashRedirects = {
+  'ableton-training': '/products/ableton-modules',
+  'nature-series': '/products/nature-series',
+  'dark-art': '/products/dark-art',
+};
+---
+
+<SectionPage
+  metadata={metadata}
+  ctaTitle="Need something custom instead?"
+  ctaSubtitle="Custom commissions, graphic design, and local/on-site work are booked through Local Services."
+  ctaActions={[{ variant: 'primary', text: 'View Local Services', href: getPermalink('/local-services') }]}
+>
+  <div class="container pt-10 pb-2 md:pt-14">
+    <h1 class="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">Digital Products — Ableton Training &amp; Art Prints on Gumroad</h1>
+    <p class="mt-3 max-w-2xl text-muted dark:text-slate-400">
+      Ableton training modules and digital art prints, available for instant purchase and download on Gumroad. Looking
+      for local or custom work instead? Visit <a href={getPermalink('/local-services')} class="font-semibold text-primary hover:underline">Local Services</a>.
+    </p>
+  </div>
+
+  <WidgetWrapper containerClass="max-w-6xl mx-auto py-8 md:py-12">
+    <CategoryGrid items={items} columns={3} />
+  </WidgetWrapper>
+
+  <script is:inline define:vars={{ hashRedirects }}>
+    var target = hashRedirects[location.hash.slice(1)];
+    if (target) location.replace(target);
+  </script>
+</SectionPage>

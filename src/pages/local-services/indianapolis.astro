@@ -1,0 +1,148 @@
+---
+import SectionPage from '~/layouts/SectionPage.astro';
+import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
+import { Icon } from 'astro-icon/components';
+import { getPermalink } from '~/utils/permalinks';
+
+import gDesk2 from '~/assets/images/desk2.jpg';
+import gAiDesk from '~/assets/images/gallery-studio-ai-desk.png';
+import gBedroomStudio from '~/assets/images/gallery-bedroom-studio.jpg';
+import gVbLive03 from '~/assets/images/gallery-vantablak-live-03.jpg';
+import gVbLive04 from '~/assets/images/gallery-vantablak-live-04.jpg';
+
+const galleries: Record<string, { src: string; alt: string }[]> = {
+  'local-services': [
+    { src: gBedroomStudio.src, alt: 'Bedroom studio' },
+    { src: gDesk2.src, alt: 'In-home studio desk' },
+    { src: gAiDesk.src, alt: 'Studio workspace' },
+    { src: gVbLive03.src, alt: 'Vantablak live sound — Melody Inn' },
+    { src: gVbLive04.src, alt: 'Vantablak live performance' },
+  ],
+};
+
+const metadata = {
+  title: 'Indianapolis Local Services — Technically Creative LLC',
+  description: 'In-person recording, live sound, DJ, karaoke, equipment rental, instrument setup, and Ableton training in Indianapolis.',
+};
+---
+
+<SectionPage
+  metadata={metadata}
+  ctaTitle="Need something custom?"
+  ctaSubtitle="Have a project that doesn't fit a listed service? Get in touch and we'll scope it out together."
+  ctaActions={[{ variant: 'primary', text: 'Start a project', href: getPermalink('/contact#form') }]}
+>
+  <WidgetWrapper id="local-services" containerClass="max-w-6xl mx-auto py-12 md:py-16">
+    <a href="/local-services" class="mb-5 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline">
+      <Icon name="tabler:arrow-left" class="h-4 w-4" /> All local &amp; custom services
+    </a>
+    <div class="flex items-center gap-3 text-primary">
+      <Icon name="tabler:map-pin" class="h-7 w-7" />
+      <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">Indianapolis Local Services</h1>
+    </div>
+    <p class="mt-2 max-w-3xl text-muted dark:text-slate-300">
+      In-person services available in the Indianapolis area. All analog instrument recording is done at
+      <a href="https://www.engineroomrecording.com" target="_blank" rel="noopener noreferrer" class="font-semibold text-primary hover:underline">The Engine Room Recording Company</a>
+      in Broadripple unless otherwise specified — studio-grade multi-mic tracking for full bands and advanced sessions.
+      My in-home bedroom studio handles solo tracking: one vocalist, guitarist, bassist, or similar at a time.
+    </p>
+
+    {galleries['local-services'].length > 0 && (
+      <div class="mt-6 flex gap-3 overflow-x-auto pb-2">
+        {galleries['local-services'].map(({ src, alt }) => (
+          <div class="shrink-0 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
+            <img src={src} alt={alt} class="h-44 w-auto object-cover" loading="lazy" />
+          </div>
+        ))}
+      </div>
+    )}
+
+    <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {[
+        {
+          icon: 'tabler:microphone',
+          title: 'Recording',
+          desc: 'Vocal, instrument, and full-band recording sessions. Multi-mic setups and advanced tracking at The Engine Room (Broadripple). Solo tracking — vocals, guitar, bass — available at the in-home bedroom studio.',
+          tag: 'Studio & In-Home',
+        },
+        {
+          icon: 'tabler:speakerphone',
+          title: 'Live Sound Engineering',
+          desc: 'PA setup, front-of-house mixing, and monitor engineering for live events, venues, showcases, and private performances in the Indianapolis area.',
+          tag: 'On-Site',
+        },
+        {
+          icon: 'tabler:package',
+          title: 'Equipment Rental',
+          desc: 'Audio gear rental for events and sessions — PA systems, microphones, DI boxes, and more. Contact to discuss your setup and availability.',
+          tag: 'Local Pickup / Delivery',
+        },
+        {
+          icon: 'tabler:music',
+          title: 'Music Producer',
+          desc: 'In-person production sessions — beat-making, arrangement, tracking, and mix direction. Collaborative sessions at the bedroom studio or on location.',
+          tag: 'Studio & On-Site',
+        },
+        {
+          icon: 'tabler:device-speaker',
+          title: 'DJ',
+          desc: 'Live DJ sets for private events, parties, corporate gatherings, and special occasions in Indianapolis and surrounding areas.',
+          tag: 'On-Site',
+        },
+        {
+          icon: 'tabler:music-star',
+          title: 'Karaoke',
+          desc: 'Full karaoke setup and hosting for private parties, corporate events, and community gatherings. PA, mics, and song library included.',
+          tag: 'On-Site',
+        },
+        {
+          icon: 'tabler:user',
+          title: '1-on-1 Ableton Training',
+          desc: 'Private in-person Ableton Live sessions tailored to your level — interface orientation, MIDI, production workflow, or live performance setup. At your location or mine.',
+          tag: 'In-Person',
+        },
+        {
+          icon: 'tabler:users',
+          title: 'Group Ableton Training',
+          desc: 'Small-group workshops and classroom-style sessions covering Ableton basics through advanced topics. Great for music programs, studios, and creative teams.',
+          tag: 'Workshops',
+        },
+        {
+          icon: 'tabler:tool',
+          title: 'Instrument Setup',
+          desc: 'Pickup and hardware installation, restringing, and precision guitar setup — action, intonation, nut slots, and truss rod dialed to your playing style. Work outside this scope (structural repairs, refrets, finish work) is referred to Indy String Theory.',
+          tag: 'In-Person',
+        },
+      ].map(({ icon, title, desc, tag }) => (
+        <div class="flex flex-col rounded-2xl border border-dashed border-primary/30 bg-white/70 p-5 dark:bg-slate-900/40">
+          <div class="flex items-start justify-between gap-2">
+            <div class="flex items-center gap-2 text-primary">
+              <Icon name={icon} class="h-5 w-5 shrink-0" />
+              <span class="font-bold text-slate-900 dark:text-white">{title}</span>
+            </div>
+            <span class="shrink-0 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-500 dark:bg-slate-800 dark:text-slate-400">{tag}</span>
+          </div>
+          <p class="mt-3 text-sm text-muted dark:text-slate-400">{desc}</p>
+          <a
+            href="/contact#form"
+            class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
+          >
+            Contact to book <Icon name="tabler:arrow-right" class="h-4 w-4" />
+          </a>
+        </div>
+      ))}
+    </div>
+
+    <div class="mt-8 rounded-2xl border border-primary/20 bg-primary/5 px-6 py-5 dark:bg-primary/10">
+      <div class="flex items-start gap-3">
+        <Icon name="tabler:building" class="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+        <div>
+          <p class="font-semibold text-slate-900 dark:text-white">Recording Venue Info</p>
+          <p class="mt-1 text-sm text-muted dark:text-slate-400">
+            All analog instrument recording defaults to <span class="font-medium text-slate-700 dark:text-slate-300">The Engine Room Recording Company</span> in Broadripple, Indianapolis — a professional studio built for multi-mic tracking, full bands, and advanced sessions. Solo tracking (one vocalist, guitarist, bassist, etc.) is available at my in-home bedroom studio. Alternate venues can be arranged — mention your preference when you reach out.
+          </p>
+        </div>
+      </div>
+    </div>
+  </WidgetWrapper>
+</SectionPage>

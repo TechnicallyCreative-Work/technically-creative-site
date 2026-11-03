@@ -1,0 +1,75 @@
+---
+import SectionPage from '~/layouts/SectionPage.astro';
+import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
+import CategoryGrid from '~/components/ui/CategoryGrid.astro';
+import { getPermalink } from '~/utils/permalinks';
+
+import vantablakAlbum from '~/assets/images/brand-vantablak-album.jpg';
+import desk3 from '~/assets/images/desk3.jpg';
+import vbLive03 from '~/assets/images/gallery-vantablak-live-03.jpg';
+
+const metadata = {
+  title: 'Local & Custom Services — Technically Creative LLC',
+  description:
+    'Graphic design commissions, online consulting, and Indianapolis local services — recording, live sound, DJ, karaoke, and in-person Ableton training.',
+};
+
+const items = [
+  {
+    title: 'Graphic Design & Commissions',
+    description: 'Logos, album artwork, illustration, social graphics, print-ready art, and watercolor & ink commissions.',
+    href: '/local-services/design-commissions',
+    image: vantablakAlbum,
+    icon: 'tabler:palette',
+    meta: 'Quoted per project',
+  },
+  {
+    title: 'Services & Consulting',
+    description: 'Ableton workflow sessions and automation audits booked through Upwork, with contract and payment protection.',
+    href: '/local-services/online-consulting',
+    image: desk3,
+    icon: 'tabler:briefcase',
+    meta: 'Booked on Upwork',
+  },
+  {
+    title: 'Indianapolis Local Services',
+    description: 'In-person recording, live sound, DJ, karaoke, equipment rental, instrument setup, and Ableton training.',
+    href: '/local-services/indianapolis',
+    image: vbLive03,
+    icon: 'tabler:map-pin',
+    meta: 'In person',
+  },
+];
+
+// Old single-page layout used #anchors (e.g. /local-services#graphic-design). Send those to the new pages.
+const hashRedirects = {
+  'graphic-design': '/local-services/design-commissions',
+  services: '/local-services/online-consulting',
+  'local-services': '/local-services/indianapolis',
+};
+---
+
+<SectionPage
+  metadata={metadata}
+  ctaTitle="Need something custom?"
+  ctaSubtitle="Have a project that doesn't fit a listed service? Get in touch and we'll scope it out together."
+  ctaActions={[{ variant: 'primary', text: 'Start a project', href: getPermalink('/contact#form') }]}
+>
+  <div class="container pt-10 pb-2 md:pt-14">
+    <h1 class="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">Local & Custom Services — Indianapolis Recording, Graphic Design &amp; Consulting</h1>
+    <p class="mt-3 max-w-2xl text-muted dark:text-slate-400">
+      Graphic design commissions, online consulting through Upwork, and Indianapolis local services — recording, live
+      sound, DJ, karaoke, and Ableton training. Looking for digital downloads instead? Visit
+      <a href={getPermalink('/products')} class="font-semibold text-primary hover:underline">Products</a>.
+    </p>
+  </div>
+
+  <WidgetWrapper containerClass="max-w-6xl mx-auto py-8 md:py-12">
+    <CategoryGrid items={items} columns={3} />
+  </WidgetWrapper>
+
+  <script is:inline define:vars={{ hashRedirects }}>
+    var target = hashRedirects[location.hash.slice(1)];
+    if (target) location.replace(target);
+  </script>
+</SectionPage>

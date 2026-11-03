@@ -6,11 +6,21 @@ import CallToAction from '~/components/widgets/CallToAction.astro';
 import { getPermalink } from '~/utils/permalinks';
 import { headerData } from '~/navigation';
 
+// Shared shell for card-grid landing pages and their detail pages
+// (portfolio, products, local services). CTA defaults to the portfolio one.
 export interface Props {
   metadata: { title: string; description: string };
+  ctaTitle?: string;
+  ctaSubtitle?: string;
+  ctaActions?: { variant: 'primary' | 'secondary' | 'tertiary' | 'link'; text: string; href: string }[];
 }
 
-const { metadata } = Astro.props;
+const {
+  metadata,
+  ctaTitle = 'Have a project in mind?',
+  ctaSubtitle = "Tell me what you need—mixing, sound design, workflow cleanup, or training—and I'll reply within one business day.",
+  ctaActions = [{ variant: 'primary', text: 'Start a project', href: getPermalink('/contact#form') }],
+} = Astro.props;
 ---
 
 <Layout metadata={metadata}>
@@ -27,9 +37,5 @@ const { metadata } = Astro.props;
 
   <slot />
 
-  <CallToAction
-    title="Have a project in mind?"
-    subtitle="Tell me what you need—mixing, sound design, workflow cleanup, or training—and I'll reply within one business day."
-    actions={[{ variant: 'primary', text: 'Start a project', href: getPermalink('/contact#form') }]}
-  />
+  <CallToAction title={ctaTitle} subtitle={ctaSubtitle} actions={ctaActions} />
 </Layout>

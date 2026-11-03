@@ -1,6 +1,6 @@
 ---
 import { Icon } from 'astro-icon/components';
-import PortfolioPage from '~/layouts/PortfolioPage.astro';
+import SectionPage from '~/layouts/SectionPage.astro';
 import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
 import Button from '~/components/ui/Button.astro';
 import ProjectCard from '~/components/portfolio/ProjectCard.astro';
@@ -26,7 +26,7 @@ const metadata = {
 };
 ---
 
-<PortfolioPage metadata={metadata}>
+<SectionPage metadata={metadata}>
   <WidgetWrapper id={id} containerClass="max-w-6xl mx-auto py-10 md:py-14">
     <div class="flex items-center gap-3 text-primary">
       <Icon name={icon} class="h-8 w-8" />
@@ -69,4 +69,4 @@ const metadata = {
       <Button variant="link" href={getPermalink(serviceHref)} icon="tabler:arrow-right" text="View matching service" />
     </div>
   </WidgetWrapper>
-</PortfolioPage>
+</SectionPage>

@@ -1,0 +1,139 @@
+---
+import SectionPage from '~/layouts/SectionPage.astro';
+import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
+import { Icon } from 'astro-icon/components';
+import { getPermalink } from '~/utils/permalinks';
+import { getImage } from 'astro:assets';
+
+import abtS01Bundle from '~/assets/images/abt-s01-bundle.png';
+import abtS01M01 from '~/assets/images/abt-s01-m01.png';
+import abtS01M02 from '~/assets/images/abt-s01-m02.png';
+import abtS01M03 from '~/assets/images/abt-s01-m03.png';
+import abtS01M04 from '~/assets/images/abt-s01-m04.png';
+import abtS01M05 from '~/assets/images/abt-s01-m05.png';
+import abtS01M06 from '~/assets/images/abt-s01-m06.png';
+import gDesk1 from '~/assets/images/desk1.jpg';
+import gDesk2 from '~/assets/images/desk2.jpg';
+import gDesk3 from '~/assets/images/desk3.jpg';
+import gAiDesk from '~/assets/images/gallery-studio-ai-desk.png';
+
+// Downsampled WebP previews only for the for-sale product images
+const [bundlePreview, m01Preview, m02Preview, m03Preview, m04Preview, m05Preview, m06Preview] = await Promise.all([
+  getImage({ src: abtS01Bundle, width: 800, format: 'webp', quality: 72 }),
+  getImage({ src: abtS01M01, width: 560, format: 'webp', quality: 72 }),
+  getImage({ src: abtS01M02, width: 560, format: 'webp', quality: 72 }),
+  getImage({ src: abtS01M03, width: 560, format: 'webp', quality: 72 }),
+  getImage({ src: abtS01M04, width: 560, format: 'webp', quality: 72 }),
+  getImage({ src: abtS01M05, width: 560, format: 'webp', quality: 72 }),
+  getImage({ src: abtS01M06, width: 560, format: 'webp', quality: 72 }),
+]);
+
+// Gallery images — add new entries to populate the gallery strip
+const galleries: Record<string, { src: string; alt: string }[]> = {
+  'ableton-training': [
+    { src: gDesk3.src, alt: 'Ableton studio setup' },
+    { src: gDesk1.src, alt: 'Studio desk setup' },
+    { src: gDesk2.src, alt: 'Studio desk side view' },
+    { src: gAiDesk.src, alt: 'AI-rendered studio desk' },
+  ],
+};
+
+const abletonModules = [
+  { id: 'ABTS01M01', label: 'Module 01', title: 'Session View & Clip View',            imgSrc: m01Preview.src },
+  { id: 'ABTS01M02', label: 'Module 02', title: 'Settings That Actually Matter',        imgSrc: m02Preview.src },
+  { id: 'ABTS01M03', label: 'Module 03', title: 'MIDI Controller Setup',                imgSrc: m03Preview.src },
+  { id: 'ABTS01M04', label: 'Module 04', title: 'Building Your Production Template',    imgSrc: m04Preview.src },
+  { id: 'ABTS01M05', label: 'Module 05', title: 'Your First Beat Using Draw Mode',      imgSrc: m05Preview.src },
+  { id: 'ABTS01M06', label: 'Module 06', title: 'Key Controls & Shortcuts Reference',   imgSrc: m06Preview.src },
+];
+const metadata = {
+  title: 'Ableton Training Modules — Technically Creative LLC',
+  description: 'Ableton Basics Session 01 training modules — buy the full bundle or individual modules on Gumroad.',
+};
+---
+
+<SectionPage
+  metadata={metadata}
+  ctaTitle="Need something custom instead?"
+  ctaSubtitle="Custom commissions, graphic design, and local/on-site work are booked through Local Services."
+  ctaActions={[{ variant: 'primary', text: 'View Local Services', href: getPermalink('/local-services') }]}
+>
+  <WidgetWrapper id="ableton-training" containerClass="max-w-6xl mx-auto py-12 md:py-16">
+    <a href="/products" class="mb-5 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline">
+      <Icon name="tabler:arrow-left" class="h-4 w-4" /> All products
+    </a>
+    <div class="flex items-center gap-3 text-primary">
+      <Icon name="tabler:device-laptop" class="h-7 w-7" />
+      <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">Ableton Training</h1>
+    </div>
+    <p class="mt-2 max-w-2xl text-muted dark:text-slate-300">Structured modules from the Ableton Basics Session 01 series — buy the full bundle or individual modules.</p>
+
+    <div class="mt-6 overflow-hidden rounded-2xl shadow-lg aspect-video w-full max-w-3xl">
+      <iframe
+        width="100%"
+        height="100%"
+        src="https://www.youtube.com/embed/PDIT1bvipnk?si=oDD2HzqEpdqKthqv"
+        title="Ableton Training — Technically Creative"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen
+        class="w-full h-full"
+      ></iframe>
+    </div>
+
+    {galleries['ableton-training'].length > 0 && (
+      <div class="mt-6 flex gap-3 overflow-x-auto pb-2">
+        {galleries['ableton-training'].map(({ src, alt }) => (
+          <div class="shrink-0 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
+            <img src={src} alt={alt} class="h-44 w-auto object-cover" loading="lazy" />
+          </div>
+        ))}
+      </div>
+    )}
+
+    <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <!-- Bundle (featured) -->
+      <a
+        href="https://techcre8.gumroad.com/l/ABTS01"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="group col-span-full flex flex-col overflow-hidden rounded-2xl border border-primary/40 bg-primary/5 transition hover:border-primary hover:shadow-lg dark:bg-primary/10 sm:col-span-2 lg:col-span-1"
+      >
+        <img src={bundlePreview.src} alt="Ableton Basics Session 01 Bundle" class="h-48 w-full object-cover pointer-events-none select-none" draggable="false" />
+        <div class="flex flex-col p-5">
+          <div class="flex items-start justify-between gap-2">
+            <span class="text-base font-bold text-slate-900 dark:text-white">Ableton Basics — Session 01</span>
+            <span class="shrink-0 rounded-full bg-primary/20 px-3 py-1 text-sm font-bold text-primary">$27</span>
+          </div>
+          <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Orientation, Template & Your First Beat — complete session bundle</p>
+          <span class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary group-hover:underline">
+            Get on Gumroad <Icon name="tabler:external-link" class="h-4 w-4" />
+          </span>
+        </div>
+      </a>
+
+      <!-- Individual modules -->
+      {abletonModules.map(({ id, label, title, imgSrc }) => (
+        <a
+          href={`https://techcre8.gumroad.com/l/${id}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group flex flex-col overflow-hidden rounded-2xl border border-dashed border-primary/30 bg-white/70 transition hover:border-primary/60 hover:shadow-md dark:bg-slate-900/40"
+        >
+          <img src={imgSrc} alt={`Ableton Basics ${label}`} class="h-36 w-full object-cover pointer-events-none select-none" draggable="false" />
+          <div class="flex flex-col p-4">
+            <div class="flex items-start justify-between gap-2">
+              <span class="font-semibold text-slate-900 dark:text-white">{label}</span>
+              <span class="shrink-0 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300">$5</span>
+            </div>
+            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{title}</p>
+            <span class="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary group-hover:underline">
+              Get on Gumroad <Icon name="tabler:external-link" class="h-3.5 w-3.5" />
+            </span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </WidgetWrapper>
+</SectionPage>

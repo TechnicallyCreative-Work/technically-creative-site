@@ -450,7 +450,7 @@ export const categories: Category[] = [
     title: 'Graphic Design & Visual Art',
     icon: 'tabler:palette',
     description: 'Brand identity, album artwork, platform graphics, original illustration, ink & watercolor prints, and fan art — full-service visual work across music, tech, and creative brands.',
-    serviceHref: '/local-services#graphic-design',
+    serviceHref: '/local-services/design-commissions',
     projects: [
       // --- Brand Identity ---
       {
