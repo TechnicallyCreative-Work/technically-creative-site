@@ -1,4 +1,5 @@
 import { getPermalink, getBlogPermalink } from './utils/permalinks';
+import { SOCIAL_URLS } from './data/social';
 
 // Shared with the gated "Join the Discord" link on /account — keep in sync
 // if the invite is ever rotated.
@@ -105,10 +106,10 @@ export const footerData = {
     { text: 'Contact', href: getPermalink('/contact') },
   ],
   socialLinks: [
-    { ariaLabel: 'LinkedIn', icon: 'tabler:brand-linkedin', href: 'https://www.linkedin.com/company/technically-creative-llc/' },
-    { ariaLabel: 'Instagram', icon: 'tabler:brand-instagram', href: 'https://www.instagram.com/technicallycreativellc/' },
-    { ariaLabel: 'Facebook', icon: 'tabler:brand-facebook', href: 'https://www.facebook.com/share/19Pu1jnFMj/' },
-    { ariaLabel: 'YouTube', icon: 'tabler:brand-youtube', href: 'https://www.youtube.com/@rootcauseriff' },
+    { ariaLabel: 'LinkedIn', icon: 'tabler:brand-linkedin', href: SOCIAL_URLS.linkedin },
+    { ariaLabel: 'Instagram', icon: 'tabler:brand-instagram', href: SOCIAL_URLS.instagram },
+    { ariaLabel: 'Facebook', icon: 'tabler:brand-facebook', href: SOCIAL_URLS.facebook },
+    { ariaLabel: 'YouTube', icon: 'tabler:brand-youtube', href: SOCIAL_URLS.youtube },
     // Discord intentionally left off the public footer — it's a paid-member
     // perk, surfaced only on /account once membership_tier === 'paid'.
     { ariaLabel: 'Email', icon: 'tabler:mail', href: 'mailto:hello@technicallycreative.work' },

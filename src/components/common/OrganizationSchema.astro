@@ -1,5 +1,6 @@
 ---
 import { SITE, METADATA } from 'astrowind:config';
+import { SOCIAL_URLS } from '~/data/social';
 
 const siteUrl = String(SITE.site).replace(/\/$/, '') + '/';
 
@@ -22,10 +23,10 @@ const schema = {
     addressCountry: 'US',
   },
   sameAs: [
-    'https://www.linkedin.com/company/technically-creative-llc/',
-    'https://www.instagram.com/technicallycreativellc/',
-    'https://www.facebook.com/share/19Pu1jnFMj/',
-    'https://www.youtube.com/@rootcauseriff',
+    SOCIAL_URLS.linkedin,
+    SOCIAL_URLS.instagram,
+    SOCIAL_URLS.facebook,
+    SOCIAL_URLS.youtube,
   ],
 };
 ---

@@ -12,6 +12,7 @@ import SocialFeed from '~/components/widgets/SocialFeed.astro';
 
 import { blogListRobots, getStaticPathsBlogList } from '~/utils/blog';
 import { getPermalink } from '~/utils/permalinks';
+import { SOCIAL_URLS } from '~/data/social';
 
 export const prerender = true;
 
@@ -43,9 +44,9 @@ const metadata = {
 const latestNewsletterUrl: string | null = null;
 
 const followLinks = [
-  { name: 'Instagram', handle: 'Follow', icon: 'tabler:brand-instagram', href: 'https://www.instagram.com/technicallycreativellc/', color: '#E1306C' },
-  { name: 'Facebook', handle: 'Follow', icon: 'tabler:brand-facebook', href: 'https://www.facebook.com/share/19Pu1jnFMj/', color: '#1877F2' },
-  { name: 'YouTube', handle: 'Subscribe', icon: 'tabler:brand-youtube', href: 'https://www.youtube.com/@rootcauseriff', color: '#FF0000' },
+  { name: 'Instagram', handle: 'Follow', icon: 'tabler:brand-instagram', href: SOCIAL_URLS.instagram, color: '#E1306C' },
+  { name: 'Facebook', handle: 'Follow', icon: 'tabler:brand-facebook', href: SOCIAL_URLS.facebook, color: '#1877F2' },
+  { name: 'YouTube', handle: 'Subscribe', icon: 'tabler:brand-youtube', href: SOCIAL_URLS.youtube, color: '#FF0000' },
   // Not released yet — rendered as an inactive, grayed-out card below instead of a link.
   { name: 'Discord', handle: 'Coming soon', icon: 'tabler:brand-discord', href: 'https://discord.gg/8hGAgFkWc', color: '#5865F2', disabled: true },
 ];
@@ -161,7 +162,7 @@ const followLinks = [
       <SocialFeed
         youtubeChannelId="UCDwChFAt-d_WEEnpHdHQNyQ"
         youtubeChannelUrl="https://www.youtube.com/@rootcauseriff"
-        facebookPageUrl="https://www.facebook.com/people/Technically-Creative/61581256443170/"
+        facebookPageUrl={SOCIAL_URLS.facebook}
         instagramPostUrls={[]}
       />
     </>
