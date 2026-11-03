@@ -74,7 +74,7 @@ const metadata = {
         { icon: 'tabler:printer', title: 'Print-Ready Artwork', desc: 'High-resolution artwork prepared for print — posters, merch graphics, event flyers, and production-ready files.' },
         { icon: 'tabler:package', title: 'Band & Artist Identity Package', desc: 'Full visual identity for musicians and bands — logo, color palette, font pairing, social templates, album art style guide, and merch-ready assets. Includes experience designing for Argent Metal (RVXX) and industrial/dark electronic projects (Vantablak).' },
       ].map(({ icon, title, desc }) => (
-        <div class="flex flex-col rounded-2xl border border-dashed border-primary/30 bg-white/70 p-5 dark:bg-slate-900/40">
+        <div class="flex flex-col rounded-2xl p-5 tc-card">
           <div class="flex items-center gap-2 text-primary mb-3">
             <Icon name={icon} class="h-5 w-5 shrink-0" />
             <span class="font-bold text-slate-900 dark:text-white">{title}</span>
@@ -97,7 +97,7 @@ const metadata = {
         Original hand-crafted artwork on paper — custom subjects, portraits, characters, scenes, and conceptual pieces. Each commission is priced individually based on size, complexity, and turnaround time.
       </p>
       <div class="mt-6 grid gap-4 sm:grid-cols-2">
-        <div class="rounded-2xl border border-primary/30 bg-primary/5 p-5 dark:bg-primary/10">
+        <div class="rounded-2xl p-5 tc-card tc-card--accent">
           <p class="font-semibold text-slate-900 dark:text-white">What's included</p>
           <ul class="mt-3 space-y-1.5 text-sm text-muted dark:text-slate-400">
             <li class="flex items-start gap-2"><Icon name="tabler:check" class="mt-0.5 h-4 w-4 shrink-0 text-primary" /> Initial concept sketch for approval</li>
@@ -107,7 +107,7 @@ const metadata = {
             <li class="flex items-start gap-2"><Icon name="tabler:check" class="mt-0.5 h-4 w-4 shrink-0 text-primary" /> Shipping available (US only, cost added)</li>
           </ul>
         </div>
-        <div class="rounded-2xl border border-dashed border-primary/30 bg-white/70 p-5 dark:bg-slate-900/40">
+        <div class="rounded-2xl p-5 tc-card">
           <p class="font-semibold text-slate-900 dark:text-white">Pricing factors</p>
           <ul class="mt-3 space-y-1.5 text-sm text-muted dark:text-slate-400">
             <li class="flex items-start gap-2"><Icon name="tabler:ruler" class="mt-0.5 h-4 w-4 shrink-0 text-primary" /> Size — small (5×7) to large (18×24)</li>

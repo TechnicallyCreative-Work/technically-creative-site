@@ -3,6 +3,9 @@ import SectionPage from '~/layouts/SectionPage.astro';
 import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
 import CategoryGrid from '~/components/ui/CategoryGrid.astro';
 import { getPermalink } from '~/utils/permalinks';
+import markAbleton from '~/assets/images/tiles/logo-ableton-modules.png';
+import markNature from '~/assets/images/tiles/logo-nature-series.png';
+import markDark from '~/assets/images/tiles/logo-dark-art.png';
 
 
 const metadata = {
@@ -15,7 +18,7 @@ const items = [
     title: 'Ableton Training',
     description: 'Ableton Basics Session 01 — buy the full bundle or individual modules, from orientation to your first beat.',
     href: '/products/ableton-modules',
-    icon: 'tabler:device-laptop',
+    logo: markAbleton,
     accent: 'green' as const,
     meta: '7 products',
   },
@@ -23,15 +26,15 @@ const items = [
     title: 'Digital Art — Nature Series',
     description: 'Original digital art prints — buy individual pieces or save with the full bundle.',
     href: '/products/nature-series',
-    icon: 'tabler:leaf',
-    accent: 'cyan' as const,
+    logo: markNature,
+    accent: 'green' as const,
     meta: '4 products',
   },
   {
     title: 'Digital Art — Dark & Fan Art',
     description: 'Dark sci-fi, biomechanical, and ink & watercolor digital prints.',
     href: '/products/dark-art',
-    icon: 'tabler:skull',
+    logo: markDark,
     accent: 'pink' as const,
     meta: '4 prints',
   },
@@ -60,7 +63,7 @@ const hashRedirects = {
   </div>
 
   <WidgetWrapper containerClass="max-w-6xl mx-auto py-8 md:py-12">
-    <CategoryGrid items={items} columns={3} />
+    <CategoryGrid items={items} />
   </WidgetWrapper>
 
   <script is:inline define:vars={{ hashRedirects }}>

@@ -28,6 +28,15 @@ import brandVantablakAlbum from '../assets/images/brand-vantablak-album.jpg';
 import galleryVbLive01 from '../assets/images/gallery-vantablak-live-01.jpg';
 import galleryVbLive02 from '../assets/images/gallery-vantablak-live-02.jpg';
 import logoClickup from '../assets/images/tiles/logo-clickup.png';
+import markGearConsultation from '../assets/images/tiles/logo-gear-consultation.png';
+import markAbletonTraining from '../assets/images/tiles/logo-ableton-training.png';
+import markVideoEditing from '../assets/images/tiles/logo-video-editing.png';
+import markSignalSpace from '../assets/images/tiles/logo-signal-space.png';
+import markGraphicDesign from '../assets/images/tiles/logo-graphic-design.png';
+import markMusicAudio from '../assets/images/tiles/logo-music-audio.png';
+import markVisualArts from '../assets/images/tiles/logo-visual-arts.png';
+import markConsultingTraining from '../assets/images/tiles/logo-consulting-training.png';
+import markAutomationTech from '../assets/images/tiles/logo-automation-tech.png';
 import logoGears from '../assets/images/tiles/logo-gears.png';
 import logoMic from '../assets/images/tiles/logo-mic.png';
 import logoOwl from '../assets/images/tiles/logo-owl.png';
@@ -593,16 +602,27 @@ export interface PortfolioGroup {
   categoryIds: string[];
 }
 
-// Neon logo marks for category tiles, pulled from the Contra case study covers.
-// Categories without an entry fall back to their tabler icon, glowing in the group's accent colour.
+// Neon marks for the pad tiles. The owl, waveform, mic, ClickUp, gears and systems marks come from the
+// Contra case study covers; the rest are drawn in the same style. Every category should have one.
 export const categoryLogos: Record<string, ImageMetadata> = {
   'music-sound-design': logoOwl,
   'sound-audio-engineering': logoWaveform,
   'performance-live-sound': logoMic,
-  'gear-consultation': logoWaveform,
+  'gear-consultation': markGearConsultation,
   'project-management': logoClickup,
   automation: logoGears,
   'technology-efficiency': logoSystems,
+  'ableton-training': markAbletonTraining,
+  'video-editing': markVideoEditing,
+  'signal-space': markSignalSpace,
+  'graphic-design': markGraphicDesign,
+};
+
+export const groupLogos: Record<string, ImageMetadata> = {
+  'music-audio': markMusicAudio,
+  'visual-arts': markVisualArts,
+  'consulting-training': markConsultingTraining,
+  'automation-tech': markAutomationTech,
 };
 
 export const groups: PortfolioGroup[] = [

@@ -75,7 +75,7 @@ const followLinks = [
           {latestNewsletterUrl ? (
             <a
               href={latestNewsletterUrl}
-              class="group flex flex-col justify-center rounded-2xl border border-primary/30 bg-white/70 p-5 transition hover:border-primary hover:shadow-md dark:bg-slate-900/40"
+              class="group flex flex-col justify-center rounded-2xl p-5 tc-card tc-card-link"
             >
               <div class="flex items-center gap-2 font-semibold text-slate-900 dark:text-white">
                 <Icon name="tabler:download" class="h-5 w-5 text-primary" /> Download the latest issue
@@ -85,7 +85,7 @@ const followLinks = [
               </span>
             </a>
           ) : (
-            <div class="flex flex-col justify-center rounded-2xl border border-dashed border-primary/20 bg-white/40 p-5 opacity-70 dark:bg-slate-900/20">
+            <div class="flex flex-col justify-center rounded-2xl p-5 opacity-70 tc-well">
               <div class="flex items-center gap-2 font-semibold text-slate-900 dark:text-white">
                 <Icon name="tabler:download" class="h-5 w-5 text-primary" /> Download the latest issue
               </div>
@@ -98,7 +98,7 @@ const followLinks = [
           <!-- Email subscribe -->
           <form
             id="newsletter-subscribe-form"
-            class="flex flex-col justify-center rounded-2xl border border-primary/30 bg-white/70 p-5 dark:bg-slate-900/40"
+            class="flex flex-col justify-center rounded-2xl p-5 tc-card"
           >
             <div class="flex items-center gap-2 font-semibold text-slate-900 dark:text-white">
               <Icon name="tabler:send" class="h-5 w-5 text-primary" /> Get it by email
@@ -134,7 +134,7 @@ const followLinks = [
           {followLinks.map(({ name, handle, icon, href, color, disabled }) =>
             disabled ? (
               <div
-                class="flex flex-col items-center gap-2 rounded-2xl border border-dashed border-primary/20 bg-white/40 p-5 text-center opacity-60 dark:bg-slate-900/20"
+                class="flex flex-col items-center gap-2 rounded-2xl p-5 text-center opacity-60 tc-well"
                 aria-disabled="true"
               >
                 <Icon name={icon} class="h-8 w-8 text-slate-400 dark:text-slate-600" />
@@ -148,7 +148,7 @@ const followLinks = [
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="group flex flex-col items-center gap-2 rounded-2xl border border-primary/20 bg-white/70 p-5 text-center transition hover:border-primary hover:shadow-md dark:bg-slate-900/40"
+                class="group flex flex-col items-center gap-2 rounded-2xl p-5 text-center tc-card tc-card-link"
               >
                 <Icon name={icon} class="h-8 w-8" style={`color:${color}`} />
                 <span class="font-semibold text-slate-900 dark:text-white">{name}</span>
