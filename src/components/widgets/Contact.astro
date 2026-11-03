@@ -404,7 +404,7 @@ const hasHubspotBridge = Boolean(portalId && formGuid);
         input.name = def.localName;
         input.value = def.value ?? 'true';
         input.className =
-          'cursor-pointer mt-1 py-3 px-4 block w-full text-md rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-900';
+          'cursor-pointer mt-1 tc-input py-3 px-4 block w-full text-md rounded-lg border';
         if (def.required) input.required = true;
 
         const labelWrap = document.createElement('div');
@@ -442,7 +442,7 @@ const hasHubspotBridge = Boolean(portalId && formGuid);
         textarea.placeholder = def.placeholder || '';
         if (def.required) textarea.required = true;
         textarea.className =
-          'py-3 px-4 block w-full text-md rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-900';
+          'tc-input py-3 px-4 block w-full text-md rounded-lg border';
         wrapper.appendChild(textarea);
         return wrapper;
       }
@@ -453,7 +453,7 @@ const hasHubspotBridge = Boolean(portalId && formGuid);
         select.name = def.localName;
         if (def.required) select.required = true;
         select.className =
-          'py-3 px-4 block w-full text-md rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-900';
+          'tc-input py-3 px-4 block w-full text-md rounded-lg border';
         (def.options || []).forEach((option) => {
           const opt = document.createElement('option');
           opt.value = option.value;
@@ -498,7 +498,7 @@ const hasHubspotBridge = Boolean(portalId && formGuid);
       input.autocomplete = def.autocomplete || 'on';
       if (def.required) input.required = true;
       input.className =
-        'py-3 px-4 block w-full text-md rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-900';
+        'tc-input py-3 px-4 block w-full text-md rounded-lg border';
       wrapper.appendChild(input);
       return wrapper;
     };

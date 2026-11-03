@@ -49,7 +49,7 @@ const {
 
 // One text button in the same spot on every page; /account takes over once signed in.
 const loginLinkClass =
-  'inline-flex items-center rounded-md border border-primary px-3 py-1.5 text-sm font-semibold whitespace-nowrap text-primary hover:bg-primary hover:text-white transition-colors';
+  'tc-btn inline-flex items-center rounded-lg border px-3 py-1.5 text-sm font-semibold whitespace-nowrap text-primary';
 
 const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
 ---
@@ -180,7 +180,7 @@ const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
           {
             showRssFeed && (
               <a
-                class="text-muted dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5 inline-flex items-center"
+                class="tc-icon-btn text-muted dark:text-gray-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-xl text-sm p-2.5 inline-flex items-center"
                 aria-label="RSS Feed"
                 href={getAsset('/rss.xml')}
               >
@@ -207,7 +207,7 @@ const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
                 <a
                   href={btnProps.href}
                   aria-label={btnProps.text}
-                  class="header-nav-link relative inline-flex items-center justify-center rounded-full p-2.5 ml-2 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
+                  class="header-nav-link relative inline-flex items-center justify-center rounded-full p-2.5 ml-2 tc-icon-btn"
                 >
                   {btnProps.icon && <Icon name={btnProps.icon} class="w-5 h-5" />}
                   <span class="nav-tooltip" role="tooltip">

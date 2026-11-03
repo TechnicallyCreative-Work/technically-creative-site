@@ -152,6 +152,189 @@ import '@fontsource/doto/latin-900.css';
     box-shadow: inset 5px 5px 12px rgb(0 0 0 / 0.7), inset -4px -4px 10px rgb(255 255 255 / 0.06);
   }
 
+  /* ---------------------------------------------------------------------------------------------
+     Buttons, same pad language as the cards.
+     .btn / .btn-secondary / .tc-btn   soft raised pad (light: page colour + light/dark shadow pair)
+     .btn-primary / .tc-btn-primary    lit cyan pad, glows, hover shifts to the secondary colour
+     .tc-icon-btn                      flat icon button that rises on hover and sinks when pressed
+     .btn-tertiary stays flat (text-style button).
+     Selectors are a little heavier than the utility classes they replace so they win without !important.
+     --------------------------------------------------------------------------------------------- */
+  html :is(.btn:not(.btn-tertiary), .tc-btn):not(.btn-primary):not(.tc-btn-primary) {
+    color: var(--tc-text-default);
+    background: linear-gradient(145deg, #eff2f8, #dce2ec);
+    border-color: rgb(255 255 255 / 0.6);
+    box-shadow:
+      5px 6px 12px rgb(163 177 198 / 0.75),
+      -4px -4px 10px rgb(255 255 255 / 0.95),
+      inset 0 1px 0 rgb(255 255 255 / 0.9);
+    transition: box-shadow 0.18s ease, transform 0.12s ease, border-color 0.18s ease, color 0.18s ease;
+  }
+  html.dark :is(.btn:not(.btn-tertiary), .tc-btn):not(.btn-primary):not(.tc-btn-primary),
+  .dark :is(.btn:not(.btn-tertiary), .tc-btn):not(.btn-primary):not(.tc-btn-primary) {
+    color: rgb(229 236 246);
+    background: linear-gradient(145deg, rgb(255 255 255 / 0.08), rgb(255 255 255 / 0.02));
+    border-color: rgb(255 255 255 / 0.1);
+    box-shadow:
+      6px 8px 16px rgb(0 0 0 / 0.7),
+      -3px -3px 8px rgb(255 255 255 / 0.04),
+      inset 0 1px 0 rgb(255 255 255 / 0.08);
+  }
+  html :is(.btn:not(.btn-tertiary), .tc-btn):not(.btn-primary):not(.tc-btn-primary):is(:hover, :focus-visible) {
+    border-color: color-mix(in srgb, var(--tc-primary) 70%, transparent);
+    background: linear-gradient(145deg, #eff2f8, #dce2ec);
+    box-shadow:
+      5px 6px 12px rgb(163 177 198 / 0.75),
+      -4px -4px 10px rgb(255 255 255 / 0.95),
+      0 0 20px -3px color-mix(in srgb, var(--tc-primary) 60%, transparent),
+      inset 0 1px 0 rgb(255 255 255 / 0.9);
+  }
+  .dark :is(.btn:not(.btn-tertiary), .tc-btn):not(.btn-primary):not(.tc-btn-primary):is(:hover, :focus-visible) {
+    background: linear-gradient(145deg, rgb(255 255 255 / 0.1), rgb(255 255 255 / 0.03));
+    box-shadow:
+      6px 8px 16px rgb(0 0 0 / 0.7),
+      0 0 20px -3px color-mix(in srgb, var(--tc-primary) 60%, transparent),
+      inset 0 1px 0 rgb(255 255 255 / 0.1);
+  }
+  html :is(.btn:not(.btn-tertiary), .tc-btn):not(.btn-primary):not(.tc-btn-primary):active {
+    transform: translateY(1px) scale(0.99);
+    box-shadow:
+      inset 4px 5px 10px rgb(163 177 198 / 0.85),
+      inset -3px -3px 8px rgb(255 255 255 / 0.9),
+      0 0 14px -4px color-mix(in srgb, var(--tc-primary) 55%, transparent);
+  }
+  .dark :is(.btn:not(.btn-tertiary), .tc-btn):not(.btn-primary):not(.tc-btn-primary):active {
+    box-shadow:
+      inset 4px 6px 12px rgb(0 0 0 / 0.8),
+      inset -2px -2px 6px rgb(255 255 255 / 0.04),
+      0 0 14px -4px color-mix(in srgb, var(--tc-primary) 55%, transparent);
+  }
+
+  html :is(.btn-primary, .tc-btn-primary) {
+    color: #fff;
+    background: linear-gradient(145deg, #2bd6ff, #00b0e3);
+    border-color: rgb(255 255 255 / 0.5);
+    text-shadow: 0 1px 2px rgb(0 70 100 / 0.35);
+    box-shadow:
+      5px 6px 12px rgb(163 177 198 / 0.8),
+      -4px -4px 10px rgb(255 255 255 / 0.95),
+      0 0 16px -4px color-mix(in srgb, var(--tc-primary) 70%, transparent),
+      inset 0 1px 0 rgb(255 255 255 / 0.5),
+      inset 0 -3px 6px rgb(0 100 140 / 0.25);
+    transition: box-shadow 0.18s ease, transform 0.12s ease, border-color 0.18s ease, background 0.18s ease;
+  }
+  .dark :is(.btn-primary, .tc-btn-primary) {
+    box-shadow:
+      6px 8px 16px rgb(0 0 0 / 0.7),
+      0 0 18px -3px color-mix(in srgb, var(--tc-primary) 65%, transparent),
+      inset 0 1px 0 rgb(255 255 255 / 0.4),
+      inset 0 -3px 6px rgb(0 100 140 / 0.3);
+  }
+  html :is(.btn-primary, .tc-btn-primary):is(:hover, :focus-visible) {
+    color: #fff;
+    background: linear-gradient(145deg, #b46aff, #8c27e8);
+    border-color: rgb(255 255 255 / 0.5);
+    box-shadow:
+      5px 6px 12px rgb(163 177 198 / 0.8),
+      -4px -4px 10px rgb(255 255 255 / 0.95),
+      0 0 22px -2px color-mix(in srgb, var(--tc-secondary) 70%, transparent),
+      inset 0 1px 0 rgb(255 255 255 / 0.45),
+      inset 0 -3px 6px rgb(60 0 110 / 0.3);
+  }
+  .dark :is(.btn-primary, .tc-btn-primary):is(:hover, :focus-visible) {
+    box-shadow:
+      6px 8px 16px rgb(0 0 0 / 0.7),
+      0 0 22px -2px color-mix(in srgb, var(--tc-secondary) 70%, transparent),
+      inset 0 1px 0 rgb(255 255 255 / 0.35),
+      inset 0 -3px 6px rgb(60 0 110 / 0.35);
+  }
+  html :is(.btn-primary, .tc-btn-primary):active {
+    transform: translateY(1px) scale(0.99);
+    box-shadow:
+      inset 4px 6px 12px rgb(0 60 90 / 0.5),
+      inset -2px -2px 6px rgb(255 255 255 / 0.25),
+      0 0 14px -4px color-mix(in srgb, var(--tc-primary) 70%, transparent);
+  }
+  html :is(.btn, .tc-btn, .tc-btn-primary):is(:disabled, [aria-disabled='true']) {
+    box-shadow: none;
+    transform: none;
+    filter: saturate(0.5);
+  }
+
+  .tc-icon-btn {
+    border: 1px solid transparent;
+    transition: box-shadow 0.18s ease, transform 0.12s ease, background 0.18s ease, border-color 0.18s ease;
+  }
+  html .tc-icon-btn:is(:hover, :focus-visible) {
+    background: linear-gradient(145deg, #eff2f8, #dce2ec);
+    border-color: rgb(255 255 255 / 0.6);
+    box-shadow:
+      3px 4px 8px rgb(163 177 198 / 0.75),
+      -3px -3px 7px rgb(255 255 255 / 0.95),
+      inset 0 1px 0 rgb(255 255 255 / 0.9);
+  }
+  .dark .tc-icon-btn:is(:hover, :focus-visible) {
+    background: linear-gradient(145deg, rgb(255 255 255 / 0.09), rgb(255 255 255 / 0.02));
+    border-color: rgb(255 255 255 / 0.08);
+    box-shadow:
+      3px 5px 10px rgb(0 0 0 / 0.7),
+      -2px -2px 6px rgb(255 255 255 / 0.04),
+      inset 0 1px 0 rgb(255 255 255 / 0.08);
+  }
+  html .tc-icon-btn:active {
+    transform: translateY(1px) scale(0.97);
+    box-shadow:
+      inset 3px 4px 8px rgb(163 177 198 / 0.85),
+      inset -2px -2px 6px rgb(255 255 255 / 0.9);
+  }
+  .dark .tc-icon-btn:active {
+    box-shadow:
+      inset 3px 4px 9px rgb(0 0 0 / 0.8),
+      inset -2px -2px 5px rgb(255 255 255 / 0.04);
+  }
+  /* Round icon buttons that always sit raised (carousel arrows). */
+  .tc-icon-btn--raised {
+    background: linear-gradient(145deg, #eff2f8, #dce2ec);
+    border-color: rgb(255 255 255 / 0.6);
+    box-shadow:
+      4px 5px 10px rgb(163 177 198 / 0.75),
+      -3px -3px 8px rgb(255 255 255 / 0.95),
+      inset 0 1px 0 rgb(255 255 255 / 0.9);
+  }
+  .dark .tc-icon-btn--raised {
+    background: linear-gradient(145deg, rgb(255 255 255 / 0.09), rgb(255 255 255 / 0.02));
+    border-color: rgb(255 255 255 / 0.08);
+    box-shadow:
+      4px 6px 12px rgb(0 0 0 / 0.7),
+      -2px -2px 6px rgb(255 255 255 / 0.04),
+      inset 0 1px 0 rgb(255 255 255 / 0.08);
+  }
+
+  /* Form fields: recessed slots, like the wells the pads sit in. */
+  html .tc-input {
+    background: rgb(163 177 198 / 0.12);
+    border-color: transparent;
+    box-shadow: inset 3px 4px 8px rgb(163 177 198 / 0.85), inset -3px -3px 7px rgb(255 255 255 / 0.95);
+    transition: box-shadow 0.18s ease, border-color 0.18s ease;
+  }
+  .dark .tc-input {
+    background: rgb(255 255 255 / 0.035);
+    box-shadow: inset 3px 4px 9px rgb(0 0 0 / 0.75), inset -2px -2px 6px rgb(255 255 255 / 0.05);
+  }
+  html .tc-input:focus {
+    outline: none;
+    border-color: color-mix(in srgb, var(--tc-primary) 80%, transparent);
+    box-shadow:
+      inset 3px 4px 8px rgb(163 177 198 / 0.85),
+      inset -3px -3px 7px rgb(255 255 255 / 0.95),
+      0 0 16px -3px color-mix(in srgb, var(--tc-primary) 60%, transparent);
+  }
+  .dark .tc-input:focus {
+    box-shadow:
+      inset 3px 4px 9px rgb(0 0 0 / 0.75),
+      0 0 16px -3px color-mix(in srgb, var(--tc-primary) 60%, transparent);
+  }
+
   /* LED readout: a small dark screen with dot-matrix text, like the display on a controller. */
   .tc-led {
     display: inline-block;
