@@ -16,8 +16,8 @@ const items = groups.map((g) => {
     title: g.title,
     description: g.description,
     href: groupPath(g.id),
-    image: g.cover,
     icon: g.icon,
+    accent: g.accent,
     meta: `${count} ${count === 1 ? 'category' : 'categories'}`,
   };
 });

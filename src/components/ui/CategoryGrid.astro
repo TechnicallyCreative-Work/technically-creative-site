@@ -2,15 +2,26 @@
 import { Image } from 'astro:assets';
 import { Icon } from 'astro-icon/components';
 import type { ImageMetadata } from 'astro';
+import tilePlate from '~/assets/images/tiles/tile-plate.webp';
 
-// Reusable card grid for landing pages (portfolio, and later products/local services).
-// One column of stacked cards on phones, 2-3 columns from sm/lg up.
+// Reusable card grid for landing pages (portfolio, products, local services).
+//
+// Each card is a dark "logo tile": the Technically Creative head artwork with a neon mark on top.
+// The mark is either a logo image (`logo`, an additive neon PNG on black) or a tabler `icon` drawn
+// with a glow in the item's `accent` colour. `image` is a photo fallback for items with neither.
+//
+// The title and description are real text in the page. On hover-capable devices they slide over the tile
+// on hover/focus; on touch devices and phones they sit under the tile, so nothing depends on hover.
+export type Accent = 'cyan' | 'green' | 'pink' | 'purple';
+
 export interface CategoryGridItem {
   title: string;
   description: string;
   href: string;
-  image?: ImageMetadata;
+  logo?: ImageMetadata;
   icon?: string;
+  accent?: Accent;
+  image?: ImageMetadata;
   meta?: string;
 }
 
@@ -23,36 +34,161 @@ const { items, columns = 3 } = Astro.props;
 const colClass = columns === 2 ? 'sm:grid-cols-2' : 'sm:grid-cols-2 lg:grid-cols-3';
 ---
 
-<ul class={`not-prose grid list-none gap-6 p-0 ${colClass}`}>
+<ul class={`cg not-prose grid list-none gap-6 p-0 ${colClass}`}>
   {
-    items.map(({ title, description, href, image, icon, meta }) => (
-      <li class="group relative flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition motion-safe:duration-200 hover:border-primary/60 hover:shadow-lg motion-safe:hover:-translate-y-0.5 dark:border-slate-700 dark:bg-slate-900">
-        {image && (
-          <div class="aspect-[16/10] w-full overflow-hidden bg-slate-200 dark:bg-slate-800">
-            <Image
-              src={image}
-              alt=""
-              widths={[400, 640, 900]}
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
-              class="h-full w-full object-cover transition motion-safe:duration-300 motion-safe:group-hover:scale-105"
-              loading="lazy"
-              decoding="async"
-            />
+    items.map(({ title, description, href, logo, icon, accent = 'cyan', image, meta }) => {
+      const tiled = Boolean(logo || icon);
+      return (
+        <li class="cg__card group relative flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
+          <div class="cg__art relative aspect-[16/10] w-full overflow-hidden bg-slate-950">
+            {tiled ? (
+              <>
+                <Image
+                  src={tilePlate}
+                  alt=""
+                  widths={[480, 720, 1000]}
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
+                  class="cg__plate absolute inset-0 h-full w-full object-cover"
+                  loading="lazy"
+                  decoding="async"
+                />
+                {logo ? (
+                  <Image
+                    src={logo}
+                    alt=""
+                    widths={[320, 520]}
+                    sizes="(max-width: 640px) 70vw, 280px"
+                    class="cg__mark cg__mark--logo"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                ) : (
+                  <Icon name={icon!} class={`cg__mark cg__mark--icon cg__accent--${accent}`} />
+                )}
+              </>
+            ) : (
+              image && (
+                <Image
+                  src={image}
+                  alt=""
+                  widths={[400, 640, 900]}
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
+                  class="h-full w-full object-cover"
+                  loading="lazy"
+                  decoding="async"
+                />
+              )
+            )}
           </div>
-        )}
-        <div class="flex flex-1 flex-col p-5">
-          {(icon || meta) && (
-            <div class="mb-2 flex items-center gap-2 text-sm text-muted">
-              {icon && <Icon name={icon} class="h-5 w-5 text-primary" />}
-              {meta && <span>{meta}</span>}
-            </div>
-          )}
-          <h3 class="text-xl font-bold leading-tight">
-            <a href={href} class="after:absolute after:inset-0">{title}</a>
-          </h3>
-          <p class="mt-2 text-muted">{description}</p>
-        </div>
-      </li>
-    ))
+          <div class="cg__caption flex flex-1 flex-col p-5">
+            {meta && <span class="cg__meta mb-2 text-sm text-muted">{meta}</span>}
+            <h3 class="text-xl font-bold leading-tight">
+              <a href={href} class="after:absolute after:inset-0">
+                {title}
+              </a>
+            </h3>
+            <p class="cg__desc mt-2 text-muted">{description}</p>
+          </div>
+        </li>
+      );
+    })
   }
 </ul>
+
+<style>
+  .cg__card {
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .cg__card:hover {
+    border-color: color-mix(in srgb, var(--tc-primary) 60%, transparent);
+    box-shadow: 0 10px 30px -12px color-mix(in srgb, var(--tc-primary) 45%, transparent);
+  }
+  .cg__card:has(a:focus-visible) {
+    outline: 2px solid var(--tc-primary);
+    outline-offset: 2px;
+  }
+
+  /* Centered neon mark over the plate. mix-blend-mode: screen makes the black of the PNG disappear. */
+  .cg__mark {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    max-height: 62%;
+    max-width: 74%;
+    width: auto;
+    height: auto;
+    transition: transform 0.35s ease, opacity 0.35s ease;
+  }
+  .cg__mark--logo {
+    mix-blend-mode: screen;
+  }
+  .cg__mark--icon {
+    width: 34%;
+    height: auto;
+    aspect-ratio: 1;
+    max-height: 62%;
+    stroke-width: 1.2;
+  }
+  .cg__accent--cyan {
+    color: #3ee7ff;
+    filter: drop-shadow(0 0 6px #08b4d4) drop-shadow(0 0 18px rgba(8, 180, 212, 0.65));
+  }
+  .cg__accent--green {
+    color: #5dff8f;
+    filter: drop-shadow(0 0 6px #1fbf55) drop-shadow(0 0 18px rgba(31, 191, 85, 0.6));
+  }
+  .cg__accent--pink {
+    color: #ff4fa8;
+    filter: drop-shadow(0 0 6px #e0207f) drop-shadow(0 0 18px rgba(224, 32, 127, 0.6));
+  }
+  .cg__accent--purple {
+    color: #b784ff;
+    filter: drop-shadow(0 0 6px #7a3de0) drop-shadow(0 0 18px rgba(122, 61, 224, 0.6));
+  }
+
+  /* Hover-capable screens: the caption becomes an overlay that reveals on hover or keyboard focus. */
+  @media (hover: hover) and (pointer: fine) and (min-width: 640px) {
+    .cg__caption {
+      position: absolute;
+      inset: 0;
+      justify-content: flex-end;
+      padding: 1.25rem;
+      color: #fff;
+      background: linear-gradient(to top, rgba(2, 8, 23, 0.94) 30%, rgba(2, 8, 23, 0.55) 70%, rgba(2, 8, 23, 0.25));
+      opacity: 0;
+      transform: translateY(0.5rem);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    .cg__card:hover .cg__caption,
+    .cg__card:focus-within .cg__caption {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .cg__card:hover .cg__mark,
+    .cg__card:focus-within .cg__mark {
+      opacity: 0.28;
+      transform: translate(-50%, -50%) scale(0.92);
+    }
+    .cg__meta,
+    .cg__desc {
+      color: rgba(226, 232, 240, 0.88);
+    }
+    /* beat the global heading-link style, which is tuned for a light or dark page, not this overlay */
+    .cg__caption h3 > a[href] {
+      color: #fff;
+      text-decoration-color: #3ee7ff;
+    }
+    .cg__caption h3 > a[href]:hover {
+      color: #ff7ac0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cg__card,
+    .cg__caption,
+    .cg__mark {
+      transition: none;
+    }
+  }
+</style>

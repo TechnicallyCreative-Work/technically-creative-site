@@ -1,4 +1,4 @@
-// Portfolio data: categories, projects, and the group/cover mapping used by the
+// Portfolio data: categories, projects, and the group and logo mapping used by the
 // card-grid pages under src/pages/portfolio/. Edit here to add or move work.
 
 import type { ImageMetadata } from 'astro';
@@ -27,8 +27,12 @@ import brandRvxxArgent2 from '../assets/images/brand-rvxx-argent2.jpg';
 import brandVantablakAlbum from '../assets/images/brand-vantablak-album.jpg';
 import galleryVbLive01 from '../assets/images/gallery-vantablak-live-01.jpg';
 import galleryVbLive02 from '../assets/images/gallery-vantablak-live-02.jpg';
-import galleryVbLive03 from '../assets/images/gallery-vantablak-live-03.jpg';
-import studioDeskImage from '../assets/images/gallery-studio-ai-desk.png';
+import logoClickup from '../assets/images/tiles/logo-clickup.png';
+import logoGears from '../assets/images/tiles/logo-gears.png';
+import logoMic from '../assets/images/tiles/logo-mic.png';
+import logoOwl from '../assets/images/tiles/logo-owl.png';
+import logoSystems from '../assets/images/tiles/logo-systems.png';
+import logoWaveform from '../assets/images/tiles/logo-waveform.png';
 
 export interface MediaObject {
   type: string;
@@ -577,28 +581,28 @@ export const categories: Category[] = [
 ];
 
 
+// Neon accent used for icon-based category tiles (logo-based tiles carry their own colour).
+export type Accent = 'cyan' | 'green' | 'pink' | 'purple';
+
 export interface PortfolioGroup {
   id: string;
   title: string;
   description: string;
   icon: string;
-  cover: ImageMetadata;
+  accent: Accent;
   categoryIds: string[];
 }
 
-// Cover images for category cards. Swap any of these for a better shot.
-export const categoryCovers: Record<string, ImageMetadata> = {
-  'music-sound-design': stemReconstructionImage,
-  'sound-audio-engineering': caveSoundscapeImage,
-  'performance-live-sound': galleryVbLive03,
-  'signal-space': studioDeskImage,
-  'graphic-design': artprintsGallery,
-  'video-editing': consoleWideImage,
-  'ableton-training': abletonSetupImage,
-  'gear-consultation': charvelImage,
-  'project-management': clickupLoggerImage,
-  automation: clickupLoggerImage,
-  'technology-efficiency': desk2Image,
+// Neon logo marks for category tiles, pulled from the Contra case study covers.
+// Categories without an entry fall back to their tabler icon, glowing in the group's accent colour.
+export const categoryLogos: Record<string, ImageMetadata> = {
+  'music-sound-design': logoOwl,
+  'sound-audio-engineering': logoWaveform,
+  'performance-live-sound': logoMic,
+  'gear-consultation': logoWaveform,
+  'project-management': logoClickup,
+  automation: logoGears,
+  'technology-efficiency': logoSystems,
 };
 
 export const groups: PortfolioGroup[] = [
@@ -607,7 +611,7 @@ export const groups: PortfolioGroup[] = [
     title: 'Music & Audio',
     description: 'Music production, sound design, audio engineering, live sound, and studio audits.',
     icon: 'tabler:music',
-    cover: stemReconstructionImage,
+    accent: 'green',
     categoryIds: ['music-sound-design', 'sound-audio-engineering', 'performance-live-sound', 'signal-space'],
   },
   {
@@ -615,7 +619,7 @@ export const groups: PortfolioGroup[] = [
     title: 'Visual Arts & Video',
     description: 'Brand systems, digital art, and video editing from pre-production to post.',
     icon: 'tabler:palette',
-    cover: artprintsGallery,
+    accent: 'pink',
     categoryIds: ['graphic-design', 'video-editing'],
   },
   {
@@ -623,7 +627,7 @@ export const groups: PortfolioGroup[] = [
     title: 'Consulting & Training',
     description: 'Ableton training, gear consultation, and project management consulting.',
     icon: 'tabler:school',
-    cover: abletonSetupImage,
+    accent: 'purple',
     categoryIds: ['ableton-training', 'gear-consultation', 'project-management'],
   },
   {
@@ -631,7 +635,7 @@ export const groups: PortfolioGroup[] = [
     title: 'Automation & Tech',
     description: 'Workflow automation and technology efficiency for creative businesses.',
     icon: 'tabler:robot',
-    cover: clickupLoggerImage,
+    accent: 'cyan',
     categoryIds: ['automation', 'technology-efficiency'],
   },
 ];

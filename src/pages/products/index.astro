@@ -4,9 +4,6 @@ import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
 import CategoryGrid from '~/components/ui/CategoryGrid.astro';
 import { getPermalink } from '~/utils/permalinks';
 
-import abtBundle from '~/assets/images/abt-s01-bundle.png';
-import storeNatureSeries from '~/assets/images/store-nature-series.png';
-import storeXenomorph from '~/assets/images/store-xenomorph.png';
 
 const metadata = {
   title: 'Digital Products — Technically Creative LLC',
@@ -18,24 +15,24 @@ const items = [
     title: 'Ableton Training',
     description: 'Ableton Basics Session 01 — buy the full bundle or individual modules, from orientation to your first beat.',
     href: '/products/ableton-modules',
-    image: abtBundle,
     icon: 'tabler:device-laptop',
+    accent: 'green' as const,
     meta: '7 products',
   },
   {
     title: 'Digital Art — Nature Series',
     description: 'Original digital art prints — buy individual pieces or save with the full bundle.',
     href: '/products/nature-series',
-    image: storeNatureSeries,
     icon: 'tabler:leaf',
+    accent: 'cyan' as const,
     meta: '4 products',
   },
   {
     title: 'Digital Art — Dark & Fan Art',
     description: 'Dark sci-fi, biomechanical, and ink & watercolor digital prints.',
     href: '/products/dark-art',
-    image: storeXenomorph,
     icon: 'tabler:skull',
+    accent: 'pink' as const,
     meta: '4 prints',
   },
 ];
