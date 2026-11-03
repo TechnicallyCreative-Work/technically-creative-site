@@ -2,20 +2,41 @@
 import { SITE } from 'astrowind:config';
 import logoMark from '~/assets/images/tc-logo-icon.png';
 
+export interface Props {
+  /** 'all' = mark and name (default), 'mark' = round mark only, 'text' = name only. */
+  part?: 'all' | 'mark' | 'text';
+  /** Alt text for the mark. Pass '' when the mark sits inside a labelled control. */
+  alt?: string;
+}
+
 const siteName = SITE?.name ?? 'Technically Creative';
+const { part = 'all', alt = siteName } = Astro.props;
 ---
 
 <span class="flex min-w-0 items-center text-gray-900 dark:text-white">
-  <img
-    src={logoMark.src}
-    width={48}
-    height={48}
-    loading="lazy"
-    decoding="async"
-    alt={siteName}
-    class="h-9 w-auto shrink-0 md:h-8 drop-shadow-sm"
-  />
-  <span class="ml-2 hidden whitespace-nowrap text-2xl font-bold md:text-xl lg:inline">
-    {siteName}
-  </span>
+  {
+    part !== 'text' && (
+      <img
+        src={logoMark.src}
+        width={48}
+        height={48}
+        loading="lazy"
+        decoding="async"
+        alt={alt}
+        class="h-9 w-auto shrink-0 md:h-8 drop-shadow-sm"
+      />
+    )
+  }
+  {
+    part !== 'mark' && (
+      <span
+        class:list={[
+          'whitespace-nowrap text-2xl font-bold md:text-xl',
+          part === 'all' ? 'ml-2 hidden lg:inline' : 'hidden lg:inline',
+        ]}
+      >
+        {siteName}
+      </span>
+    )
+  }
 </span>
