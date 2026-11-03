@@ -1,0 +1,100 @@
+---
+import SectionPage from '~/layouts/SectionPage.astro';
+import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
+import { Icon } from 'astro-icon/components';
+import { getPermalink } from '~/utils/permalinks';
+import { getImage } from 'astro:assets';
+
+import storeNatureSeries from '~/assets/images/store-nature-series.png';
+import gArtprints from '~/assets/images/artprints-gallery.jpg';
+
+const naturePreview = await getImage({ src: storeNatureSeries, width: 700, format: 'webp', quality: 72 });
+
+const galleries: Record<string, { src: string; alt: string }[]> = {
+  'nature-series': [
+    { src: storeNatureSeries.src, alt: 'Nature series art prints panel' },
+    { src: gArtprints.src, alt: 'Physical art prints' },
+  ],
+};
+
+const naturePrints = [
+  { slug: 'Mantis', name: 'Praying Mantis', price: '$8', desc: 'Nature Series single print' },
+  { slug: 'moth', name: 'Moth', price: '$8', desc: 'Nature Series single print' },
+  { slug: 'frog', name: 'Frog', price: '$8', desc: 'Nature Series single print' },
+];
+const metadata = {
+  title: 'Digital Art — Nature Series — Technically Creative LLC',
+  description: 'Original Nature Series digital art prints — buy individual pieces or save with the full bundle on Gumroad.',
+};
+---
+
+<SectionPage
+  metadata={metadata}
+  ctaTitle="Need something custom instead?"
+  ctaSubtitle="Custom commissions, graphic design, and local/on-site work are booked through Local Services."
+  ctaActions={[{ variant: 'primary', text: 'View Local Services', href: getPermalink('/local-services') }]}
+>
+  <WidgetWrapper id="nature-series" containerClass="max-w-6xl mx-auto py-12 md:py-16">
+    <a href="/products" class="mb-5 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline">
+      <Icon name="tabler:arrow-left" class="h-4 w-4" /> All products
+    </a>
+    <div class="flex items-center gap-3 text-primary">
+      <Icon name="tabler:leaf" class="h-7 w-7" />
+      <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">Digital Art — Nature Series</h1>
+    </div>
+    <p class="mt-2 max-w-2xl text-muted dark:text-slate-300">Original digital art prints — buy individual pieces or save with the full bundle.</p>
+
+    {galleries['nature-series'].length > 0 && (
+      <div class="mt-6 flex gap-3 overflow-x-auto pb-2">
+        {galleries['nature-series'].map(({ src, alt }) => (
+          <div class="shrink-0 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
+            <img src={src} alt={alt} class="h-44 w-auto object-cover" loading="lazy" />
+          </div>
+        ))}
+      </div>
+    )}
+
+    <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <!-- Bundle (featured) -->
+      <a
+        href="https://techcre8.gumroad.com/l/natureseriesbundle"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="group flex flex-col overflow-hidden rounded-2xl border border-primary/40 bg-primary/5 transition hover:border-primary hover:shadow-lg dark:bg-primary/10"
+      >
+        <img src={naturePreview.src} alt="Nature Series Bundle" class="h-44 w-full object-cover pointer-events-none select-none" draggable="false" />
+        <div class="flex flex-col p-4">
+          <div class="flex items-start justify-between gap-2">
+            <span class="font-bold text-slate-900 dark:text-white">Nature Series Bundle</span>
+            <span class="shrink-0 rounded-full bg-primary/20 px-2.5 py-0.5 text-xs font-bold text-primary">$20</span>
+          </div>
+          <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">All three prints — Mantis, Moth & Frog</p>
+          <span class="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary group-hover:underline">
+            Get on Gumroad <Icon name="tabler:external-link" class="h-3.5 w-3.5" />
+          </span>
+        </div>
+      </a>
+
+      {naturePrints.map(({ slug, name, price, desc }) => (
+        <a
+          href={`https://techcre8.gumroad.com/l/${slug}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group flex flex-col overflow-hidden rounded-2xl border border-dashed border-primary/30 bg-white/70 transition hover:border-primary/60 hover:shadow-md dark:bg-slate-900/40"
+        >
+          <img src={naturePreview.src} alt={name} class="h-44 w-full object-cover pointer-events-none select-none" draggable="false" />
+          <div class="flex flex-col p-4">
+            <div class="flex items-start justify-between gap-2">
+              <span class="font-semibold text-slate-900 dark:text-white">{name}</span>
+              <span class="shrink-0 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300">{price}</span>
+            </div>
+            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{desc}</p>
+            <span class="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary group-hover:underline">
+              Get on Gumroad <Icon name="tabler:external-link" class="h-3.5 w-3.5" />
+            </span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </WidgetWrapper>
+</SectionPage>

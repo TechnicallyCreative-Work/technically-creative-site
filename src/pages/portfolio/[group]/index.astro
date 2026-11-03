@@ -1,5 +1,5 @@
 ---
-import PortfolioPage from '~/layouts/PortfolioPage.astro';
+import SectionPage from '~/layouts/SectionPage.astro';
 import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
 import CategoryGrid from '~/components/ui/CategoryGrid.astro';
 import { categoryCovers, categoryPath, getGroupCategories, groups } from '~/data/portfolio';
@@ -26,7 +26,7 @@ const items = getGroupCategories(group).map((c) => ({
 }));
 ---
 
-<PortfolioPage metadata={metadata}>
+<SectionPage metadata={metadata}>
   <div class="container pt-10 pb-2 md:pt-14">
     <h1 class="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">{group.title}</h1>
     <p class="mt-3 max-w-2xl text-muted dark:text-slate-400">{group.description}</p>
@@ -35,4 +35,4 @@ const items = getGroupCategories(group).map((c) => ({
   <WidgetWrapper containerClass="max-w-6xl mx-auto py-8 md:py-12">
     <CategoryGrid items={items} />
   </WidgetWrapper>
-</PortfolioPage>
+</SectionPage>

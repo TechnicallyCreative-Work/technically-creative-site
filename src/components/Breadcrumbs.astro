@@ -13,6 +13,8 @@ const LABELS: Record<string, string> = {
   contact: 'Contact',
   credentials: 'Credentials',
   portfolio: 'Portfolio',
+  products: 'Products',
+  'local-services': 'Local Services',
   services: 'Services',
   store: 'Store',
   'midi-to-tab': 'Midi to Tab',
@@ -24,6 +26,13 @@ const LABELS: Record<string, string> = {
   'public-speaking-workshops': 'Public Speaking & Workshops',
   'sound-design-foley': 'Sound Design & Foley',
   'workflow-automation': 'Workflow Automation',
+  // Products and local-services detail pages
+  'ableton-modules': 'Ableton Training',
+  'nature-series': 'Nature Series',
+  'dark-art': 'Dark & Fan Art',
+  'design-commissions': 'Graphic Design & Commissions',
+  'online-consulting': 'Services & Consulting',
+  indianapolis: 'Indianapolis Local Services',
   // Portfolio groups and categories (labels come from src/data/portfolio.ts)
   ...Object.fromEntries(groups.map((g) => [g.id, g.title])),
   ...Object.fromEntries(categories.map((c) => [c.id, c.title])),
