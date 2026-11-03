@@ -3,10 +3,13 @@ import Layout from '~/layouts/PageLayout.astro';
 import Header from '~/components/widgets/Header.astro';
 
 import BrandBanner from '~/components/widgets/BrandBanner.astro';
-import Features from '~/components/widgets/Features.astro';
+import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
+import Headline from '~/components/ui/Headline.astro';
+import CategoryGrid from '~/components/ui/CategoryGrid.astro';
 import Content from '~/components/widgets/Content.astro';
 import CallToAction from '~/components/widgets/CallToAction.astro';
 import { headerData } from '~/navigation';
+import { serviceOfferings } from '~/data/serviceOfferings';
 import workflowImage from '~/assets/images/verticalcool.jpg';
 
 const metadata = {
@@ -22,6 +25,15 @@ const metadata = {
 };
 
 const links = headerData.links;
+
+const offerings = serviceOfferings.map(({ slug, title, description, meta, logo, accent }) => ({
+  title,
+  description,
+  href: `/services/${slug}`,
+  logo,
+  accent,
+  meta,
+}));
 ---
 
 <Layout metadata={metadata}>
@@ -37,55 +49,10 @@ const links = headerData.links;
   </div>
 
   <!-- Service Offerings -->
-  <Features
-    id="services"
-    tagline="What I offer"
-    title="Service Offerings"
-    items={[
-      {
-        title: 'Mixing & Mastering',
-        description:
-          'Singles start at $249 with EP and album bundles. Expect organized sessions, a detailed mix report, and unlimited notes for 10 days.',
-        icon: 'tabler:adjustments',
-        callToAction: { text: 'Mixing workflow', href: '/services/mixing-mastering' },
-      },
-      {
-        title: 'Sound Design & Foley',
-        description:
-          'Custom audio textures for games, film, and trailers. Project bundles start at $350 with delivery-ready stems and alternate mixes.',
-        icon: 'tabler:speakerphone',
-        callToAction: { text: 'Sound design process', href: '/services/sound-design-foley' },
-      },
-      {
-        title: 'Music Technology Consulting',
-        description:
-          'Studio audits, systems roadmaps, and coaching subscriptions start at $350 per month with async support between sessions.',
-        icon: 'tabler:music',
-        callToAction: { text: 'Consulting details', href: '/services/music-technology-consulting' },
-      },
-      {
-        title: 'Project Management Consulting',
-        description:
-          'Sprint planning intensives from $680, launch management packages, and fractional retainers for ongoing oversight.',
-        icon: 'tabler:briefcase',
-        callToAction: { text: 'Delivery playbook', href: '/services/project-management-consulting' },
-      },
-      {
-        title: 'Workflow Automation for Creatives',
-        description:
-          'ClickUp, Airtable, and n8n builds that automate intake, approvals, and reporting. Discovery-to-build roadmaps start at $600.',
-        icon: 'tabler:settings-automation',
-        callToAction: { text: 'Automation roadmap', href: '/services/workflow-automation' },
-      },
-      {
-        title: 'Public Speaking Workshops',
-        description:
-          'Keynotes and interactive workshops on creative discipline, delivery, and emerging audio tech. Sessions begin at $750.',
-        icon: 'tabler:microphone',
-        callToAction: { text: 'Workshop formats', href: '/services/public-speaking-workshops' },
-      },
-    ]}
-  />
+  <WidgetWrapper id="services" containerClass="max-w-6xl mx-auto">
+    <Headline tagline="What I offer" title="Service Offerings" />
+    <CategoryGrid items={offerings} />
+  </WidgetWrapper>
 
   <!-- Process -->
   <Content

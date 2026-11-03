@@ -4,12 +4,23 @@ import Layout from '~/layouts/PageLayout.astro';
 import Hero from '~/components/widgets/Hero.astro';
 import SplashScreen from '~/components/widgets/SplashScreen.astro';
 import BrandBanner from '~/components/widgets/BrandBanner.astro';
-import Features2 from '~/components/widgets/Features2.astro';
+import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
+import Headline from '~/components/ui/Headline.astro';
+import CategoryGrid from '~/components/ui/CategoryGrid.astro';
 import Steps from '~/components/widgets/Steps.astro';
 import FAQs from '~/components/widgets/FAQs.astro';
 import Stats from '~/components/widgets/Stats.astro';
 import CallToAction from '~/components/widgets/CallToAction.astro';
 import stepsVisual from '~/assets/images/verticalcool.jpg';
+import { serviceOfferings } from '~/data/serviceOfferings';
+
+const highlights = serviceOfferings.map(({ slug, title, summary, logo, accent }) => ({
+  title,
+  description: summary,
+  href: `/services/${slug}`,
+  logo,
+  accent,
+}));
 
 const metadata = {
   title: 'Freelance Mixing & Workflow Automation | Indianapolis',
@@ -82,51 +93,17 @@ const metadata = {
   />
 
   <!-- Features2 Widget ************** -->
-  <Features2
-    title="Technically Creative — Audio • PM • Delivery"
-    subtitle="A collection of offerings and services that will help you get your creative project done"
-    tagline="Highlights"
-    items={[
-      {
-        title: 'Mixing & Mastering',
-        description: "Release-ready mixes and masters that translate across all playback systems.",
-        icon: 'tabler:music',
-      },
-      {
-        title: 'Sound Design & Foley',
-        description:
-          "Custom soundscapes and immersive audio for film, games, and interactive experiences.",
-        icon: 'flat-color-icons:music',
-      },
-      {
-        title: 'Music Technology Consulting',
-        description:
-          'Expert guidance on DAWs, studio setup, signal flow, and audio software optimization.',
-        icon: 'flat-color-icons:idea',
-      },
-      {
-        title: 'Project Management',
-        description:
-          "Structured workflows and Agile methodologies to keep your creative projects on track and on budget.",
-        icon: 'flat-color-icons:planner',
-      },
-      {
-        title: 'Workflow Automation',
-        description:
-          'Automate repetitive tasks, streamline client intake, and optimize your creative pipeline for efficiency.',
-        icon: 'flat-color-icons:workflow',
-      },
-      {
-        title: 'Public Speaking & Workshops',
-        description: 'Engaging presentations and hands-on training on music technology, audio production, and project management for creatives.',
-        icon: 'flat-color-icons:voice-presentation',
-      },
-    ]}
-  >
+  <WidgetWrapper id="highlights" containerClass="max-w-6xl mx-auto">
     <Fragment slot="bg">
       <div class="absolute inset-0 bg-blue-50 dark:bg-transparent"></div>
     </Fragment>
-  </Features2>
+    <Headline
+      title="Technically Creative — Audio • PM • Delivery"
+      subtitle="A collection of offerings and services that will help you get your creative project done"
+      tagline="Highlights"
+    />
+    <CategoryGrid items={highlights} />
+  </WidgetWrapper>
 
   <!-- HighlightedPosts Widget ******* -->
   {
