@@ -2,7 +2,7 @@
 import SectionPage from '~/layouts/SectionPage.astro';
 import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
 import CategoryGrid from '~/components/ui/CategoryGrid.astro';
-import { categories, categoryPath, getGroupCategories, groupPath, groups } from '~/data/portfolio';
+import { categories, categoryPath, getGroupCategories, groupLogos, groupPath, groups } from '~/data/portfolio';
 
 const metadata = {
   title: 'Portfolio - Technically Creative LLC',
@@ -16,7 +16,7 @@ const items = groups.map((g) => {
     title: g.title,
     description: g.description,
     href: groupPath(g.id),
-    icon: g.icon,
+    logo: groupLogos[g.id],
     accent: g.accent,
     meta: `${count} ${count === 1 ? 'category' : 'categories'}`,
   };
@@ -36,7 +36,7 @@ const hashRedirects = Object.fromEntries(categories.map((c) => [c.id, categoryPa
   </div>
 
   <WidgetWrapper containerClass="max-w-6xl mx-auto py-8 md:py-12">
-    <CategoryGrid items={items} columns={2} />
+    <CategoryGrid items={items} />
   </WidgetWrapper>
 
   <script is:inline define:vars={{ hashRedirects }}>

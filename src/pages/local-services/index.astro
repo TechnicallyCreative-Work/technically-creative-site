@@ -3,6 +3,9 @@ import SectionPage from '~/layouts/SectionPage.astro';
 import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
 import CategoryGrid from '~/components/ui/CategoryGrid.astro';
 import { getPermalink } from '~/utils/permalinks';
+import markDesign from '~/assets/images/tiles/logo-design-commissions.png';
+import markConsulting from '~/assets/images/tiles/logo-online-consulting.png';
+import markIndy from '~/assets/images/tiles/logo-indianapolis.png';
 
 
 const metadata = {
@@ -16,7 +19,7 @@ const items = [
     title: 'Graphic Design & Commissions',
     description: 'Logos, album artwork, illustration, social graphics, print-ready art, and watercolor & ink commissions.',
     href: '/local-services/design-commissions',
-    icon: 'tabler:palette',
+    logo: markDesign,
     accent: 'pink' as const,
     meta: 'Quoted per project',
   },
@@ -24,7 +27,7 @@ const items = [
     title: 'Services & Consulting',
     description: 'Ableton workflow sessions and automation audits booked through Upwork, with contract and payment protection.',
     href: '/local-services/online-consulting',
-    icon: 'tabler:briefcase',
+    logo: markConsulting,
     accent: 'cyan' as const,
     meta: 'Booked on Upwork',
   },
@@ -32,7 +35,7 @@ const items = [
     title: 'Indianapolis Local Services',
     description: 'In-person recording, live sound, DJ, karaoke, equipment rental, instrument setup, and Ableton training.',
     href: '/local-services/indianapolis',
-    icon: 'tabler:map-pin',
+    logo: markIndy,
     accent: 'purple' as const,
     meta: 'In person',
   },
@@ -62,7 +65,7 @@ const hashRedirects = {
   </div>
 
   <WidgetWrapper containerClass="max-w-6xl mx-auto py-8 md:py-12">
-    <CategoryGrid items={items} columns={3} />
+    <CategoryGrid items={items} />
   </WidgetWrapper>
 
   <script is:inline define:vars={{ hashRedirects }}>
