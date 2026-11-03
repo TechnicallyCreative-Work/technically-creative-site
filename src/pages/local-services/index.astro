@@ -4,9 +4,6 @@ import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
 import CategoryGrid from '~/components/ui/CategoryGrid.astro';
 import { getPermalink } from '~/utils/permalinks';
 
-import vantablakAlbum from '~/assets/images/brand-vantablak-album.jpg';
-import desk3 from '~/assets/images/desk3.jpg';
-import vbLive03 from '~/assets/images/gallery-vantablak-live-03.jpg';
 
 const metadata = {
   title: 'Local & Custom Services — Technically Creative LLC',
@@ -19,24 +16,24 @@ const items = [
     title: 'Graphic Design & Commissions',
     description: 'Logos, album artwork, illustration, social graphics, print-ready art, and watercolor & ink commissions.',
     href: '/local-services/design-commissions',
-    image: vantablakAlbum,
     icon: 'tabler:palette',
+    accent: 'pink' as const,
     meta: 'Quoted per project',
   },
   {
     title: 'Services & Consulting',
     description: 'Ableton workflow sessions and automation audits booked through Upwork, with contract and payment protection.',
     href: '/local-services/online-consulting',
-    image: desk3,
     icon: 'tabler:briefcase',
+    accent: 'cyan' as const,
     meta: 'Booked on Upwork',
   },
   {
     title: 'Indianapolis Local Services',
     description: 'In-person recording, live sound, DJ, karaoke, equipment rental, instrument setup, and Ableton training.',
     href: '/local-services/indianapolis',
-    image: vbLive03,
     icon: 'tabler:map-pin',
+    accent: 'purple' as const,
     meta: 'In person',
   },
 ];

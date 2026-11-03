@@ -2,7 +2,7 @@
 import SectionPage from '~/layouts/SectionPage.astro';
 import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
 import CategoryGrid from '~/components/ui/CategoryGrid.astro';
-import { categoryCovers, categoryPath, getGroupCategories, groups } from '~/data/portfolio';
+import { categoryLogos, categoryPath, getGroupCategories, groups } from '~/data/portfolio';
 import type { PortfolioGroup } from '~/data/portfolio';
 
 export function getStaticPaths() {
@@ -20,8 +20,9 @@ const items = getGroupCategories(group).map((c) => ({
   title: c.title,
   description: c.description,
   href: categoryPath(c.id),
-  image: categoryCovers[c.id],
+  logo: categoryLogos[c.id],
   icon: c.icon,
+  accent: group.accent,
   meta: c.projects.length === 0 ? 'Service available' : `${c.projects.length} ${c.projects.length === 1 ? 'project' : 'projects'}`,
 }));
 ---
