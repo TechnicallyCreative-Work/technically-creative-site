@@ -1,0 +1,75 @@
+---
+import { Icon } from 'astro-icon/components';
+import { statusStyles, statusLabels, type Project } from '~/data/portfolio';
+
+export interface Props {
+  project: Project;
+}
+
+const { title: projectTitle, summary, media, label, href, status, review } = Astro.props.project;
+---
+
+<article class="rounded-2xl border border-slate-700 bg-slate-800 px-6 py-8 shadow-xl shadow-black/40 transition hover:border-primary/60 hover:shadow-2xl hover:shadow-black/50">
+  <div class="flex items-center justify-between gap-2">
+    <div class="text-sm font-semibold uppercase tracking-wider text-primary">
+      {label ?? 'Case Study'}
+    </div>
+    {status && (
+      <span class={`rounded-full px-2.5 py-0.5 text-xs font-medium ${statusStyles[status] ?? ''}`}>
+        {statusLabels[status] ?? status}
+      </span>
+    )}
+  </div>
+  <h3 class="mt-3 text-xl font-semibold text-white">{projectTitle}</h3>
+  <p class="mt-2 text-slate-400">{summary}</p>
+
+  {media?.type === 'youtube' && (
+    <div class="mt-4 overflow-hidden rounded-xl border border-slate-700">
+      <iframe
+        class="h-48 w-full"
+        src={media.src}
+        title={`${projectTitle} video`}
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen
+      ></iframe>
+    </div>
+  )}
+  {media?.type === 'image' && (
+    <div class="mt-4 overflow-hidden rounded-xl border border-slate-700">
+      <img class="h-48 w-full object-cover" src={media.src} alt={media.alt ?? projectTitle} />
+    </div>
+  )}
+  {media?.type === 'raw' && (
+    <div class="mt-4 overflow-hidden rounded-xl border border-slate-700">
+      <Fragment set:html={media.html} />
+    </div>
+  )}
+  {review && (
+    <blockquote class="mt-5 rounded-xl border border-amber-700/40 bg-amber-900/10 px-4 py-3">
+      <div class="mb-1.5 flex items-center gap-1">
+        {Array.from({ length: review.rating }).map(() => (
+          <Icon name="tabler:star-filled" class="h-3.5 w-3.5 text-amber-400" />
+        ))}
+        {review.platform && (
+          <span class="ml-1.5 text-xs font-medium text-slate-500">{review.platform}</span>
+        )}
+      </div>
+      <p class="text-sm italic leading-relaxed text-slate-300">"{review.quote}"</p>
+    </blockquote>
+  )}
+  {href && (
+    <div class="mt-4">
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
+      >
+        View on Upwork
+        <Icon name="tabler:external-link" class="h-4 w-4" />
+      </a>
+    </div>
+  )}
+</article>

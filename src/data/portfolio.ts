@@ -1,59 +1,43 @@
----
-import Layout from '~/layouts/PageLayout.astro';
-import Header from '~/components/widgets/Header.astro';
+// Portfolio data: categories, projects, and the group/cover mapping used by the
+// card-grid pages under src/pages/portfolio/. Edit here to add or move work.
 
-import BrandBanner from '~/components/widgets/BrandBanner.astro';
-import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
-import CallToAction from '~/components/widgets/CallToAction.astro';
-import Button from '~/components/ui/Button.astro';
-import { Icon } from 'astro-icon/components';
-import { getPermalink } from '~/utils/permalinks';
-import { headerData } from '~/navigation';
+import type { ImageMetadata } from 'astro';
+import abletonSetupImage from '../assets/images/desk3.jpg';
+import clickupLoggerImage from '../assets/images/project-image-7.png';
+import consoleWideImage from '../assets/images/WideConsoleStudioShotAiEdit.png';
+import caveSoundscapeImage from '../assets/images/cave-river-soundscape.png';
+import soundLogoImage from '../assets/images/sound-logo-ethno-indigenous.png';
+import charvelImage from '../assets/images/Charvel-ProMod-SSS.jpg';
+import desk1Image from '../assets/images/desk1.jpg';
+import desk2Image from '../assets/images/desk2.jpg';
+import stemReconstructionImage from '../assets/images/stem-reconstruction.webp';
+import cosmosImage from '../assets/images/all-is-well-cosmos.jpg';
+import artXenomorph from '../assets/images/store-xenomorph.png';
+import artHorrorOwl from '../assets/images/store-horrorowl.png';
+import artDredd from '../assets/images/store-dredd.png';
+import artNatureSeries from '../assets/images/store-nature-series.png';
+import artCyberHare from '../assets/images/store-cyberhare.png';
+import artprintsGallery from '../assets/images/artprints-gallery.jpg';
+import brandTcLogo from '../assets/images/brand-tc-logo.png';
+import brandTcWallpaperGd from '../assets/images/brand-tc-wallpaper-gd.png';
+import brandTcYoutubeBanner from '../assets/images/brand-tc-youtube-banner.png';
+import brandRvxxLogo from '../assets/images/brand-rvxx-logo.png';
+import brandRvxxArgent from '../assets/images/brand-rvxx-argent.jpg';
+import brandRvxxArgent2 from '../assets/images/brand-rvxx-argent2.jpg';
+import brandVantablakAlbum from '../assets/images/brand-vantablak-album.jpg';
+import galleryVbLive01 from '../assets/images/gallery-vantablak-live-01.jpg';
+import galleryVbLive02 from '../assets/images/gallery-vantablak-live-02.jpg';
+import galleryVbLive03 from '../assets/images/gallery-vantablak-live-03.jpg';
+import studioDeskImage from '../assets/images/gallery-studio-ai-desk.png';
 
-import abletonSetupImage from '~/assets/images/desk3.jpg';
-import clickupLoggerImage from '~/assets/images/project-image-7.png';
-import consoleWideImage from '~/assets/images/WideConsoleStudioShotAiEdit.png';
-import caveSoundscapeImage from '~/assets/images/cave-river-soundscape.png';
-import soundLogoImage from '~/assets/images/sound-logo-ethno-indigenous.png';
-import charvelImage from '~/assets/images/Charvel-ProMod-SSS.jpg';
-import desk1Image from '~/assets/images/desk1.jpg';
-import desk2Image from '~/assets/images/desk2.jpg';
-import stemReconstructionImage from '~/assets/images/stem-reconstruction.webp';
-import cosmosImage from '~/assets/images/all-is-well-cosmos.jpg';
-
-import artXenomorph from '~/assets/images/store-xenomorph.png';
-import artHorrorOwl from '~/assets/images/store-horrorowl.png';
-import artDredd from '~/assets/images/store-dredd.png';
-import artNatureSeries from '~/assets/images/store-nature-series.png';
-import artCyberHare from '~/assets/images/store-cyberhare.png';
-import artprintsGallery from '~/assets/images/artprints-gallery.jpg';
-
-import brandTcLogo from '~/assets/images/brand-tc-logo.png';
-import brandTcWallpaperGd from '~/assets/images/brand-tc-wallpaper-gd.png';
-import brandTcYoutubeBanner from '~/assets/images/brand-tc-youtube-banner.png';
-import brandRvxxLogo from '~/assets/images/brand-rvxx-logo.png';
-import brandRvxxArgent from '~/assets/images/brand-rvxx-argent.jpg';
-import brandRvxxArgent2 from '~/assets/images/brand-rvxx-argent2.jpg';
-import brandVantablakAlbum from '~/assets/images/brand-vantablak-album.jpg';
-import galleryVbLive01 from '~/assets/images/gallery-vantablak-live-01.jpg';
-import galleryVbLive02 from '~/assets/images/gallery-vantablak-live-02.jpg';
-import galleryVbLive03 from '~/assets/images/gallery-vantablak-live-03.jpg';
-
-const metadata = {
-  title: 'Portfolio - Technically Creative LLC',
-  description: 'Service-aligned work across music production, sound engineering, Ableton training, automation, and more from Technically Creative LLC.',
-};
-
-const links = headerData.links;
-
-interface MediaObject {
+export interface MediaObject {
   type: string;
   src?: string;
   alt?: string;
   html?: string;
 }
 
-interface Project {
+export interface Project {
   label?: string;
   title: string;
   status?: string;
@@ -67,7 +51,7 @@ interface Project {
   };
 }
 
-interface Category {
+export interface Category {
   id: string;
   title: string;
   icon: string;
@@ -77,21 +61,21 @@ interface Category {
   projects: Project[];
 }
 
-const statusStyles: Record<string, string> = {
+export const statusStyles: Record<string, string> = {
   completed: 'bg-emerald-900/40 text-emerald-300',
   'in-progress': 'bg-amber-900/40 text-amber-300',
   'on-hold': 'bg-slate-700/60 text-slate-400',
   queued: 'bg-blue-900/40 text-blue-300',
 };
 
-const statusLabels: Record<string, string> = {
+export const statusLabels: Record<string, string> = {
   completed: 'Completed',
   'in-progress': 'In Progress',
   'on-hold': 'On Hold',
   queued: 'Queued',
 };
 
-const categories: Category[] = [
+export const categories: Category[] = [
   {
     id: 'music-sound-design',
     title: 'Music & Sound Design Production',
@@ -591,138 +575,87 @@ const categories: Category[] = [
     ],
   },
 ];
----
 
-<Layout metadata={metadata}>
-  <Fragment slot="header">
-    <Header
-      links={links}
-      actions={[{ text: 'Hire me', href: getPermalink('/contact#form') }]}
-      isSticky
-      showToggleTheme
-    />
-  </Fragment>
 
-  <BrandBanner />
+export interface PortfolioGroup {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  cover: ImageMetadata;
+  categoryIds: string[];
+}
 
-  <div class="container pt-10 pb-2 md:pt-14">
-    <h1 class="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">Portfolio — Service-Aligned Work</h1>
-    <p class="mt-3 max-w-2xl text-muted dark:text-slate-400">Each section mirrors a core service. Projects are tagged by status so you can see exactly where things stand.</p>
-  </div>
+// Cover images for category cards. Swap any of these for a better shot.
+export const categoryCovers: Record<string, ImageMetadata> = {
+  'music-sound-design': stemReconstructionImage,
+  'sound-audio-engineering': caveSoundscapeImage,
+  'performance-live-sound': galleryVbLive03,
+  'signal-space': studioDeskImage,
+  'graphic-design': artprintsGallery,
+  'video-editing': consoleWideImage,
+  'ableton-training': abletonSetupImage,
+  'gear-consultation': charvelImage,
+  'project-management': clickupLoggerImage,
+  automation: clickupLoggerImage,
+  'technology-efficiency': desk2Image,
+};
 
-  {categories.map(({ id, title, description, icon, serviceHref, heroVideo, projects }) => (
-    <WidgetWrapper id={id} containerClass="max-w-6xl mx-auto py-12 md:py-16">
-      <div class="flex items-center gap-3 text-primary">
-        <Icon name={icon} class="h-8 w-8" />
-        <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
-          {title}
-        </h2>
-      </div>
-      <p class="mt-3 max-w-3xl text-lg text-muted dark:text-slate-300">{description}</p>
+export const groups: PortfolioGroup[] = [
+  {
+    id: 'music-audio',
+    title: 'Music & Audio',
+    description: 'Music production, sound design, audio engineering, live sound, and studio audits.',
+    icon: 'tabler:music',
+    cover: stemReconstructionImage,
+    categoryIds: ['music-sound-design', 'sound-audio-engineering', 'performance-live-sound', 'signal-space'],
+  },
+  {
+    id: 'visual-arts',
+    title: 'Visual Arts & Video',
+    description: 'Brand systems, digital art, and video editing from pre-production to post.',
+    icon: 'tabler:palette',
+    cover: artprintsGallery,
+    categoryIds: ['graphic-design', 'video-editing'],
+  },
+  {
+    id: 'consulting-training',
+    title: 'Consulting & Training',
+    description: 'Ableton training, gear consultation, and project management consulting.',
+    icon: 'tabler:school',
+    cover: abletonSetupImage,
+    categoryIds: ['ableton-training', 'gear-consultation', 'project-management'],
+  },
+  {
+    id: 'automation-tech',
+    title: 'Automation & Tech',
+    description: 'Workflow automation and technology efficiency for creative businesses.',
+    icon: 'tabler:robot',
+    cover: clickupLoggerImage,
+    categoryIds: ['automation', 'technology-efficiency'],
+  },
+];
 
-      {heroVideo && (
-        <div class="mt-6 overflow-hidden rounded-2xl shadow-lg aspect-video w-full max-w-3xl">
-          <iframe
-            width="100%"
-            height="100%"
-            src={heroVideo}
-            title={`${title} — Technically Creative`}
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerpolicy="strict-origin-when-cross-origin"
-            allowfullscreen
-            class="w-full h-full"
-          ></iframe>
-        </div>
-      )}
+export function getCategory(id: string): Category {
+  const c = categories.find((x) => x.id === id);
+  if (!c) throw new Error(`Unknown portfolio category: ${id}`);
+  return c;
+}
 
-      {projects.length === 0 ? (
-        <div class="mt-8 rounded-2xl border border-dashed border-primary/30 bg-white/70 px-6 py-10 text-center dark:bg-slate-900/40">
-          <p class="text-muted dark:text-slate-400">Case studies coming soon — this service is actively offered.</p>
-          <div class="mt-4">
-            <Button variant="link" href={getPermalink('/contact#form')} icon="tabler:arrow-right" text="Inquire about this service" />
-          </div>
-        </div>
-      ) : (
-        <div class="mt-8 flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4 md:grid md:grid-cols-2 md:gap-6 md:overflow-visible md:pb-0">
-          {projects.map(({ title: projectTitle, summary, media, label, href, status, review }) => (
-            <article class="min-w-[280px] snap-center rounded-2xl border border-slate-700 bg-slate-800 px-6 py-8 shadow-xl shadow-black/40 transition hover:border-primary/60 hover:shadow-2xl hover:shadow-black/50 md:min-w-0">
-              <div class="flex items-center justify-between gap-2">
-                <div class="text-sm font-semibold uppercase tracking-wider text-primary">
-                  {label ?? 'Case Study'}
-                </div>
-                {status && (
-                  <span class={`rounded-full px-2.5 py-0.5 text-xs font-medium ${statusStyles[status] ?? ''}`}>
-                    {statusLabels[status] ?? status}
-                  </span>
-                )}
-              </div>
-              <h3 class="mt-3 text-xl font-semibold text-white">{projectTitle}</h3>
-              <p class="mt-2 text-slate-400">{summary}</p>
+export function getGroupCategories(group: PortfolioGroup): Category[] {
+  return group.categoryIds.map(getCategory);
+}
 
-              {media?.type === 'youtube' && (
-                <div class="mt-4 overflow-hidden rounded-xl border border-slate-700">
-                  <iframe
-                    class="h-48 w-full"
-                    src={media.src}
-                    title={`${projectTitle} video`}
-                    frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    referrerpolicy="strict-origin-when-cross-origin"
-                    allowfullscreen
-                  ></iframe>
-                </div>
-              )}
-              {media?.type === 'image' && (
-                <div class="mt-4 overflow-hidden rounded-xl border border-slate-700">
-                  <img class="h-48 w-full object-cover" src={media.src} alt={media.alt ?? projectTitle} />
-                </div>
-              )}
-              {media?.type === 'raw' && (
-                <div class="mt-4 overflow-hidden rounded-xl border border-slate-700">
-                  <Fragment set:html={media.html} />
-                </div>
-              )}
-              {review && (
-                <blockquote class="mt-5 rounded-xl border border-amber-700/40 bg-amber-900/10 px-4 py-3">
-                  <div class="mb-1.5 flex items-center gap-1">
-                    {Array.from({ length: review.rating }).map(() => (
-                      <Icon name="tabler:star-filled" class="h-3.5 w-3.5 text-amber-400" />
-                    ))}
-                    {review.platform && (
-                      <span class="ml-1.5 text-xs font-medium text-slate-500">{review.platform}</span>
-                    )}
-                  </div>
-                  <p class="text-sm italic leading-relaxed text-slate-300">"{review.quote}"</p>
-                </blockquote>
-              )}
-              {href && (
-                <div class="mt-4">
-                  <a
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
-                  >
-                    View on Upwork
-                    <Icon name="tabler:external-link" class="h-4 w-4" />
-                  </a>
-                </div>
-              )}
-            </article>
-          ))}
-        </div>
-      )}
+export function getGroupForCategory(categoryId: string): PortfolioGroup {
+  const g = groups.find((x) => x.categoryIds.includes(categoryId));
+  if (!g) throw new Error(`Portfolio category ${categoryId} is not in any group`);
+  return g;
+}
 
-      <div class="mt-6">
-        <Button variant="link" href={getPermalink(serviceHref)} icon="tabler:arrow-right" text="View matching service" />
-      </div>
-    </WidgetWrapper>
-  ))}
+export function categoryPath(categoryId: string): string {
+  return `/portfolio/${getGroupForCategory(categoryId).id}/${categoryId}`;
+}
 
-  <CallToAction
-    title="Have a project in mind?"
-    subtitle="Tell me what you need—mixing, sound design, workflow cleanup, or training—and I'll reply within one business day."
-    actions={[{ variant: 'primary', text: 'Start a project', href: getPermalink('/contact#form') }]}
-  />
-</Layout>
+export function groupPath(groupId: string): string {
+  return `/portfolio/${groupId}`;
+}

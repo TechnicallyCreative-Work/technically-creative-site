@@ -1,0 +1,35 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+import Header from '~/components/widgets/Header.astro';
+import BrandBanner from '~/components/widgets/BrandBanner.astro';
+import CallToAction from '~/components/widgets/CallToAction.astro';
+import { getPermalink } from '~/utils/permalinks';
+import { headerData } from '~/navigation';
+
+export interface Props {
+  metadata: { title: string; description: string };
+}
+
+const { metadata } = Astro.props;
+---
+
+<Layout metadata={metadata}>
+  <Fragment slot="header">
+    <Header
+      links={headerData.links}
+      actions={[{ text: 'Hire me', href: getPermalink('/contact#form') }]}
+      isSticky
+      showToggleTheme
+    />
+  </Fragment>
+
+  <BrandBanner />
+
+  <slot />
+
+  <CallToAction
+    title="Have a project in mind?"
+    subtitle="Tell me what you need—mixing, sound design, workflow cleanup, or training—and I'll reply within one business day."
+    actions={[{ variant: 'primary', text: 'Start a project', href: getPermalink('/contact#form') }]}
+  />
+</Layout>

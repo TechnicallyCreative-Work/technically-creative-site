@@ -1,0 +1,46 @@
+---
+import PortfolioPage from '~/layouts/PortfolioPage.astro';
+import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
+import CategoryGrid from '~/components/ui/CategoryGrid.astro';
+import { categories, categoryPath, getGroupCategories, groupPath, groups } from '~/data/portfolio';
+
+const metadata = {
+  title: 'Portfolio - Technically Creative LLC',
+  description:
+    'Service-aligned work across music production, sound engineering, visual arts, training, and automation from Technically Creative LLC.',
+};
+
+const items = groups.map((g) => {
+  const count = getGroupCategories(g).length;
+  return {
+    title: g.title,
+    description: g.description,
+    href: groupPath(g.id),
+    image: g.cover,
+    icon: g.icon,
+    meta: `${count} ${count === 1 ? 'category' : 'categories'}`,
+  };
+});
+
+// Old single-page portfolio used #anchors (e.g. /portfolio#automation). Send those to the new pages.
+const hashRedirects = Object.fromEntries(categories.map((c) => [c.id, categoryPath(c.id)]));
+---
+
+<PortfolioPage metadata={metadata}>
+  <div class="container pt-10 pb-2 md:pt-14">
+    <h1 class="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">Portfolio</h1>
+    <p class="mt-3 max-w-2xl text-muted dark:text-slate-400">
+      Pick an area to see the work. Each category mirrors a core service, and projects are tagged by status so you can
+      see exactly where things stand.
+    </p>
+  </div>
+
+  <WidgetWrapper containerClass="max-w-6xl mx-auto py-8 md:py-12">
+    <CategoryGrid items={items} columns={2} />
+  </WidgetWrapper>
+
+  <script is:inline define:vars={{ hashRedirects }}>
+    var target = hashRedirects[location.hash.slice(1)];
+    if (target) location.replace(target);
+  </script>
+</PortfolioPage>
