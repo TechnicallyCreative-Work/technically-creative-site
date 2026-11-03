@@ -5,6 +5,8 @@ import '@fontsource/orbitron/600.css';
 import '@fontsource/orbitron/700.css';
 import '@fontsource/orbitron/800.css';
 import '@fontsource/orbitron/900.css';
+import '@fontsource/doto/latin-700.css';
+import '@fontsource/doto/latin-900.css';
 ---
 
 <style is:global>
@@ -62,6 +64,119 @@ import '@fontsource/orbitron/900.css';
     font-family: var(--tc-font-heading), var(--tc-font-sans), sans-serif;
     text-transform: uppercase;
     letter-spacing: 0.02em;
+  }
+
+  /* ---------------------------------------------------------------------------------------------
+     Pad look, shared by every card on the site.
+     .tc-card       raised surface (light and dark), like a pad sitting in a plate
+     .tc-card-link  clickable card: lights up on hover, sinks when pressed
+     .tc-card--accent  slightly brighter edge for featured cards
+     .tc-card-dark  always-dark rubber pad (cards that carry their own dark content)
+     .tc-well       recessed slot, used for empty or coming-soon cards
+     .tc-led        dot-matrix readout screen for headings, set --led for the colour
+     --------------------------------------------------------------------------------------------- */
+  .tc-card {
+    border: 1px solid rgb(15 23 42 / 0.06);
+    background: linear-gradient(145deg, #fff, #f3f5f9);
+    box-shadow:
+      8px 10px 20px rgb(15 23 42 / 0.13),
+      -6px -6px 14px rgb(255 255 255 / 0.9),
+      inset 0 1px 0 #fff;
+    transition: box-shadow 0.18s ease, transform 0.12s ease, border-color 0.18s ease;
+  }
+  .dark .tc-card {
+    border-color: rgb(255 255 255 / 0.07);
+    background: linear-gradient(145deg, rgb(255 255 255 / 0.07), rgb(255 255 255 / 0.02));
+    box-shadow:
+      8px 10px 22px rgb(0 0 0 / 0.75),
+      -4px -4px 12px rgb(255 255 255 / 0.035),
+      inset 0 1px 0 rgb(255 255 255 / 0.08);
+  }
+  .tc-card--accent {
+    border-color: color-mix(in srgb, var(--tc-primary) 45%, transparent);
+  }
+  .tc-card-link:hover,
+  .tc-card-link:focus-visible {
+    border-color: color-mix(in srgb, var(--tc-primary) 80%, transparent);
+    box-shadow:
+      8px 10px 20px rgb(15 23 42 / 0.13),
+      0 0 24px -2px color-mix(in srgb, var(--tc-primary) 55%, transparent),
+      inset 0 1px 0 #fff;
+  }
+  .dark .tc-card-link:hover,
+  .dark .tc-card-link:focus-visible {
+    box-shadow:
+      8px 10px 22px rgb(0 0 0 / 0.75),
+      0 0 24px -2px color-mix(in srgb, var(--tc-primary) 55%, transparent),
+      inset 0 1px 0 rgb(255 255 255 / 0.08);
+  }
+  .tc-card-link:active {
+    transform: translateY(2px) scale(0.99);
+    box-shadow:
+      inset 4px 6px 14px rgb(15 23 42 / 0.2),
+      inset -3px -3px 8px rgb(255 255 255 / 0.8),
+      0 0 18px -4px color-mix(in srgb, var(--tc-primary) 55%, transparent);
+  }
+  .dark .tc-card-link:active {
+    box-shadow:
+      inset 5px 7px 16px rgb(0 0 0 / 0.8),
+      inset -2px -2px 8px rgb(255 255 255 / 0.04),
+      0 0 18px -4px color-mix(in srgb, var(--tc-primary) 55%, transparent);
+  }
+
+  .tc-card-dark {
+    border: 1px solid rgb(255 255 255 / 0.08);
+    background: linear-gradient(155deg, #101a2e, #060b18 70%);
+    box-shadow:
+      8px 12px 22px rgb(15 23 42 / 0.3),
+      0 3px 5px rgb(0 0 0 / 0.35),
+      inset 0 1px 0 rgb(255 255 255 / 0.12),
+      inset 0 -10px 18px rgb(0 0 0 / 0.3);
+  }
+  .dark .tc-card-dark {
+    box-shadow:
+      8px 12px 22px rgb(0 0 0 / 0.75),
+      0 3px 5px rgb(0 0 0 / 0.4),
+      inset 0 1px 0 rgb(255 255 255 / 0.12),
+      inset 0 -10px 18px rgb(0 0 0 / 0.3);
+  }
+
+  .tc-well {
+    border: 0;
+    background: rgb(15 23 42 / 0.04);
+    box-shadow: inset 5px 5px 11px rgb(15 23 42 / 0.14), inset -5px -5px 11px rgb(255 255 255 / 0.95);
+  }
+  .dark .tc-well {
+    background: rgb(255 255 255 / 0.035);
+    box-shadow: inset 5px 5px 12px rgb(0 0 0 / 0.7), inset -4px -4px 10px rgb(255 255 255 / 0.06);
+  }
+
+  /* LED readout: a small dark screen with dot-matrix text, like the display on a controller. */
+  .tc-led {
+    display: inline-block;
+    max-width: 100%;
+    padding: 0.4rem 0.65rem;
+    border-radius: 0.5rem;
+    font-family: 'Doto', ui-monospace, monospace !important;
+    font-weight: 900;
+    font-size: 1rem;
+    line-height: 1.25;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--led, #3ee7ff);
+    text-shadow: 0 0 5px color-mix(in srgb, var(--led, #3ee7ff) 75%, transparent);
+    background-color: #02060f;
+    background-image: repeating-linear-gradient(0deg, rgb(255 255 255 / 0.035) 0 1px, transparent 1px 3px);
+    box-shadow:
+      inset 0 2px 6px rgb(0 0 0 / 0.85),
+      inset 0 0 0 1px rgb(255 255 255 / 0.06),
+      0 1px 0 rgb(255 255 255 / 0.9);
+  }
+  .dark .tc-led {
+    box-shadow:
+      inset 0 2px 6px rgb(0 0 0 / 0.85),
+      inset 0 0 0 1px rgb(255 255 255 / 0.08),
+      0 1px 0 rgb(255 255 255 / 0.06);
   }
 </style>
 

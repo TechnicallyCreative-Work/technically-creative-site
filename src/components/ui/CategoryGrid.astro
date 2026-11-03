@@ -84,7 +84,7 @@ const { items } = Astro.props;
           </div>
           <div class="cg__caption flex flex-1 flex-col pt-3">
             {meta && <span class="cg__meta mb-1 text-xs text-muted">{meta}</span>}
-            <h3 class="text-base font-bold leading-tight sm:text-lg">
+            <h3 class="cg__title tc-led">
               <a href={href} class="after:absolute after:inset-0">
                 {title}
               </a>
@@ -231,9 +231,22 @@ const { items } = Astro.props;
     outline-offset: 3px;
   }
 
-  /* Touch and phones: caption sits under the pad. */
-  .cg__caption h3 > a[href] {
-    text-underline-offset: 3px;
+  /* Heading is an LED readout, not a link: the whole pad is the link, so the text takes no link styling. */
+  .cg__title {
+    --led: color-mix(in srgb, rgb(var(--pad)) 78%, white);
+    align-self: flex-start;
+    font-size: 0.8rem;
+  }
+  @media (min-width: 640px) {
+    .cg__title {
+      font-size: 0.9rem;
+    }
+  }
+  .cg__caption h3 > a[href],
+  .cg__caption h3 > a[href]:hover,
+  .cg__caption h3 > a[href]:focus-visible {
+    color: inherit;
+    text-decoration: none;
   }
 
   /* Hover-capable screens: the caption becomes an overlay that appears when the pad lights up. */
@@ -269,14 +282,8 @@ const { items } = Astro.props;
     .cg__desc {
       color: rgba(226, 232, 240, 0.88);
     }
-    /* beat the global heading-link style, which is tuned for a light or dark page, not this overlay */
     .cg__caption h3 > a[href] {
-      color: #fff;
-      text-decoration-color: rgb(var(--pad));
       pointer-events: auto;
-    }
-    .cg__caption h3 > a[href]:hover {
-      color: #ff7ac0;
     }
   }
 

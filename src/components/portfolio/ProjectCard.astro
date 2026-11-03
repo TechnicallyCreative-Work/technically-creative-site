@@ -9,7 +9,7 @@ export interface Props {
 const { title: projectTitle, summary, media, label, href, status, review } = Astro.props.project;
 ---
 
-<article class="rounded-2xl border border-slate-700 bg-slate-800 px-6 py-8 shadow-xl shadow-black/40 transition hover:border-primary/60 hover:shadow-2xl hover:shadow-black/50">
+<article class="rounded-2xl px-6 py-8 tc-card-dark">
   <div class="flex items-center justify-between gap-2">
     <div class="text-sm font-semibold uppercase tracking-wider text-primary">
       {label ?? 'Case Study'}
@@ -20,7 +20,7 @@ const { title: projectTitle, summary, media, label, href, status, review } = Ast
       </span>
     )}
   </div>
-  <h3 class="mt-3 text-xl font-semibold text-white">{projectTitle}</h3>
+  <h3 class="tc-led mt-3 text-base">{projectTitle}</h3>
   <p class="mt-2 text-slate-400">{summary}</p>
 
   {media?.type === 'youtube' && (

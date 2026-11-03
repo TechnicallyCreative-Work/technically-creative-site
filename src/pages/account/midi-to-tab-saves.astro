@@ -63,7 +63,7 @@ const metadata = {
   <WidgetWrapper containerClass="max-w-2xl mx-auto py-4 md:py-8">
     {
       !isPaid && (
-        <div class="rounded-2xl border border-primary/30 bg-white/70 p-6 text-sm dark:bg-slate-900/40">
+        <div class="rounded-2xl p-6 text-sm tc-card">
           Saving Midi to Tab work requires a paid membership.{' '}
           <a href="/account" class="font-semibold text-primary hover:underline">
             Upgrade from your account page
@@ -75,7 +75,7 @@ const metadata = {
 
     {
       isPaid && savesWithLinks.length === 0 && (
-        <div class="rounded-2xl border border-primary/30 bg-white/70 p-6 text-sm dark:bg-slate-900/40">
+        <div class="rounded-2xl p-6 text-sm tc-card">
           No saves yet — convert a file on the Midi to Tab tool and click "Save to My Account".
         </div>
       )
@@ -85,7 +85,7 @@ const metadata = {
       isPaid && savesWithLinks.length > 0 && (
         <div class="space-y-4">
           {savesWithLinks.map((save) => (
-            <div class="rounded-2xl border border-primary/30 bg-white/70 p-6 dark:bg-slate-900/40">
+            <div class="rounded-2xl p-6 tc-card">
               <div class="flex items-center justify-between gap-2">
                 <span class="font-semibold text-slate-900 dark:text-white">{save.original_filename}</span>
                 <span class="shrink-0 text-xs text-muted dark:text-slate-400">
