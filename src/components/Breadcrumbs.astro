@@ -2,6 +2,7 @@
 import '@fontsource/orbitron/500.css';
 import '@fontsource/orbitron/700.css';
 import { trimSlash, getCanonical, CATEGORY_BASE, TAG_BASE } from '~/utils/permalinks';
+import { categories, groups } from '~/data/portfolio';
 
 // Base segments like "category" and "tag" have no listing page of their own —
 // only /category/[slug] and /tag/[slug] exist — so they shouldn't render as links.
@@ -23,6 +24,9 @@ const LABELS: Record<string, string> = {
   'public-speaking-workshops': 'Public Speaking & Workshops',
   'sound-design-foley': 'Sound Design & Foley',
   'workflow-automation': 'Workflow Automation',
+  // Portfolio groups and categories (labels come from src/data/portfolio.ts)
+  ...Object.fromEntries(groups.map((g) => [g.id, g.title])),
+  ...Object.fromEntries(categories.map((c) => [c.id, c.title])),
 };
 
 function humanize(segment: string) {

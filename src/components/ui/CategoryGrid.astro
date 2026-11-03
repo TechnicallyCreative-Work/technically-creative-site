@@ -1,0 +1,58 @@
+---
+import { Image } from 'astro:assets';
+import { Icon } from 'astro-icon/components';
+import type { ImageMetadata } from 'astro';
+
+// Reusable card grid for landing pages (portfolio, and later products/local services).
+// One column of stacked cards on phones, 2-3 columns from sm/lg up.
+export interface CategoryGridItem {
+  title: string;
+  description: string;
+  href: string;
+  image?: ImageMetadata;
+  icon?: string;
+  meta?: string;
+}
+
+export interface Props {
+  items: CategoryGridItem[];
+  columns?: 2 | 3;
+}
+
+const { items, columns = 3 } = Astro.props;
+const colClass = columns === 2 ? 'sm:grid-cols-2' : 'sm:grid-cols-2 lg:grid-cols-3';
+---
+
+<ul class={`not-prose grid list-none gap-6 p-0 ${colClass}`}>
+  {
+    items.map(({ title, description, href, image, icon, meta }) => (
+      <li class="group relative flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition motion-safe:duration-200 hover:border-primary/60 hover:shadow-lg motion-safe:hover:-translate-y-0.5 dark:border-slate-700 dark:bg-slate-900">
+        {image && (
+          <div class="aspect-[16/10] w-full overflow-hidden bg-slate-200 dark:bg-slate-800">
+            <Image
+              src={image}
+              alt=""
+              widths={[400, 640, 900]}
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
+              class="h-full w-full object-cover transition motion-safe:duration-300 motion-safe:group-hover:scale-105"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        )}
+        <div class="flex flex-1 flex-col p-5">
+          {(icon || meta) && (
+            <div class="mb-2 flex items-center gap-2 text-sm text-muted">
+              {icon && <Icon name={icon} class="h-5 w-5 text-primary" />}
+              {meta && <span>{meta}</span>}
+            </div>
+          )}
+          <h3 class="text-xl font-bold leading-tight">
+            <a href={href} class="after:absolute after:inset-0">{title}</a>
+          </h3>
+          <p class="mt-2 text-muted">{description}</p>
+        </div>
+      </li>
+    ))
+  }
+</ul>

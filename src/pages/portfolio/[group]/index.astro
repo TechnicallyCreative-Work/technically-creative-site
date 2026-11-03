@@ -1,0 +1,38 @@
+---
+import PortfolioPage from '~/layouts/PortfolioPage.astro';
+import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
+import CategoryGrid from '~/components/ui/CategoryGrid.astro';
+import { categoryCovers, categoryPath, getGroupCategories, groups } from '~/data/portfolio';
+import type { PortfolioGroup } from '~/data/portfolio';
+
+export function getStaticPaths() {
+  return groups.map((group) => ({ params: { group: group.id }, props: { group } }));
+}
+
+const { group } = Astro.props as { group: PortfolioGroup };
+
+const metadata = {
+  title: `${group.title} Portfolio - Technically Creative LLC`,
+  description: group.description,
+};
+
+const items = getGroupCategories(group).map((c) => ({
+  title: c.title,
+  description: c.description,
+  href: categoryPath(c.id),
+  image: categoryCovers[c.id],
+  icon: c.icon,
+  meta: c.projects.length === 0 ? 'Service available' : `${c.projects.length} ${c.projects.length === 1 ? 'project' : 'projects'}`,
+}));
+---
+
+<PortfolioPage metadata={metadata}>
+  <div class="container pt-10 pb-2 md:pt-14">
+    <h1 class="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">{group.title}</h1>
+    <p class="mt-3 max-w-2xl text-muted dark:text-slate-400">{group.description}</p>
+  </div>
+
+  <WidgetWrapper containerClass="max-w-6xl mx-auto py-8 md:py-12">
+    <CategoryGrid items={items} />
+  </WidgetWrapper>
+</PortfolioPage>
