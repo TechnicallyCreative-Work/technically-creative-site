@@ -160,3 +160,53 @@
 .dd *:first-child {
   margin-top: 0;
 }
+
+/* ------------------------------------------------------------------
+   Clickable headings: headings that wrap a link read as links.
+   Light mode uses darker teal/pink so text stays readable on white
+   (brand cyan on white is only ~2:1); dark mode uses the neon brand
+   cyan/pink with a soft glow. Underline is always visible so phones
+   (no hover) still get the cue.
+   ------------------------------------------------------------------ */
+:root {
+  --tc-link: rgb(0 120 150);
+  --tc-link-hover: rgb(214 0 110);
+  --tc-link-glow: transparent;
+}
+
+.dark {
+  --tc-link: rgb(0 200 255);
+  --tc-link-hover: rgb(255 51 153);
+  --tc-link-glow: rgb(255 51 153 / 45%);
+}
+
+main :is(h1, h2, h3, h4, h5, h6) > a[href] {
+  color: var(--tc-link);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-decoration-color: color-mix(in srgb, var(--tc-link) 45%, transparent);
+  text-underline-offset: 0.25em;
+  transition:
+    color 150ms ease-in-out,
+    text-decoration-color 150ms ease-in-out,
+    text-shadow 150ms ease-in-out;
+}
+
+main :is(h1, h2, h3, h4, h5, h6) > a[href]:hover,
+main :is(h1, h2, h3, h4, h5, h6) > a[href]:focus-visible {
+  color: var(--tc-link-hover);
+  text-decoration-color: currentColor;
+  text-shadow: 0 0 12px var(--tc-link-glow);
+}
+
+main :is(h1, h2, h3, h4, h5, h6) > a[href]:focus-visible {
+  outline: 2px solid var(--tc-link-hover);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  main :is(h1, h2, h3, h4, h5, h6) > a[href] {
+    transition: none;
+  }
+}
