@@ -54,7 +54,7 @@ const formAttrs = formAttributes ?? {};
                     name={name}
                     id={name}
                     required={required}
-                    class="py-3 px-4 block w-full text-md rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-900"
+                    class="tc-input py-3 px-4 block w-full text-md rounded-lg border"
                   >
                     {options.map((option) => (
                       <option value={option.value}>{option.label}</option>
@@ -68,7 +68,7 @@ const formAttrs = formAttributes ?? {};
                     autocomplete={autocomplete}
                     placeholder={placeholder}
                     required={required}
-                    class="py-3 px-4 block w-full text-md rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-900"
+                    class="tc-input py-3 px-4 block w-full text-md rounded-lg border"
                   />
                 )}
               </div>
@@ -90,7 +90,7 @@ const formAttrs = formAttributes ?? {};
             rows={textarea.rows ? textarea.rows : 4}
             placeholder={textarea.placeholder}
             required={textarea.required}
-            class="py-3 px-4 block w-full text-md rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-900"
+            class="tc-input py-3 px-4 block w-full text-md rounded-lg border"
           />
         </div>
       )
@@ -107,7 +107,7 @@ const formAttrs = formAttributes ?? {};
             type="checkbox"
             value={disclaimer.value ?? 'true'}
             required={disclaimer.required}
-            class="cursor-pointer mt-1 py-3 px-4 block w-full text-md rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-900"
+            class="cursor-pointer mt-1 tc-input py-3 px-4 block w-full text-md rounded-lg border"
           />
         </div>
         <div class="ml-3">

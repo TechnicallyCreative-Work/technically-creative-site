@@ -96,14 +96,14 @@ const metadata = {
         isPaid ? (
           <button
             id="manage-billing-btn"
-            class="mt-5 flex w-full items-center justify-center gap-1.5 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primary/90"
+            class="mt-5 flex w-full items-center justify-center gap-1.5 rounded-lg tc-btn-primary border px-4 py-2.5 text-sm font-semibold text-white"
           >
             <Icon name="tabler:credit-card" class="h-4 w-4" /> Manage billing
           </button>
         ) : (
           <button
             id="upgrade-btn"
-            class="mt-5 flex w-full items-center justify-center gap-1.5 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primary/90"
+            class="mt-5 flex w-full items-center justify-center gap-1.5 rounded-lg tc-btn-primary border px-4 py-2.5 text-sm font-semibold text-white"
           >
             <Icon name="tabler:star" class="h-4 w-4" /> Upgrade to paid membership
           </button>
@@ -115,7 +115,7 @@ const metadata = {
         isPaid && (
           <a
             href="/account/midi-to-tab-saves"
-            class="mt-3 flex w-full items-center justify-center gap-1.5 rounded-lg border border-gray-200 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-gray-50 dark:border-gray-700 dark:text-slate-300 dark:hover:bg-slate-800"
+            class="mt-3 flex w-full items-center justify-center gap-1.5 rounded-lg tc-btn border px-4 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-300"
           >
             <Icon name="tabler:music" class="h-4 w-4" /> View Midi to Tab saves
           </a>
@@ -128,7 +128,7 @@ const metadata = {
             href={DISCORD_INVITE_URL}
             target="_blank"
             rel="noopener noreferrer"
-            class="mt-3 flex w-full items-center justify-center gap-1.5 rounded-lg border border-gray-200 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-gray-50 dark:border-gray-700 dark:text-slate-300 dark:hover:bg-slate-800"
+            class="mt-3 flex w-full items-center justify-center gap-1.5 rounded-lg tc-btn border px-4 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-300"
           >
             <Icon name="tabler:brand-discord" class="h-4 w-4" /> Join the Discord
           </a>
@@ -154,7 +154,7 @@ const metadata = {
       <form method="POST" action="/api/auth/logout" class="mt-4">
         <button
           type="submit"
-          class="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-gray-50 dark:border-gray-700 dark:text-slate-300 dark:hover:bg-slate-800"
+          class="w-full rounded-lg tc-btn border px-4 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-300"
         >
           Log out
         </button>
