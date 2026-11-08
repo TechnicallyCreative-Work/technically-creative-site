@@ -26,6 +26,11 @@ export default defineConfig({
   output: 'static',
   adapter: netlify(),
 
+  // /shows was the first name of the events page; keep old links working.
+  redirects: {
+    '/shows': '/events',
+  },
+
   integrations: [
     tailwind({
       applyBaseStyles: false,
