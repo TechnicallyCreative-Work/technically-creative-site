@@ -3,7 +3,6 @@ import Layout from '~/layouts/PageLayout.astro';
 import Header from '~/components/widgets/Header.astro';
 import BrandBanner from '~/components/widgets/BrandBanner.astro';
 import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
-import CallToAction from '~/components/widgets/CallToAction.astro';
 import { Icon } from 'astro-icon/components';
 import { getPermalink } from '~/utils/permalinks';
 import { headerData } from '~/navigation';
@@ -18,11 +17,11 @@ const metadata = {
 // Noise Floor list in ClickUp. See src/pages/events.astro <script> for the shape.
 const FEED_URL = 'https://technicallycreative.app.n8n.cloud/webhook/show-calendar';
 
-// Public ClickUp intake form. Flip FORM_ACTIVE to true once the form is switched
-// on in ClickUp; until then the page sends people to the contact form instead of
-// embedding a dead form.
-const SUBMIT_FORM_URL = 'https://forms.clickup.com/90131588401/f/2ky45t9h-17733/HHCCE2U6ZDK7DQSUZR';
-const FORM_ACTIVE = false;
+// Submission endpoint (n8n "Event Submission API"): validates the form and flier,
+// then creates the ClickUp task for review. Flier specs below mirror that workflow.
+const SUBMIT_URL = 'https://technicallycreative.app.n8n.cloud/webhook/event-submit';
+const FLIER_SPEC = { maxMB: 10, minShortSide: 1080, minAspect: 0.5, maxAspect: 2 };
+const LEAD_DAYS = 3;
 ---
 
 <Layout metadata={metadata}>
@@ -41,7 +40,7 @@ const FORM_ACTIVE = false;
     <h1 class="mt-1 text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">Shows &amp; Events</h1>
     <p class="mt-3 max-w-2xl text-muted dark:text-slate-400">
       Live music and music tech events around Indianapolis, reviewed before they land here. Hosting or playing
-      something? Send it in at least 72 hours ahead.
+      something? <a href="#submit" class="font-semibold text-primary hover:underline">Submit it below</a>.
     </p>
   </div>
 
@@ -100,39 +99,227 @@ const FORM_ACTIVE = false;
     </template>
   </WidgetWrapper>
 
-  {
-    FORM_ACTIVE ? (
-      <WidgetWrapper id="submit" containerClass="max-w-4xl mx-auto py-4 md:py-8">
-        <h2 class="text-xl font-bold md:text-2xl">Submit a show or event</h2>
-        <p class="mt-2 text-sm text-muted dark:text-slate-400">
-          Fill in the form below. Everything except your flier file is shown publicly, including the contact email.
-        </p>
-        <iframe
-          class="mt-4 w-full rounded-2xl border border-slate-200/80 dark:border-slate-700/60"
-          src={SUBMIT_FORM_URL}
-          title="Submit a show or event"
-          style="min-height: 1100px;"
-          loading="lazy"
+  <WidgetWrapper id="submit" containerClass="max-w-4xl mx-auto py-4 md:py-8">
+    <h2 class="text-xl font-bold md:text-2xl">Submit a show or event</h2>
+    <p class="mt-2 text-sm text-muted dark:text-slate-400">
+      Live shows and music tech events in the Indianapolis area. Every submission is reviewed before it is posted, so
+      send it at least {LEAD_DAYS} days ahead.
+    </p>
+
+    <div id="submit-done" class="mt-6 rounded-2xl p-6 tc-well" role="status" hidden>
+      <p class="text-lg font-bold">Got it, thank you.</p>
+      <p class="mt-2 text-sm text-muted dark:text-slate-400">
+        Your event is in the review queue. If it fits the calendar it will show up above, and the contact email you gave
+        will be shown with it.
+      </p>
+      <button type="button" id="submit-another" class="mt-4 text-sm font-semibold text-primary hover:underline">
+        Submit another event
+      </button>
+    </div>
+
+    <form id="submit-form" class="tc-card mt-6 space-y-6 rounded-2xl p-5 md:p-6" novalidate>
+      <div class="sr-only" aria-hidden="true">
+        <label for="website_url">Leave this field empty</label>
+        <input type="text" id="website_url" name="website_url" tabindex="-1" autocomplete="off" />
+      </div>
+
+      <fieldset>
+        <legend class="block text-sm font-medium">What kind of listing is this?</legend>
+        <div class="mt-2 flex flex-wrap gap-4">
+          <label class="inline-flex items-center gap-2 text-sm">
+            <input type="radio" name="type" value="Live Show" checked class="h-4 w-4" /> Live show
+          </label>
+          <label class="inline-flex items-center gap-2 text-sm">
+            <input type="radio" name="type" value="Music Tech Event" class="h-4 w-4" /> Music tech event
+          </label>
+        </div>
+      </fieldset>
+
+      <div>
+        <label for="f-title" class="block text-sm font-medium">Name of the event or show</label>
+        <input
+          id="f-title"
+          name="title"
+          type="text"
+          required
+          maxlength="120"
+          class="tc-input mt-1 block w-full rounded-lg border px-4 py-3"
         />
-        <p class="mt-3 text-sm">
-          <a
-            class="font-semibold text-primary hover:underline"
-            href={SUBMIT_FORM_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Open the form in its own tab
-          </a>
+      </div>
+
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div>
+          <label for="f-startDate" class="block text-sm font-medium">Start date</label>
+          <input
+            id="f-startDate"
+            name="startDate"
+            type="date"
+            required
+            class="tc-input mt-1 block w-full rounded-lg border px-4 py-3"
+          />
+        </div>
+        <div>
+          <label for="f-startTime" class="block text-sm font-medium">Start time</label>
+          <input
+            id="f-startTime"
+            name="startTime"
+            type="time"
+            required
+            class="tc-input mt-1 block w-full rounded-lg border px-4 py-3"
+          />
+        </div>
+        <div>
+          <label for="f-endDate" class="block text-sm font-medium">End date</label>
+          <input
+            id="f-endDate"
+            name="endDate"
+            type="date"
+            required
+            class="tc-input mt-1 block w-full rounded-lg border px-4 py-3"
+          />
+        </div>
+        <div>
+          <label for="f-endTime" class="block text-sm font-medium">End time</label>
+          <input
+            id="f-endTime"
+            name="endTime"
+            type="time"
+            required
+            class="tc-input mt-1 block w-full rounded-lg border px-4 py-3"
+          />
+        </div>
+        <div>
+          <label for="f-doors" class="block text-sm font-medium">Doors open</label>
+          <input
+            id="f-doors"
+            name="doors"
+            type="time"
+            required
+            class="tc-input mt-1 block w-full rounded-lg border px-4 py-3"
+          />
+        </div>
+        <div>
+          <label for="f-parking" class="block text-sm font-medium">Parking</label>
+          <select id="f-parking" name="parking" required class="tc-input mt-1 block w-full rounded-lg border px-4 py-3">
+            <option value="">Choose one</option>
+            <option value="Free">Free</option>
+            <option value="Paid">Paid</option>
+          </select>
+        </div>
+        <div>
+          <label for="f-setting" class="block text-sm font-medium">Indoors or outdoors</label>
+          <select id="f-setting" name="setting" required class="tc-input mt-1 block w-full rounded-lg border px-4 py-3">
+            <option value="">Choose one</option>
+            <option value="Indoors">Indoors</option>
+            <option value="Outdoors">Outdoors</option>
+            <option value="Both">Both</option>
+          </select>
+        </div>
+        <div>
+          <label for="f-city" class="block text-sm font-medium">City</label>
+          <input
+            id="f-city"
+            name="city"
+            type="text"
+            required
+            maxlength="80"
+            value="Indianapolis"
+            class="tc-input mt-1 block w-full rounded-lg border px-4 py-3"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label for="f-address" class="block text-sm font-medium">Street address</label>
+        <input
+          id="f-address"
+          name="address"
+          type="text"
+          required
+          maxlength="200"
+          autocomplete="street-address"
+          class="tc-input mt-1 block w-full rounded-lg border px-4 py-3"
+        />
+      </div>
+
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div>
+          <label for="f-email" class="block text-sm font-medium">Contact email for questions about the event</label>
+          <input
+            id="f-email"
+            name="email"
+            type="email"
+            required
+            maxlength="120"
+            autocomplete="email"
+            class="tc-input mt-1 block w-full rounded-lg border px-4 py-3"
+          />
+          <p class="mt-1 text-xs text-muted dark:text-slate-400">Shown publicly with the listing.</p>
+        </div>
+        <div>
+          <label for="f-link" class="block text-sm font-medium">Tickets or event page (optional)</label>
+          <input
+            id="f-link"
+            name="link"
+            type="url"
+            maxlength="300"
+            placeholder="https://"
+            class="tc-input mt-1 block w-full rounded-lg border px-4 py-3"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label for="f-note" class="block text-sm font-medium">Anything else people should know (optional)</label>
+        <textarea
+          id="f-note"
+          name="note"
+          rows="3"
+          maxlength="600"
+          class="tc-input mt-1 block w-full rounded-lg border px-4 py-3"></textarea>
+      </div>
+
+      <div>
+        <label for="f-flier" class="block text-sm font-medium">Flier</label>
+        <input
+          id="f-flier"
+          name="flier"
+          type="file"
+          required
+          accept="image/jpeg,image/png,application/pdf"
+          class="mt-1 block w-full text-sm file:mr-4 file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white"
+        />
+        <p class="mt-1 text-xs text-muted dark:text-slate-400">
+          JPG, PNG or PDF, up to {FLIER_SPEC.maxMB} MB. Images need at least {FLIER_SPEC.minShortSide} px on the short side
+          and a shape between 1:2 and 2:1.
         </p>
-      </WidgetWrapper>
-    ) : (
-      <CallToAction
-        title="Hosting a show or event in Indy?"
-        subtitle="Send the details and I will review it for the calendar. Fishers and Carmel are out of scope for now."
-        actions={[{ variant: 'primary', text: 'Submit an event', href: getPermalink('/contact#form') }]}
-      />
-    )
-  }
+        <div id="flier-preview" class="mt-3" hidden>
+          <img
+            id="flier-preview-img"
+            alt="Flier preview"
+            class="max-h-48 rounded-lg border border-slate-200/80 dark:border-slate-700/60"
+          />
+        </div>
+      </div>
+
+      <label class="flex items-start gap-3 text-sm">
+        <input id="f-consent" type="checkbox" required class="mt-1 h-4 w-4" />
+        <span
+          >I understand these details, including the contact email, will be shown publicly if the listing is approved.</span
+        >
+      </label>
+
+      <div id="submit-errors" class="rounded-lg border border-red-500/60 p-4 text-sm" role="alert" hidden></div>
+
+      <button
+        type="submit"
+        id="submit-btn"
+        class="inline-flex items-center rounded-lg bg-primary px-6 py-3 font-semibold text-white disabled:opacity-60"
+      >
+        Submit for review
+      </button>
+    </form>
+  </WidgetWrapper>
 
   <style is:global>
     .event-chip {
@@ -316,6 +503,178 @@ const FORM_ACTIVE = false;
       } catch {
         message('The calendar could not load right now. Please try again in a few minutes.');
       }
+    })();
+  </script>
+
+  <script define:vars={{ SUBMIT_URL, FLIER_SPEC, LEAD_DAYS }}>
+    (() => {
+      const form = document.getElementById('submit-form');
+      if (!form) return;
+      const TZ = 'America/Indiana/Indianapolis';
+      const $ = (id) => document.getElementById(id);
+      const errBox = $('submit-errors');
+      const btn = $('submit-btn');
+      const done = $('submit-done');
+      const startDate = $('f-startDate');
+      const endDate = $('f-endDate');
+      const flierInput = $('f-flier');
+      const previewWrap = $('flier-preview');
+      const previewImg = $('flier-preview-img');
+
+      const todayIso = () => new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(new Date());
+      const addDays = (iso, n) => {
+        const d = new Date(iso + 'T12:00:00Z');
+        d.setUTCDate(d.getUTCDate() + n);
+        return d.toISOString().slice(0, 10);
+      };
+      const minStart = addDays(todayIso(), LEAD_DAYS);
+      startDate.min = minStart;
+      endDate.min = minStart;
+      startDate.addEventListener('change', () => {
+        endDate.min = startDate.value || minStart;
+        if (!endDate.value || endDate.value < startDate.value) endDate.value = startDate.value;
+      });
+
+      const showErrors = (list) => {
+        errBox.replaceChildren();
+        const ul = document.createElement('ul');
+        ul.className = 'list-disc space-y-1 pl-5';
+        for (const msg of list) {
+          const li = document.createElement('li');
+          li.textContent = msg;
+          ul.appendChild(li);
+        }
+        errBox.appendChild(ul);
+        errBox.hidden = false;
+        errBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      };
+      const clearErrors = () => {
+        errBox.hidden = true;
+        errBox.replaceChildren();
+      };
+
+      const imageSize = (file) =>
+        new Promise((resolve) => {
+          const url = URL.createObjectURL(file);
+          const img = new Image();
+          img.onload = () => {
+            URL.revokeObjectURL(url);
+            resolve({ w: img.naturalWidth, h: img.naturalHeight });
+          };
+          img.onerror = () => {
+            URL.revokeObjectURL(url);
+            resolve(null);
+          };
+          img.src = url;
+        });
+
+      // Returns an error message, or '' when the flier meets the specs.
+      const checkFlier = async (file) => {
+        if (!file) return 'Attach a flier (JPG, PNG or PDF).';
+        if (file.size > FLIER_SPEC.maxMB * 1024 * 1024) return 'The flier is over ' + FLIER_SPEC.maxMB + ' MB.';
+        if (!/^(image\/jpeg|image\/png|application\/pdf)$/.test(file.type))
+          return 'The flier must be a JPG, PNG or PDF.';
+        if (file.type === 'application/pdf') return '';
+        const dim = await imageSize(file);
+        if (!dim) return 'That image could not be read. Try exporting it again.';
+        const shortSide = Math.min(dim.w, dim.h);
+        const aspect = dim.w / dim.h;
+        if (shortSide < FLIER_SPEC.minShortSide)
+          return (
+            'The flier image is too small (' +
+            dim.w +
+            'x' +
+            dim.h +
+            '). The short side needs to be at least ' +
+            FLIER_SPEC.minShortSide +
+            ' px.'
+          );
+        if (aspect < FLIER_SPEC.minAspect || aspect > FLIER_SPEC.maxAspect)
+          return (
+            'The flier shape is too extreme (' +
+            dim.w +
+            'x' +
+            dim.h +
+            '). Keep the width to height ratio between 1:2 and 2:1.'
+          );
+        return '';
+      };
+
+      flierInput.addEventListener('change', async () => {
+        clearErrors();
+        previewWrap.hidden = true;
+        const file = flierInput.files && flierInput.files[0];
+        if (!file) return;
+        const problem = await checkFlier(file);
+        if (problem) {
+          showErrors([problem]);
+          flierInput.value = '';
+          return;
+        }
+        if (file.type !== 'application/pdf') {
+          previewImg.src = URL.createObjectURL(file);
+          previewWrap.hidden = false;
+        }
+      });
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        clearErrors();
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
+        const problems = [];
+        if (startDate.value < minStart)
+          problems.push('Events need at least ' + LEAD_DAYS + ' days of lead time before they start.');
+        if (endDate.value + 'T' + $('f-endTime').value < startDate.value + 'T' + $('f-startTime').value)
+          problems.push('The end must be after the start.');
+        const flierProblem = await checkFlier(flierInput.files && flierInput.files[0]);
+        if (flierProblem) problems.push(flierProblem);
+        if (problems.length) {
+          showErrors(problems);
+          return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = 'Sending...';
+        try {
+          const res = await fetch(SUBMIT_URL, { method: 'POST', body: new FormData(form) });
+          let data = null;
+          try {
+            data = await res.json();
+          } catch {
+            data = null;
+          }
+          if (res.ok && data && data.ok) {
+            form.hidden = true;
+            done.hidden = false;
+            done.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          } else if (data && Array.isArray(data.errors) && data.errors.length) {
+            showErrors(data.errors);
+          } else {
+            showErrors([
+              'That did not send. Please try again, or email contact@technicallycreative.work with the details and flier.',
+            ]);
+          }
+        } catch {
+          showErrors([
+            'That did not send. Please try again, or email contact@technicallycreative.work with the details and flier.',
+          ]);
+        } finally {
+          btn.disabled = false;
+          btn.textContent = 'Submit for review';
+        }
+      });
+
+      $('submit-another').addEventListener('click', () => {
+        form.reset();
+        previewWrap.hidden = true;
+        clearErrors();
+        done.hidden = true;
+        form.hidden = false;
+        form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
     })();
   </script>
 </Layout>
