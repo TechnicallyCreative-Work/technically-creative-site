@@ -33,6 +33,11 @@ export const headerData = {
       icon: 'tabler:star',
     },
     {
+      text: 'Shows & Events',
+      href: getPermalink('/events'),
+      icon: 'tabler:calendar-event',
+    },
+    {
       text: 'News',
       href: getBlogPermalink(),
       icon: 'tabler:news',
@@ -78,7 +83,7 @@ export const footerData = {
         { text: 'Products', href: getPermalink('/products') },
         { text: 'Local Services', href: getPermalink('/local-services') },
         { text: 'Tools', href: getPermalink('/tools') },
-        { text: 'Indy Show Calendar', href: getPermalink('/shows') },
+        { text: 'Shows & Events', href: getPermalink('/events') },
       ],
     },
     {
