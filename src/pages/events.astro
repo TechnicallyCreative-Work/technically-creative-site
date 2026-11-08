@@ -20,7 +20,8 @@ const FEED_URL = 'https://technicallycreative.app.n8n.cloud/webhook/show-calenda
 // Submission endpoint (n8n "Event Submission API"): validates the form and flier,
 // then creates the ClickUp task for review. Flier specs below mirror that workflow.
 const SUBMIT_URL = 'https://technicallycreative.app.n8n.cloud/webhook/event-submit';
-const FLIER_SPEC = { maxMB: 10, minShortSide: 1080, minAspect: 0.5, maxAspect: 2 };
+// Canva default flyer: 8.5 x 11 in portrait = 816 x 1056 px at 1x export. A4 and 4:5 portrait also pass.
+const FLIER_SPEC = { maxMB: 10, minShortSide: 816, minAspect: 0.68, maxAspect: 0.82 };
 const LEAD_DAYS = 3;
 ---
 
@@ -290,8 +291,9 @@ const LEAD_DAYS = 3;
           class="mt-1 block w-full text-sm file:mr-4 file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white"
         />
         <p class="mt-1 text-xs text-muted dark:text-slate-400">
-          JPG, PNG or PDF, up to {FLIER_SPEC.maxMB} MB. Images need at least {FLIER_SPEC.minShortSide} px on the short side
-          and a shape between 1:2 and 2:1.
+          Use the Canva default flyer (8.5 x 11 in, portrait). JPG, PNG or PDF, up to {FLIER_SPEC.maxMB} MB. Export images
+          at
+          {FLIER_SPEC.minShortSide} x 1056 px or larger. A4 and 4:5 portrait also work.
         </p>
         <div id="flier-preview" class="mt-3" hidden>
           <img
@@ -585,17 +587,17 @@ const LEAD_DAYS = 3;
             dim.w +
             'x' +
             dim.h +
-            '). The short side needs to be at least ' +
+            '). Use the Canva default flyer size (8.5 x 11 in), exported at ' +
             FLIER_SPEC.minShortSide +
-            ' px.'
+            ' x 1056 px or larger.'
           );
         if (aspect < FLIER_SPEC.minAspect || aspect > FLIER_SPEC.maxAspect)
           return (
-            'The flier shape is too extreme (' +
+            'The flier shape does not fit (' +
             dim.w +
             'x' +
             dim.h +
-            '). Keep the width to height ratio between 1:2 and 2:1.'
+            '). The flier needs to be portrait like the Canva default flyer (8.5 x 11 in). A4 and 4:5 portrait also work.'
           );
         return '';
       };
