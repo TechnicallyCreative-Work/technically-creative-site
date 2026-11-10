@@ -29,6 +29,7 @@ declare global {
     readonly MAILERLITE_GROUP_ID_NOTEMAPPER: string;
     readonly RESEND_API_KEY: string;
     readonly HUBSPOT_PRIVATE_APP_TOKEN: string;
+    readonly N8N_MIDI_TO_TAB_REPORT_WEBHOOK?: string;
   }
 
   interface ImportMeta {
