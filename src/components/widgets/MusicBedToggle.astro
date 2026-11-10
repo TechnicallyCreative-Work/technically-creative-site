@@ -11,7 +11,7 @@ interface Props {
   volume?: number;
 }
 
-const { src = '/audio/music-bed.mp3', volume = 0.5 } = Astro.props;
+const { src = '/audio/music-bed.mp3', volume = 1 } = Astro.props;
 ---
 
 <button
@@ -127,7 +127,7 @@ const { src = '/audio/music-bed.mp3', volume = 0.5 } = Astro.props;
       var btn = button();
       return {
         src: (btn && btn.getAttribute('data-src')) || '/audio/music-bed.mp3',
-        volume: parseFloat(btn && btn.getAttribute('data-volume')) || 0.5,
+        volume: parseFloat(btn && btn.getAttribute('data-volume')) || 1,
       };
     }
 
