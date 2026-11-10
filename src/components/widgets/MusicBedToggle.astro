@@ -55,12 +55,14 @@ const { src = '/audio/music-bed.mp3', volume = 0.5 } = Astro.props;
     width: 2.75rem;
     height: 2.75rem;
     border-radius: 9999px;
-    border: 2px solid rgb(255 255 255 / 0.85);
+    /* Brand purple fill; the outline carries the on/off status. */
+    background-color: var(--tc-secondary, rgb(155 48 255));
+    border: 3px solid transparent;
     color: #fff;
     cursor: pointer;
     box-shadow: 0 4px 14px rgb(0 0 0 / 0.35);
     transition:
-      background-color 0.2s ease,
+      border-color 0.2s ease,
       transform 0.15s ease;
   }
   #music-bed-toggle:hover {
@@ -70,12 +72,12 @@ const { src = '/audio/music-bed.mp3', volume = 0.5 } = Astro.props;
     outline: 3px solid #fff;
     outline-offset: 2px;
   }
-  /* Red when off, green when on. The icon also changes, so color isn't the only cue. */
+  /* Red outline when off, green when on. The icon also changes, so color isn't the only cue. */
   #music-bed-toggle[aria-pressed='false'] {
-    background-color: #dc2626;
+    border-color: #ef4444;
   }
   #music-bed-toggle[aria-pressed='true'] {
-    background-color: #16a34a;
+    border-color: #22c55e;
   }
   #music-bed-toggle[aria-pressed='false'] .music-bed-waves {
     display: none;
