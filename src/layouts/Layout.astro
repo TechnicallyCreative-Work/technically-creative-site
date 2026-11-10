@@ -17,6 +17,7 @@ import MailerLite from '~/components/common/MailerLite.astro';
 
 // Comment the line below to disable View Transitions
 import { ClientRouter } from 'astro:transitions';
+import MusicBedToggle from '~/components/widgets/MusicBedToggle.astro';
 
 import type { MetaData as MetaDataType } from '~/types';
 
@@ -49,6 +50,7 @@ const { language, textDirection } = I18N;
     <GoogleTagManagerBody />
     <slot />
 
+    <MusicBedToggle />
     <BasicScripts />
     <script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
   </body>

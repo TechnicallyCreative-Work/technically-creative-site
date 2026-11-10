@@ -1,7 +1,11 @@
 ---
-// On/off toggle for the site's looping music bed. Off by default: browsers block
-// autoplay with sound, and visitors should opt in. Uses Web Audio so the 10-second
-// loop is gapless (an <audio loop> element leaves an audible gap with MP3s).
+// Site-wide on/off toggle for the looping music bed: a floating, icon-only button
+// (red + X when off, green + waves when on). Render it once in the shared layout.
+//
+// - Off by default: browsers block autoplay with sound, and visitors should opt in.
+// - Gapless loop via Web Audio (an <audio loop> element leaves an MP3 gap).
+// - Survives Astro ClientRouter page changes: playback state lives on
+//   window.__tcMusicBed, and the button is persisted across navigations.
 interface Props {
   src?: string;
   volume?: number;
@@ -10,20 +14,20 @@ interface Props {
 const { src = '/audio/music-bed.mp3', volume = 0.5 } = Astro.props;
 ---
 
-<!-- Positioned absolutely: render inside a `relative` container (the brand banner video). -->
 <button
   type="button"
   id="music-bed-toggle"
   data-src={src}
   data-volume={volume}
   aria-pressed="false"
-  aria-label="Music bed: Off"
-  class="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 z-10 inline-flex items-center gap-2 rounded-full border border-white/40 px-2.5 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium text-white bg-black/55 backdrop-blur-sm hover:bg-black/75 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+  aria-label="Music bed: off. Click to turn on."
+  title="Music bed: off"
+  transition:persist="music-bed-toggle"
 >
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="18"
-    height="18"
+    width="22"
+    height="22"
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
@@ -37,32 +41,65 @@ const { src = '/audio/music-bed.mp3', volume = 0.5 } = Astro.props;
     <path class="music-bed-waves" d="M18.5 5.5a9 9 0 0 1 0 13"></path>
     <path class="music-bed-muted" d="m16 9 6 6M22 9l-6 6"></path>
   </svg>
-  <span id="music-bed-label" class="hidden sm:inline">Music bed: Off</span>
 </button>
 
 <style is:global>
+  #music-bed-toggle {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 50;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 9999px;
+    border: 2px solid rgb(255 255 255 / 0.85);
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgb(0 0 0 / 0.35);
+    transition:
+      background-color 0.2s ease,
+      transform 0.15s ease;
+  }
+  #music-bed-toggle:hover {
+    transform: scale(1.08);
+  }
+  #music-bed-toggle:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 2px;
+  }
+  /* Red when off, green when on. The icon also changes, so color isn't the only cue. */
+  #music-bed-toggle[aria-pressed='false'] {
+    background-color: #dc2626;
+  }
+  #music-bed-toggle[aria-pressed='true'] {
+    background-color: #16a34a;
+  }
   #music-bed-toggle[aria-pressed='false'] .music-bed-waves {
     display: none;
   }
   #music-bed-toggle[aria-pressed='true'] .music-bed-muted {
     display: none;
   }
+  @media (prefers-reduced-motion: reduce) {
+    #music-bed-toggle {
+      transition: none;
+    }
+  }
 </style>
 
 <script is:inline>
   (function () {
-    var btn = document.getElementById('music-bed-toggle');
-    var label = document.getElementById('music-bed-label');
-    if (!btn || !label) return;
-
-    var AudioCtx = window.AudioContext || window.webkitAudioContext;
-    if (!AudioCtx) {
-      btn.style.display = 'none';
+    // This script can run again after a ClientRouter swap. Keep a single controller
+    // for the whole session and just (re)bind whichever button is in the DOM.
+    if (window.__tcMusicBed) {
+      window.__tcMusicBed.bind();
       return;
     }
 
-    var src = btn.getAttribute('data-src');
-    var targetVolume = parseFloat(btn.getAttribute('data-volume')) || 0.5;
+    var AudioCtx = window.AudioContext || window.webkitAudioContext;
     var FADE = 0.6; // seconds
 
     var ctx = null;
@@ -72,14 +109,27 @@ const { src = '/audio/music-bed.mp3', volume = 0.5 } = Astro.props;
     var on = false;
     var busy = false;
 
-    function setUi(state) {
-      var text = state ? 'Music bed: On' : 'Music bed: Off';
-      btn.setAttribute('aria-pressed', state ? 'true' : 'false');
-      btn.setAttribute('aria-label', text);
-      label.textContent = text;
+    function button() {
+      return document.getElementById('music-bed-toggle');
     }
 
-    function load() {
+    function setUi() {
+      var btn = button();
+      if (!btn) return;
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      btn.setAttribute('aria-label', on ? 'Music bed: on. Click to turn off.' : 'Music bed: off. Click to turn on.');
+      btn.setAttribute('title', on ? 'Music bed: on' : 'Music bed: off');
+    }
+
+    function settings() {
+      var btn = button();
+      return {
+        src: (btn && btn.getAttribute('data-src')) || '/audio/music-bed.mp3',
+        volume: parseFloat(btn && btn.getAttribute('data-volume')) || 0.5,
+      };
+    }
+
+    function load(src) {
       if (!bufferPromise) {
         bufferPromise = fetch(src)
           .then(function (r) {
@@ -100,6 +150,7 @@ const { src = '/audio/music-bed.mp3', volume = 0.5 } = Astro.props;
     }
 
     function start() {
+      var cfg = settings();
       if (!ctx) {
         ctx = new AudioCtx();
         gain = ctx.createGain();
@@ -108,7 +159,9 @@ const { src = '/audio/music-bed.mp3', volume = 0.5 } = Astro.props;
       }
       busy = true;
       return Promise.resolve(ctx.state === 'suspended' ? ctx.resume() : null)
-        .then(load)
+        .then(function () {
+          return load(cfg.src);
+        })
         .then(function (buffer) {
           source = ctx.createBufferSource();
           source.buffer = buffer;
@@ -118,17 +171,16 @@ const { src = '/audio/music-bed.mp3', volume = 0.5 } = Astro.props;
           var now = ctx.currentTime;
           gain.gain.cancelScheduledValues(now);
           gain.gain.setValueAtTime(0, now);
-          gain.gain.linearRampToValueAtTime(targetVolume, now + FADE);
+          gain.gain.linearRampToValueAtTime(cfg.volume, now + FADE);
           on = true;
-          setUi(true);
         })
         .catch(function (err) {
           console.error('Music bed could not start:', err);
           on = false;
-          setUi(false);
         })
         .then(function () {
           busy = false;
+          setUi();
         });
     }
 
@@ -146,20 +198,27 @@ const { src = '/audio/music-bed.mp3', volume = 0.5 } = Astro.props;
         } catch (e) {}
       }, FADE * 1000 + 50);
       on = false;
-      setUi(false);
+      setUi();
     }
 
-    // The banner behind this button toggles the video's own sound on click and on
-    // Enter/Space; keep this button's events from bubbling up and triggering that too.
-    btn.addEventListener('keydown', function (e) {
-      e.stopPropagation();
-    });
-    btn.addEventListener('click', function (e) {
-      e.stopPropagation();
-      if (busy) return;
-      if (on) stop();
-      else start();
-    });
+    function bind() {
+      var btn = button();
+      if (!btn) return;
+      if (!AudioCtx) {
+        btn.style.display = 'none';
+        return;
+      }
+      setUi(); // a fresh button after a page swap must show the current state
+      if (btn.__tcMusicBound) return;
+      btn.__tcMusicBound = true;
+      btn.addEventListener('click', function () {
+        if (busy) return;
+        if (on) stop();
+        else start();
+      });
+    }
+
+    window.__tcMusicBed = { bind: bind };
 
     // Don't keep playing in a background tab; pick back up when the visitor returns.
     document.addEventListener('visibilitychange', function () {
@@ -167,5 +226,10 @@ const { src = '/audio/music-bed.mp3', volume = 0.5 } = Astro.props;
       if (document.hidden) ctx.suspend();
       else ctx.resume();
     });
+
+    // Re-sync the button after every ClientRouter navigation.
+    document.addEventListener('astro:page-load', bind);
+
+    bind();
   })();
 </script>

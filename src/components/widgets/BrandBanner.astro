@@ -1,10 +1,6 @@
 ---
 import brandBannerImage from '~/assets/images/tc-logo-banner.jpg';
 import brandBannerVideo from '~/assets/videos/hero-background.mp4';
-import MusicBedToggle from '~/components/widgets/MusicBedToggle.astro';
-
-// The music bed toggle is opt-in per page so other pages using the banner stay unchanged.
-const { showMusicToggle = false } = Astro.props;
 
 // Allow swapping the hero video via PUBLIC_BRAND_BANNER_VIDEO_URL; fall back to bundled asset.
 const brandBannerVideoSource = import.meta.env.PUBLIC_BRAND_BANNER_VIDEO_URL || brandBannerVideo;
@@ -14,14 +10,9 @@ const videoId = 'brand-banner-video';
 const bannerId = 'brand-banner';
 ---
 
-<div
-  id={bannerId}
-  class="relative w-full overflow-hidden bg-black cursor-pointer aspect-[6/1]"
-  role="button"
-  tabindex="0"
-  aria-label="Toggle banner sound"
-  aria-pressed="false"
->
+<!-- The video has no audio track, so the banner is purely visual. Site sound is the
+     floating music bed toggle (MusicBedToggle, rendered in the shared layout). -->
+<div id={bannerId} class="relative w-full overflow-hidden bg-black aspect-[6/1]">
   <video
     id={videoId}
     class="absolute inset-0 h-full w-full object-cover"
@@ -43,46 +34,4 @@ const bannerId = 'brand-banner';
       class="h-full w-full object-cover"
     />
   </video>
-  {showMusicToggle && <MusicBedToggle />}
 </div>
-
-<script is:inline>
-  // Browsers only allow sound after a user gesture, so clicking/tapping the banner toggles mute.
-  const initBannerSound = () => {
-    const banner = document.getElementById('brand-banner');
-    const video = document.getElementById('brand-banner-video');
-
-    if (!banner || !video) return;
-
-    const toggleSound = async () => {
-      const nextMuted = !video.muted;
-      video.muted = nextMuted;
-      if (nextMuted) {
-        video.setAttribute('muted', '');
-      } else {
-        video.removeAttribute('muted');
-        video.volume = 1;
-        try {
-          await video.play();
-        } catch (err) {
-          console.error('Unable to play video after unmuting', err);
-        }
-      }
-      banner.setAttribute('aria-pressed', (!video.muted).toString());
-    };
-
-    banner.addEventListener('click', toggleSound);
-    banner.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        toggleSound();
-      }
-    });
-  };
-
-  if (document.readyState === 'complete' || document.readyState === 'interactive') {
-    initBannerSound();
-  } else {
-    document.addEventListener('DOMContentLoaded', initBannerSound, { once: true });
-  }
-</script>
