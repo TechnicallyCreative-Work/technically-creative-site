@@ -1,0 +1,163 @@
+---
+// On/off toggle for the site's looping music bed. Off by default: browsers block
+// autoplay with sound, and visitors should opt in. Uses Web Audio so the 10-second
+// loop is gapless (an <audio loop> element leaves an audible gap with MP3s).
+interface Props {
+  src?: string;
+  volume?: number;
+}
+
+const { src = '/audio/music-bed.mp3', volume = 0.5 } = Astro.props;
+---
+
+<div class="mt-4 md:mt-6">
+  <button
+    type="button"
+    id="music-bed-toggle"
+    data-src={src}
+    data-volume={volume}
+    aria-pressed="false"
+    class="inline-flex items-center gap-2 rounded-full border border-slate-400/60 dark:border-slate-500/60 px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 bg-white/40 dark:bg-slate-800/40 hover:bg-white/70 dark:hover:bg-slate-700/60 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M11 5 6 9H2v6h4l5 4V5z"></path>
+      <path class="music-bed-waves" d="M15.5 8.5a5 5 0 0 1 0 7"></path>
+      <path class="music-bed-waves" d="M18.5 5.5a9 9 0 0 1 0 13"></path>
+      <path class="music-bed-muted" d="m16 9 6 6M22 9l-6 6"></path>
+    </svg>
+    <span id="music-bed-label">Music bed: Off</span>
+  </button>
+</div>
+
+<style is:global>
+  #music-bed-toggle[aria-pressed='false'] .music-bed-waves {
+    display: none;
+  }
+  #music-bed-toggle[aria-pressed='true'] .music-bed-muted {
+    display: none;
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    var btn = document.getElementById('music-bed-toggle');
+    var label = document.getElementById('music-bed-label');
+    if (!btn || !label) return;
+
+    var AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) {
+      btn.parentElement.style.display = 'none';
+      return;
+    }
+
+    var src = btn.getAttribute('data-src');
+    var targetVolume = parseFloat(btn.getAttribute('data-volume')) || 0.5;
+    var FADE = 0.6; // seconds
+
+    var ctx = null;
+    var gain = null;
+    var source = null;
+    var bufferPromise = null;
+    var on = false;
+    var busy = false;
+
+    function setUi(state) {
+      btn.setAttribute('aria-pressed', state ? 'true' : 'false');
+      label.textContent = state ? 'Music bed: On' : 'Music bed: Off';
+    }
+
+    function load() {
+      if (!bufferPromise) {
+        bufferPromise = fetch(src)
+          .then(function (r) {
+            if (!r.ok) throw new Error('music bed fetch failed: ' + r.status);
+            return r.arrayBuffer();
+          })
+          .then(function (data) {
+            return new Promise(function (resolve, reject) {
+              ctx.decodeAudioData(data, resolve, reject);
+            });
+          })
+          .catch(function (err) {
+            bufferPromise = null; // allow a retry on the next click
+            throw err;
+          });
+      }
+      return bufferPromise;
+    }
+
+    function start() {
+      if (!ctx) {
+        ctx = new AudioCtx();
+        gain = ctx.createGain();
+        gain.gain.value = 0;
+        gain.connect(ctx.destination);
+      }
+      busy = true;
+      return Promise.resolve(ctx.state === 'suspended' ? ctx.resume() : null)
+        .then(load)
+        .then(function (buffer) {
+          source = ctx.createBufferSource();
+          source.buffer = buffer;
+          source.loop = true;
+          source.connect(gain);
+          source.start(0);
+          var now = ctx.currentTime;
+          gain.gain.cancelScheduledValues(now);
+          gain.gain.setValueAtTime(0, now);
+          gain.gain.linearRampToValueAtTime(targetVolume, now + FADE);
+          on = true;
+          setUi(true);
+        })
+        .catch(function (err) {
+          console.error('Music bed could not start:', err);
+          on = false;
+          setUi(false);
+        })
+        .then(function () {
+          busy = false;
+        });
+    }
+
+    function stop() {
+      if (!ctx || !source) return;
+      var now = ctx.currentTime;
+      var ending = source;
+      source = null;
+      gain.gain.cancelScheduledValues(now);
+      gain.gain.setValueAtTime(gain.gain.value, now);
+      gain.gain.linearRampToValueAtTime(0, now + FADE);
+      setTimeout(function () {
+        try {
+          ending.stop();
+        } catch (e) {}
+      }, FADE * 1000 + 50);
+      on = false;
+      setUi(false);
+    }
+
+    btn.addEventListener('click', function () {
+      if (busy) return;
+      if (on) stop();
+      else start();
+    });
+
+    // Don't keep playing in a background tab; pick back up when the visitor returns.
+    document.addEventListener('visibilitychange', function () {
+      if (!ctx || !on) return;
+      if (document.hidden) ctx.suspend();
+      else ctx.resume();
+    });
+  })();
+</script>
