@@ -1,6 +1,10 @@
 ---
 import brandBannerImage from '~/assets/images/tc-logo-banner.jpg';
 import brandBannerVideo from '~/assets/videos/hero-background.mp4';
+import MusicBedToggle from '~/components/widgets/MusicBedToggle.astro';
+
+// The music bed toggle is opt-in per page so other pages using the banner stay unchanged.
+const { showMusicToggle = false } = Astro.props;
 
 // Allow swapping the hero video via PUBLIC_BRAND_BANNER_VIDEO_URL; fall back to bundled asset.
 const brandBannerVideoSource = import.meta.env.PUBLIC_BRAND_BANNER_VIDEO_URL || brandBannerVideo;
@@ -39,6 +43,7 @@ const bannerId = 'brand-banner';
       class="h-full w-full object-cover"
     />
   </video>
+  {showMusicToggle && <MusicBedToggle />}
 </div>
 
 <script is:inline>

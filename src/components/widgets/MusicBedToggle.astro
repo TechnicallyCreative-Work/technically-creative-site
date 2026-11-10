@@ -10,35 +10,35 @@ interface Props {
 const { src = '/audio/music-bed.mp3', volume = 0.5 } = Astro.props;
 ---
 
-<div class="mt-4 md:mt-6">
-  <button
-    type="button"
-    id="music-bed-toggle"
-    data-src={src}
-    data-volume={volume}
-    aria-pressed="false"
-    class="inline-flex items-center gap-2 rounded-full border border-slate-400/60 dark:border-slate-500/60 px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 bg-white/40 dark:bg-slate-800/40 hover:bg-white/70 dark:hover:bg-slate-700/60 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+<!-- Positioned absolutely: render inside a `relative` container (the brand banner video). -->
+<button
+  type="button"
+  id="music-bed-toggle"
+  data-src={src}
+  data-volume={volume}
+  aria-pressed="false"
+  aria-label="Music bed: Off"
+  class="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 z-10 inline-flex items-center gap-2 rounded-full border border-white/40 px-2.5 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium text-white bg-black/55 backdrop-blur-sm hover:bg-black/75 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
   >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M11 5 6 9H2v6h4l5 4V5z"></path>
-      <path class="music-bed-waves" d="M15.5 8.5a5 5 0 0 1 0 7"></path>
-      <path class="music-bed-waves" d="M18.5 5.5a9 9 0 0 1 0 13"></path>
-      <path class="music-bed-muted" d="m16 9 6 6M22 9l-6 6"></path>
-    </svg>
-    <span id="music-bed-label">Music bed: Off</span>
-  </button>
-</div>
+    <path d="M11 5 6 9H2v6h4l5 4V5z"></path>
+    <path class="music-bed-waves" d="M15.5 8.5a5 5 0 0 1 0 7"></path>
+    <path class="music-bed-waves" d="M18.5 5.5a9 9 0 0 1 0 13"></path>
+    <path class="music-bed-muted" d="m16 9 6 6M22 9l-6 6"></path>
+  </svg>
+  <span id="music-bed-label" class="hidden sm:inline">Music bed: Off</span>
+</button>
 
 <style is:global>
   #music-bed-toggle[aria-pressed='false'] .music-bed-waves {
@@ -57,7 +57,7 @@ const { src = '/audio/music-bed.mp3', volume = 0.5 } = Astro.props;
 
     var AudioCtx = window.AudioContext || window.webkitAudioContext;
     if (!AudioCtx) {
-      btn.parentElement.style.display = 'none';
+      btn.style.display = 'none';
       return;
     }
 
@@ -73,8 +73,10 @@ const { src = '/audio/music-bed.mp3', volume = 0.5 } = Astro.props;
     var busy = false;
 
     function setUi(state) {
+      var text = state ? 'Music bed: On' : 'Music bed: Off';
       btn.setAttribute('aria-pressed', state ? 'true' : 'false');
-      label.textContent = state ? 'Music bed: On' : 'Music bed: Off';
+      btn.setAttribute('aria-label', text);
+      label.textContent = text;
     }
 
     function load() {
@@ -147,7 +149,13 @@ const { src = '/audio/music-bed.mp3', volume = 0.5 } = Astro.props;
       setUi(false);
     }
 
-    btn.addEventListener('click', function () {
+    // The banner behind this button toggles the video's own sound on click and on
+    // Enter/Space; keep this button's events from bubbling up and triggering that too.
+    btn.addEventListener('keydown', function (e) {
+      e.stopPropagation();
+    });
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
       if (busy) return;
       if (on) stop();
       else start();

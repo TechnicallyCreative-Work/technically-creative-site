@@ -3,7 +3,6 @@ import Layout from '~/layouts/PageLayout.astro';
 
 import Hero from '~/components/widgets/Hero.astro';
 import SplashScreen from '~/components/widgets/SplashScreen.astro';
-import MusicBedToggle from '~/components/widgets/MusicBedToggle.astro';
 import BrandBanner from '~/components/widgets/BrandBanner.astro';
 import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
 import Headline from '~/components/ui/Headline.astro';
@@ -31,7 +30,7 @@ const metadata = {
 
 <Layout metadata={metadata}>
   <SplashScreen />
-  <BrandBanner />
+  <BrandBanner showMusicToggle />
 
   <!-- Hero Widget ******************* -->
   <Hero
@@ -50,8 +49,6 @@ const metadata = {
       That means your music or media project gets the artistry it deserves—and the professional process it needs to
       finish on time, on budget, and with impact.
     </Fragment>
-
-    <Fragment slot="content"><MusicBedToggle /></Fragment>
   </Hero>
 
   <!-- Steps Widget — Customer POV (PMI Lifecycle) ****************** -->
