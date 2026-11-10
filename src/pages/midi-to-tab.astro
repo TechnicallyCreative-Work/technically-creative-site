@@ -27,7 +27,7 @@ if (user) {
 // down the whole page — fall back to a fresh-visitor gate state and let the
 // client-side /api/midi-to-tab/check-and-increment call (which hits the same
 // helper) sort out the real usage count when they actually convert a file.
-let usageRow: { use_count: number; email_captured_at: string | null } = { use_count: 0, email_captured_at: null };
+let usageRow: { use_count: number; email_captured_at: string | null; email?: string | null } = { use_count: 0, email_captured_at: null, email: null };
 try {
   usageRow = await getOrCreateUsageRow(createSupabaseServiceRoleClient(), {
     anonId,
@@ -44,7 +44,12 @@ const midiToTabState = {
   newsletterUnlocked: Boolean(user) && newsletterOptIn,
   useCount: usageRow.use_count,
   emailCaptured: Boolean(usageRow.email_captured_at),
+  // Shown in the top bar: the account email when signed in, otherwise the
+  // email they gave to unlock unlimited use (if any).
+  userEmail: user?.email ?? null,
+  capturedEmail: usageRow.email_captured_at ? (usageRow.email ?? null) : null,
 };
+const displayEmail = midiToTabState.userEmail ?? midiToTabState.capturedEmail;
 ---
 
 <!DOCTYPE html>
@@ -101,6 +106,13 @@ body{padding:0;margin:0;}
 .topbar-links{margin-left:auto;display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
 .topbar-links a{font-family:'Space Mono',monospace;font-size:10px;color:var(--tdim);text-decoration:none;padding:5px 10px;border:0.5px solid var(--border);border-radius:5px;transition:all .2s;}
 .topbar-links a:hover{color:var(--cyan);border-color:var(--cyan);}
+.topbar-links a.topbar-cta{color:var(--navy);background:var(--cyan);border-color:var(--cyan);font-weight:700;}
+.topbar-links a.topbar-cta:hover{color:var(--navy);background:#5af0ff;}
+.topbar-links .user-chip{font-family:'Space Mono',monospace;font-size:10px;color:var(--green);padding:5px 10px;border:0.5px solid rgba(57,255,20,0.3);background:var(--gdim);border-radius:5px;text-decoration:none;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.topbar-links a.user-chip:hover{color:var(--green);border-color:var(--green);}
+.logout-form{margin:0;display:inline;}
+.topbar-btn{font-family:'Space Mono',monospace;font-size:10px;color:var(--tdim);background:none;padding:5px 10px;border:0.5px solid var(--border);border-radius:5px;cursor:pointer;transition:all .2s;}
+.topbar-btn:hover{color:var(--mag);border-color:var(--mag);}
 .main{max-width:1100px;margin:0 auto;padding:28px 24px 60px;}
 .upload-zone{border:1.5px dashed var(--cborder);border-radius:12px;padding:36px 24px;text-align:center;cursor:pointer;transition:all .2s;background:var(--cdim);margin-bottom:16px;}
 .upload-zone:hover,.upload-zone.drag{border-color:var(--cyan);background:rgba(0,229,255,0.18);}
@@ -117,8 +129,10 @@ body{padding:0;margin:0;}
 .cg label{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;color:var(--tdim);letter-spacing:1px;text-transform:uppercase;white-space:nowrap;}
 select{background:var(--navy3);border:0.5px solid var(--border);border-radius:6px;color:var(--text);font-family:'Space Mono',monospace;font-size:11px;padding:7px 12px;outline:none;cursor:pointer;transition:border-color .2s;}
 select:focus{border-color:var(--cyan);}
-input[type=number],input[type=text],input[type=password]{background:var(--navy3);border:0.5px solid var(--border);border-radius:6px;color:var(--text);font-family:'Space Mono',monospace;font-size:11px;padding:7px 12px;outline:none;transition:border-color .2s;}
-input[type=number]:focus,input[type=text]:focus,input[type=password]:focus{border-color:var(--cyan);}
+input[type=number],input[type=text],input[type=password],input[type=email],textarea{background:var(--navy3);border:0.5px solid var(--border);border-radius:6px;color:var(--text);font-family:'Space Mono',monospace;font-size:11px;padding:7px 12px;outline:none;transition:border-color .2s;}
+input[type=number]:focus,input[type=text]:focus,input[type=password]:focus,input[type=email]:focus,textarea:focus{border-color:var(--cyan);}
+input[type=file]{color:var(--tmid);font-family:'Space Mono',monospace;font-size:11px;}
+input[type=file]::file-selector-button{background:var(--navy4);color:var(--text);border:0.5px solid var(--cborder);border-radius:6px;padding:6px 12px;margin-right:10px;font-family:'Rajdhani',sans-serif;font-weight:600;letter-spacing:1px;cursor:pointer;}
 
 /* BPM + KEY BAR */
 .meta-bar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;background:var(--navy2);border:0.5px solid var(--mborder);border-radius:10px;padding:14px 18px;margin-bottom:14px;}
@@ -210,7 +224,21 @@ table.fb td.slabel{font-family:'Space Mono',monospace;font-size:10px;color:var(-
 .api-row{display:flex;gap:8px;align-items:center;}
 .api-row input{flex:1;}
 .api-row button{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:8px 16px;border-radius:6px;cursor:pointer;border:none;background:var(--cyan);color:var(--navy);white-space:nowrap;}
-.api-saved{color:var(--green);font-family:'Space Mono',monospace;font-size:10px;margin-top:6px;display:none;}
+.api-status{font-family:'Space Mono',monospace;font-size:11px;margin-top:8px;line-height:1.6;}
+.api-status.ok{color:var(--green);}
+.api-status.warn{color:var(--amber);}
+.api-status.bad{color:var(--mag);}
+.api-status a{color:inherit;font-weight:700;text-decoration:underline;}
+.usage-banner a,.usage-banner button.linkbtn{color:var(--cyan);font-weight:700;text-decoration:underline;background:none;border:none;padding:0;font:inherit;cursor:pointer;margin-left:6px;}
+.report-card{max-width:460px;max-height:92vh;overflow-y:auto;}
+.report-card textarea,.report-card input[type=email],.report-card input[type=file]{width:100%;margin-bottom:6px;}
+.report-card textarea{resize:vertical;min-height:110px;}
+.rep-label{display:block;font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;color:var(--tdim);letter-spacing:1px;text-transform:uppercase;margin:10px 0 5px;}
+.rep-hint{font-family:'Space Mono',monospace;font-size:10px;color:var(--tdim);margin-bottom:6px;}
+.rep-ok{font-family:'Space Mono',monospace;font-size:11px;color:var(--green);margin:8px 0;display:none;}
+.report-card .btn-go{margin-top:10px;width:100%;}
+.gate-card .gate-alt{font-size:11px;color:var(--tdim);margin-top:12px;text-align:center;}
+.gate-card .gate-alt a,.gate-card .gate-alt button{color:var(--cyan);background:none;border:none;padding:0;font:inherit;text-decoration:underline;cursor:pointer;}
 .footer{border-top:0.5px solid var(--border);padding:18px 24px;font-family:'Space Mono',monospace;font-size:10px;color:var(--tdim);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;max-width:1100px;margin:0 auto;}
 .footer a{color:var(--cyan);text-decoration:none;}
 .usage-banner{font-family:'Space Mono',monospace;font-size:11px;color:var(--amber);background:var(--adim);border:0.5px solid rgba(255,170,0,0.3);border-radius:8px;padding:9px 14px;margin-bottom:14px;}
@@ -240,6 +268,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     {isPaidMember && <a href="/account/midi-to-tab-saves">My Saves</a>}
     {headerData.links.map((link) => <a href={link.href}>{link.text}</a>)}
     <a href="https://techcre8.gumroad.com/" target="_blank">Gumroad</a>
+    <button type="button" class="topbar-btn" onclick="openReportModal()">Report Issue</button>
+    {user ? (
+      <>
+        <a href="/account" class="user-chip" id="userChip" title="Your account">{displayEmail}</a>
+        <form method="POST" action="/api/auth/logout" class="logout-form">
+          <button type="submit" class="topbar-btn">Log Out</button>
+        </form>
+      </>
+    ) : (
+      <>
+        {displayEmail && <span class="user-chip" id="userChip" title="Email used to unlock unlimited conversions">{displayEmail}</span>}
+        <a href="/login?next=/midi-to-tab" class="topbar-cta" id="loginLink">Log In</a>
+      </>
+    )}
   </div>
 </div>
 
@@ -250,10 +292,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="api-section" id="apiSection">
     <p>Claude AI powers note analysis. Paste your Anthropic API key — stored only in your browser, never sent anywhere except Anthropic's API.</p>
     <div class="api-row">
-      <input type="password" id="apiKeyInput" aria-label="Anthropic API key" placeholder="Key saved — paste new key to update">
-      <button onclick="saveApiKey()">Save Key</button>
+      <input type="password" id="apiKeyInput" aria-label="Anthropic API key" placeholder="sk-ant-...">
+      <button id="apiKeyBtn" onclick="saveApiKey()">Save Key</button>
     </div>
-    <div class="api-saved" id="apiSaved" style="display: block;">✓ Key saved — ready to use</div>
+    <div class="api-status" id="apiStatus" role="status" style="display:none;"></div>
   </div>
 
   <div class="upload-zone" id="dropZone" onclick="document.getElementById('midiInput').click()" ondragover="onDrag(event)" ondragleave="onDragLeave()" ondrop="onDrop(event)">
@@ -432,11 +474,38 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <div class="gate-overlay" id="emailGateModal">
   <div class="gate-card">
-    <h2>Keep going — free</h2>
-    <p>You've used your 3 free conversions. Drop your email to keep using Midi to Tab free, unlimited — no card required.</p>
+    <h2 id="gateTitle">Keep going — free</h2>
+    <p id="gateCopy">You've used your 3 free conversions. Drop your email to keep using Midi to Tab free, unlimited — no card required.</p>
     <input type="email" id="gateEmailInput" placeholder="you@example.com">
     <div class="gate-error" id="gateEmailError"></div>
     <button class="btn-go" id="gateEmailSubmit" onclick="submitGateEmail()">Continue</button>
+    <div class="gate-alt" id="gateAlt">
+      Have an account? <a href="/login?next=/midi-to-tab">Log in</a> · <button type="button" onclick="closeEmailGateModal()">Not now</button>
+    </div>
+  </div>
+</div>
+
+<div class="gate-overlay" id="reportModal" onclick="if(event.target===this)closeReportModal()">
+  <div class="gate-card report-card" role="dialog" aria-modal="true" aria-labelledby="reportTitle">
+    <h2 id="reportTitle">Report an issue</h2>
+    <p>Something not working? Tell us what happened — a screenshot helps a lot. Your page, browser and settings are included automatically.</p>
+    <form id="reportForm" onsubmit="submitReport(event)" novalidate>
+      <label class="rep-label" for="reportDesc">What went wrong?</label>
+      <textarea id="reportDesc" name="description" rows="5" maxlength="2000" placeholder="What did you do, what did you expect, and what happened instead?" required></textarea>
+      <label class="rep-label" for="reportShot">Screenshot (optional)</label>
+      <input type="file" id="reportShot" name="screenshot" accept="image/png,image/jpeg,image/webp,image/gif" onchange="onReportShot()">
+      <div class="rep-hint" id="reportShotHint">PNG, JPG, WebP or GIF, up to 4 MB. You can also paste an image here.</div>
+      <div id="reportEmailRow">
+        <label class="rep-label" for="reportEmail">Your email (optional, so we can follow up)</label>
+        <input type="email" id="reportEmail" name="contact_email" placeholder="you@example.com">
+      </div>
+      <!-- Honeypot: hidden from people, irresistible to bots. -->
+      <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;">
+      <div class="gate-error" id="reportError"></div>
+      <div class="rep-ok" id="reportOk"></div>
+      <button class="btn-go" type="submit" id="reportSubmit">Send report</button>
+    </form>
+    <div class="gate-alt"><button type="button" onclick="closeReportModal()">Close</button></div>
   </div>
 </div>
 
@@ -463,16 +532,70 @@ let parsedMidi=null,allEvents=[],selectedTrack='all',fingeringData=[],currentFil
 let detectedBpm=120,detectedKey='Unknown',finalKey='Unknown',finalBpm=120,bpmOverridden=false,keyOverridden=false;
 
 // ── API KEY ────────────────────────────────────────────────────
-function saveApiKey(){
-  const k=document.getElementById('apiKeyInput').value.trim();
-  if(!k.startsWith('sk-')){alert('Key should start with sk-ant-...');return;}
-  localStorage.setItem('tc_api_key',k);
-  document.getElementById('apiSaved').style.display='block';
-  document.getElementById('apiKeyInput').value='';
+const KEY_CONSOLE_URL='https://console.anthropic.com/settings/keys';
+const KEY_INACTIVE_TEXT='Your Anthropic API key is no longer active. Generate a new key at the top of the page to enable AI analysis.';
+function anthropicHeaders(k){return{'Content-Type':'application/json','x-api-key':k,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'};}
+function getApiKey(){try{return localStorage.getItem('tc_api_key')||'';}catch(e){return '';}}
+function escHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function setApiStatus(kind,html){
+  const el=document.getElementById('apiStatus');
+  if(!html){el.style.display='none';el.innerHTML='';return;}
+  el.className='api-status '+kind;el.innerHTML=html;el.style.display='block';
+}
+// A key Anthropic rejects (401/403) is useless — drop it so the UI stops claiming it's saved.
+function markApiKeyInactive(){
+  try{localStorage.removeItem('tc_api_key');}catch(e){}
+  document.getElementById('apiKeyInput').placeholder='Paste new key (sk-ant-...)';
+  setApiStatus('bad','Key is no longer active — <a href="'+KEY_CONSOLE_URL+'" target="_blank" rel="noopener">generate a new key</a>, then paste it above.');
+}
+// Cheap, token-free check: listing models needs a valid key. Returns 'active' | 'inactive' | 'unknown'.
+async function verifyApiKey(k){
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/models?limit=1',{headers:anthropicHeaders(k)});
+    if(r.ok)return 'active';
+    if(r.status===401||r.status===403)return 'inactive';
+    return 'unknown';
+  }catch(e){return 'unknown';}
+}
+// Wrapper for Messages API calls: handles a dead key in one place and surfaces real API errors.
+async function anthropicMessages(body){
+  const k=getApiKey();
+  if(!k)return{error:'no_key'};
+  const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:anthropicHeaders(k),body:JSON.stringify(body)});
+  const data=await resp.json().catch(()=>({}));
+  if(resp.status===401||resp.status===403){markApiKeyInactive();return{error:'inactive'};}
+  if(!resp.ok)return{error:'api',message:(data&&data.error&&data.error.message)||('Anthropic API error '+resp.status)};
+  return{data};
+}
+async function saveApiKey(){
+  const input=document.getElementById('apiKeyInput');
+  const btn=document.getElementById('apiKeyBtn');
+  const k=input.value.trim();
+  if(!k.startsWith('sk-')){setApiStatus('bad','Key should start with sk-ant-...');return;}
+  btn.disabled=true;setApiStatus('warn','Checking key...');
+  const state=await verifyApiKey(k);
+  btn.disabled=false;
+  if(state==='inactive'){
+    setApiStatus('bad','That key was rejected by Anthropic — <a href="'+KEY_CONSOLE_URL+'" target="_blank" rel="noopener">generate a new key</a> and try again.');
+    return;
+  }
+  try{localStorage.setItem('tc_api_key',k);}catch(e){setApiStatus('bad','Could not save the key in this browser (storage blocked).');return;}
+  input.value='';
+  input.placeholder='Key saved — paste new key to replace';
+  setApiStatus(state==='active'?'ok':'warn',state==='active'?'✓ Key verified — ready to use':'Key saved, but it could not be verified right now (network?). It will be checked again on use.');
+}
+async function initApiKeyStatus(){
+  const k=getApiKey();
+  if(!k){setApiStatus('warn','No API key set — AI analysis is off until you add one.');return;}
+  document.getElementById('apiKeyInput').placeholder='Key saved — paste new key to replace';
+  setApiStatus('warn','Checking saved key...');
+  const state=await verifyApiKey(k);
+  if(state==='active')setApiStatus('ok','✓ Key verified — ready to use');
+  else if(state==='inactive')markApiKeyInactive();
+  else setApiStatus('warn','Key saved, but it could not be verified right now (network?).');
 }
 window.addEventListener('DOMContentLoaded',()=>{
-  const k=localStorage.getItem('tc_api_key');
-  if(k){document.getElementById('apiSaved').style.display='block';document.getElementById('apiKeyInput').placeholder='Key saved — paste new key to update';}
+  initApiKeyStatus();
   const state=window.__MIDI_TO_TAB_STATE__||{};
   updateUsageBanner(Math.max(0,3-(state.useCount||0)));
 });
@@ -663,13 +786,9 @@ async function runAnalysis(){
   // AI analysis
   setMsg('Getting AI analysis...');
   aiText='';
-  const apiKey=localStorage.getItem('tc_api_key');
-  if(apiKey){
+  if(getApiKey()){
     try{
-      const resp=await fetch('https://api.anthropic.com/v1/messages',{
-        method:'POST',
-        headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-        body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:`You are a guitar and music theory expert. Analyze these MIDI notes for a guitarist.
+      const r=await anthropicMessages({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:`You are a guitar and music theory expert. Analyze these MIDI notes for a guitarist.
 
 Notes (Ableton naming, C3=middle C): ${unique.slice(0,24).join(', ')}
 Total notes: ${allEvents.length}
@@ -677,11 +796,11 @@ Detected key: ${finalKey}
 BPM: ${finalBpm}
 Tuning: ${tuning}
 
-In 4-5 sentences: confirm or refine the detected key, describe the scale/mode, comment on how the BPM affects playability, and give one practical fingering or position tip for guitar. Be direct and specific.`}]})
-      });
-      const data=await resp.json();
-      aiText=data.content?.[0]?.text||'Could not parse response.';
-    }catch(e){aiText='API call failed — check your key and internet connection.';}
+In 4-5 sentences: confirm or refine the detected key, describe the scale/mode, comment on how the BPM affects playability, and give one practical fingering or position tip for guitar. Be direct and specific.`}]});
+      if(r.error==='inactive')aiText=KEY_INACTIVE_TEXT;
+      else if(r.error)aiText=escHtml(r.message||'AI analysis failed.');
+      else aiText=r.data.content?.[0]?.text||'Could not parse response.';
+    }catch(e){aiText='API call failed — check your internet connection and try again.';}
   } else {
     aiText='No API key set. Add your Anthropic API key at the top of the page to enable AI analysis.';
   }
@@ -938,23 +1057,20 @@ function downloadReport(){
 // ── GOOGLE DRIVE ───────────────────────────────────────────────
 async function saveToDrive(){
   if(!allEvents.length){showStatus('Run analysis first.','err');return;}
-  const apiKey=localStorage.getItem('tc_api_key');
-  if(!apiKey){showStatus('Add your Anthropic API key first.','err');return;}
+  if(!getApiKey()){showStatus('Add your Anthropic API key first.','err');return;}
   const btn=document.getElementById('driveBtn');
   btn.disabled=true;btn.textContent='Saving to Drive...';
   const html=buildReportHTML();
   const fileName=`TechCre8_Tab_${currentFileName}_${new Date().toISOString().slice(0,10)}.html`;
   try{
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-6',max_tokens:1000,
-        mcp_servers:[{type:'url',url:'https://drivemcp.googleapis.com/mcp/v1',name:'google-drive'}],
-        messages:[{role:'user',content:`Create a new file in Google Drive named "${fileName}" with mimeType "text/html". Content:\n${html.slice(0,6000)}`}]
-      })
+    const r=await anthropicMessages({
+      model:'claude-sonnet-4-6',max_tokens:1000,
+      mcp_servers:[{type:'url',url:'https://drivemcp.googleapis.com/mcp/v1',name:'google-drive'}],
+      messages:[{role:'user',content:`Create a new file in Google Drive named "${fileName}" with mimeType "text/html". Content:\n${html.slice(0,6000)}`}]
     });
-    const data=await resp.json();
+    if(r.error==='inactive'){showStatus('Key is no longer active — generate a new key at the top of the page.','err');btn.disabled=false;btn.textContent='▲ Save to Google Drive';return;}
+    if(r.error){showStatus(r.message||'Drive save failed — download the report and upload it manually.','err');btn.disabled=false;btn.textContent='▲ Save to Google Drive';return;}
+    const data=r.data;
     const text=data.content?.map(c=>c.text||'').join(' ')||'';
     if(text.toLowerCase().includes('creat')||text.toLowerCase().includes('upload')||text.toLowerCase().includes('id')){
       showStatus('✓ Saved to Google Drive! Check your Drive root folder.','ok');
@@ -986,10 +1102,22 @@ function updateUsageBanner(remaining){
     banner.style.display='none';
     return;
   }
-  banner.textContent=remaining>0?`${remaining} free conversion${remaining===1?'':'s'} left.`:'Last free conversion used.';
+  const msg=remaining>0?`${remaining} free conversion${remaining===1?'':'s'} left.`:'Last free conversion used.';
+  // Unlimited is one click away at any time: an email, or just log in.
+  banner.innerHTML=`${msg} Want unlimited? <button type="button" class="linkbtn" onclick="openEmailGateModal(false)">Enter your email</button>`
+    +(state.isSignedIn?'':` or <a href="/login?next=/midi-to-tab">log in</a>`)+'.';
   banner.style.display='block';
 }
-function openEmailGateModal(){
+function openEmailGateModal(exhausted=true){
+  const state=window.__MIDI_TO_TAB_STATE__||{};
+  document.getElementById('gateTitle').textContent=exhausted?'Keep going — free':'Unlock unlimited — free';
+  document.getElementById('gateCopy').textContent=exhausted
+    ?"You've used your 3 free conversions. Drop your email to keep using Midi to Tab free, unlimited — no card required."
+    :'Drop your email to unlock unlimited Midi to Tab conversions — free, no card required.';
+  const input=document.getElementById('gateEmailInput');
+  if(!input.value&&state.userEmail)input.value=state.userEmail;
+  // Signed-in users have no need for the "Log in" prompt.
+  document.getElementById('gateAlt').style.display=state.isSignedIn?'none':'block';
   document.getElementById('emailGateModal').style.display='flex';
 }
 function closeEmailGateModal(){
@@ -1017,6 +1145,15 @@ async function submitGateEmail(){
     if(!resp.ok){throw new Error(data.error||'Something went wrong.');}
     window.__MIDI_TO_TAB_STATE__=window.__MIDI_TO_TAB_STATE__||{};
     window.__MIDI_TO_TAB_STATE__.emailCaptured=true;
+    window.__MIDI_TO_TAB_STATE__.capturedEmail=email;
+    // Show the email in the top bar right away (signed-in users already have their chip).
+    if(!document.getElementById('userChip')){
+      const chip=document.createElement('span');
+      chip.className='user-chip';chip.id='userChip';chip.textContent=email;
+      chip.title='Email used to unlock unlimited conversions';
+      const login=document.getElementById('loginLink');
+      if(login)login.parentNode.insertBefore(chip,login);
+    }
     closeEmailGateModal();
     updateUsageBanner();
     runAnalysis();
@@ -1025,6 +1162,75 @@ async function submitGateEmail(){
     errEl.style.display='block';
   }
   btn.disabled=false;btn.textContent='Continue';
+}
+
+// ── REPORT AN ISSUE ───────────────────────────────────────────
+const REPORT_MAX_BYTES=4*1024*1024;
+function openReportModal(){
+  const state=window.__MIDI_TO_TAB_STATE__||{};
+  const email=document.getElementById('reportEmail');
+  // Signed-in users are identified server-side, so don't ask them again.
+  document.getElementById('reportEmailRow').style.display=state.isSignedIn?'none':'block';
+  if(!email.value&&state.capturedEmail)email.value=state.capturedEmail;
+  document.getElementById('reportError').style.display='none';
+  document.getElementById('reportOk').style.display='none';
+  document.getElementById('reportModal').style.display='flex';
+  document.getElementById('reportDesc').focus();
+}
+function closeReportModal(){document.getElementById('reportModal').style.display='none';}
+function onReportShot(){
+  const f=document.getElementById('reportShot').files[0];
+  const hint=document.getElementById('reportShotHint');
+  if(!f){hint.textContent='PNG, JPG, WebP or GIF, up to 4 MB. You can also paste an image here.';return;}
+  hint.textContent=f.name+' ('+(f.size/1024/1024).toFixed(2)+' MB)';
+}
+// Let people paste a screenshot straight from the clipboard (Win+Shift+S, then Ctrl+V).
+window.addEventListener('DOMContentLoaded',()=>{
+  const desc=document.getElementById('reportDesc');
+  desc.addEventListener('paste',e=>{
+    const item=[...(e.clipboardData?.items||[])].find(i=>i.type.startsWith('image/'));
+    if(!item)return;
+    const blob=item.getAsFile();
+    if(!blob)return;
+    const ext=(blob.type.split('/')[1]||'png').replace('jpeg','jpg');
+    const dt=new DataTransfer();
+    dt.items.add(new File([blob],'pasted-screenshot.'+ext,{type:blob.type}));
+    document.getElementById('reportShot').files=dt.files;
+    onReportShot();
+    e.preventDefault();
+  });
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeReportModal();});
+});
+async function submitReport(e){
+  e.preventDefault();
+  const errEl=document.getElementById('reportError');
+  const okEl=document.getElementById('reportOk');
+  const btn=document.getElementById('reportSubmit');
+  const form=document.getElementById('reportForm');
+  errEl.style.display='none';okEl.style.display='none';
+  const desc=form.description.value.trim();
+  if(desc.length<10){errEl.textContent='Please describe the issue in a few more words.';errEl.style.display='block';return;}
+  const shot=form.screenshot.files[0];
+  if(shot&&shot.size>REPORT_MAX_BYTES){errEl.textContent='Screenshot is too large — please keep it under 4 MB.';errEl.style.display='block';return;}
+  const data=new FormData(form);
+  if(!shot)data.delete('screenshot');
+  data.append('page_url',location.href);
+  data.append('file_name',currentFileObj?currentFileObj.name:'');
+  data.append('tuning',(document.getElementById('tuning')||{}).value||'');
+  btn.disabled=true;btn.textContent='Sending...';
+  try{
+    const resp=await fetch('/api/midi-to-tab/report-issue',{method:'POST',body:data});
+    const out=await resp.json().catch(()=>({}));
+    if(!resp.ok)throw new Error(out.error||'Something went wrong. Please try again.');
+    okEl.textContent='Thanks — report sent'+(out.reportId?' (ref '+out.reportId+')':'')+'. We\'ll look into it.';
+    okEl.style.display='block';
+    form.reset();onReportShot();
+    setTimeout(closeReportModal,2500);
+  }catch(err){
+    errEl.textContent=err.message||'Something went wrong. Please try again.';
+    errEl.style.display='block';
+  }
+  btn.disabled=false;btn.textContent='Send report';
 }
 
 // ── SAVE TO ACCOUNT ───────────────────────────────────────────
