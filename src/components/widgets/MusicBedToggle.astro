@@ -1,0 +1,237 @@
+---
+// Site-wide on/off toggle for the looping music bed: a floating, icon-only button
+// (red + X when off, green + waves when on). Render it once in the shared layout.
+//
+// - Off by default: browsers block autoplay with sound, and visitors should opt in.
+// - Gapless loop via Web Audio (an <audio loop> element leaves an MP3 gap).
+// - Survives Astro ClientRouter page changes: playback state lives on
+//   window.__tcMusicBed, and the button is persisted across navigations.
+interface Props {
+  src?: string;
+  volume?: number;
+}
+
+const { src = '/audio/music-bed.mp3', volume = 1 } = Astro.props;
+---
+
+<button
+  type="button"
+  id="music-bed-toggle"
+  data-src={src}
+  data-volume={volume}
+  aria-pressed="false"
+  aria-label="Music bed: off. Click to turn on."
+  title="Music bed: off"
+  transition:persist="music-bed-toggle"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="22"
+    height="22"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M11 5 6 9H2v6h4l5 4V5z"></path>
+    <path class="music-bed-waves" d="M15.5 8.5a5 5 0 0 1 0 7"></path>
+    <path class="music-bed-waves" d="M18.5 5.5a9 9 0 0 1 0 13"></path>
+    <path class="music-bed-muted" d="m16 9 6 6M22 9l-6 6"></path>
+  </svg>
+</button>
+
+<style is:global>
+  #music-bed-toggle {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 50;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 9999px;
+    /* Brand purple fill; the outline carries the on/off status. */
+    background-color: var(--tc-secondary, rgb(155 48 255));
+    border: 3px solid transparent;
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgb(0 0 0 / 0.35);
+    transition:
+      border-color 0.2s ease,
+      transform 0.15s ease;
+  }
+  #music-bed-toggle:hover {
+    transform: scale(1.08);
+  }
+  #music-bed-toggle:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 2px;
+  }
+  /* Red outline when off, green when on. The icon also changes, so color isn't the only cue. */
+  #music-bed-toggle[aria-pressed='false'] {
+    border-color: #ef4444;
+  }
+  #music-bed-toggle[aria-pressed='true'] {
+    border-color: #22c55e;
+  }
+  #music-bed-toggle[aria-pressed='false'] .music-bed-waves {
+    display: none;
+  }
+  #music-bed-toggle[aria-pressed='true'] .music-bed-muted {
+    display: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #music-bed-toggle {
+      transition: none;
+    }
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    // This script can run again after a ClientRouter swap. Keep a single controller
+    // for the whole session and just (re)bind whichever button is in the DOM.
+    if (window.__tcMusicBed) {
+      window.__tcMusicBed.bind();
+      return;
+    }
+
+    var AudioCtx = window.AudioContext || window.webkitAudioContext;
+    var FADE = 0.6; // seconds
+
+    var ctx = null;
+    var gain = null;
+    var source = null;
+    var bufferPromise = null;
+    var on = false;
+    var busy = false;
+
+    function button() {
+      return document.getElementById('music-bed-toggle');
+    }
+
+    function setUi() {
+      var btn = button();
+      if (!btn) return;
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      btn.setAttribute('aria-label', on ? 'Music bed: on. Click to turn off.' : 'Music bed: off. Click to turn on.');
+      btn.setAttribute('title', on ? 'Music bed: on' : 'Music bed: off');
+    }
+
+    function settings() {
+      var btn = button();
+      return {
+        src: (btn && btn.getAttribute('data-src')) || '/audio/music-bed.mp3',
+        volume: parseFloat(btn && btn.getAttribute('data-volume')) || 1,
+      };
+    }
+
+    function load(src) {
+      if (!bufferPromise) {
+        bufferPromise = fetch(src)
+          .then(function (r) {
+            if (!r.ok) throw new Error('music bed fetch failed: ' + r.status);
+            return r.arrayBuffer();
+          })
+          .then(function (data) {
+            return new Promise(function (resolve, reject) {
+              ctx.decodeAudioData(data, resolve, reject);
+            });
+          })
+          .catch(function (err) {
+            bufferPromise = null; // allow a retry on the next click
+            throw err;
+          });
+      }
+      return bufferPromise;
+    }
+
+    function start() {
+      var cfg = settings();
+      if (!ctx) {
+        ctx = new AudioCtx();
+        gain = ctx.createGain();
+        gain.gain.value = 0;
+        gain.connect(ctx.destination);
+      }
+      busy = true;
+      return Promise.resolve(ctx.state === 'suspended' ? ctx.resume() : null)
+        .then(function () {
+          return load(cfg.src);
+        })
+        .then(function (buffer) {
+          source = ctx.createBufferSource();
+          source.buffer = buffer;
+          source.loop = true;
+          source.connect(gain);
+          source.start(0);
+          var now = ctx.currentTime;
+          gain.gain.cancelScheduledValues(now);
+          gain.gain.setValueAtTime(0, now);
+          gain.gain.linearRampToValueAtTime(cfg.volume, now + FADE);
+          on = true;
+        })
+        .catch(function (err) {
+          console.error('Music bed could not start:', err);
+          on = false;
+        })
+        .then(function () {
+          busy = false;
+          setUi();
+        });
+    }
+
+    function stop() {
+      if (!ctx || !source) return;
+      var now = ctx.currentTime;
+      var ending = source;
+      source = null;
+      gain.gain.cancelScheduledValues(now);
+      gain.gain.setValueAtTime(gain.gain.value, now);
+      gain.gain.linearRampToValueAtTime(0, now + FADE);
+      setTimeout(function () {
+        try {
+          ending.stop();
+        } catch (e) {}
+      }, FADE * 1000 + 50);
+      on = false;
+      setUi();
+    }
+
+    function bind() {
+      var btn = button();
+      if (!btn) return;
+      if (!AudioCtx) {
+        btn.style.display = 'none';
+        return;
+      }
+      setUi(); // a fresh button after a page swap must show the current state
+      if (btn.__tcMusicBound) return;
+      btn.__tcMusicBound = true;
+      btn.addEventListener('click', function () {
+        if (busy) return;
+        if (on) stop();
+        else start();
+      });
+    }
+
+    window.__tcMusicBed = { bind: bind };
+
+    // Don't keep playing in a background tab; pick back up when the visitor returns.
+    document.addEventListener('visibilitychange', function () {
+      if (!ctx || !on) return;
+      if (document.hidden) ctx.suspend();
+      else ctx.resume();
+    });
+
+    // Re-sync the button after every ClientRouter navigation.
+    document.addEventListener('astro:page-load', bind);
+
+    bind();
+  })();
+</script>
