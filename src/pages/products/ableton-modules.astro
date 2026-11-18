@@ -46,6 +46,15 @@ const abletonModules = [
   { id: 'ABTS01M05', label: 'Module 05', title: 'Your First Beat Using Draw Mode',      imgSrc: m05Preview.src },
   { id: 'ABTS01M06', label: 'Module 06', title: 'Key Controls & Shortcuts Reference',   imgSrc: m06Preview.src },
 ];
+const gumroadItem = (id: string, name: string, price: number | string, category: string) =>
+  JSON.stringify({
+    item_id: id,
+    item_name: name,
+    item_category: category,
+    price: Number(String(price).replace(/[^0-9.]/g, '')),
+    quantity: 1,
+  });
+
 const metadata = {
   title: 'Ableton Training Modules — Technically Creative LLC',
   description: 'Ableton Basics Session 01 training modules — buy the full bundle or individual modules on Gumroad.',
@@ -96,6 +105,11 @@ const metadata = {
       <!-- Bundle (featured) -->
       <a
         href="https://techcre8.gumroad.com/l/ABTS01"
+        data-track="begin_checkout"
+        data-track-location="ableton-modules"
+        data-track-item={gumroadItem('ABTS01', 'Ableton Basics Session 01 Bundle', 27, 'ableton-training')}
+        data-track-view-item={gumroadItem('ABTS01', 'Ableton Basics Session 01 Bundle', 27, 'ableton-training')}
+        data-track-list="Ableton Modules"
         target="_blank"
         rel="noopener noreferrer"
         class="group col-span-full flex flex-col overflow-hidden rounded-2xl sm:col-span-2 lg:col-span-1 tc-card tc-card-link tc-card--accent"
@@ -117,6 +131,11 @@ const metadata = {
       {abletonModules.map(({ id, label, title, imgSrc }) => (
         <a
           href={`https://techcre8.gumroad.com/l/${id}`}
+          data-track="begin_checkout"
+          data-track-location="ableton-modules"
+          data-track-item={gumroadItem(id, `Ableton Basics ${label}`, 5, 'ableton-training')}
+          data-track-view-item={gumroadItem(id, `Ableton Basics ${label}`, 5, 'ableton-training')}
+          data-track-list="Ableton Modules"
           target="_blank"
           rel="noopener noreferrer"
           class="group flex flex-col overflow-hidden rounded-2xl tc-card tc-card-link"
