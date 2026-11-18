@@ -124,7 +124,10 @@ import splashIcon from '~/assets/favicons/icon-256.png';
     // Installed web apps already get the OS launch screen.
     var standalone =
       window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-    if (seen || standalone) return;
+    // Desktop visitors (wide + mouse) skip the ~4s splash: it delayed first paint of the
+    // real content and desktop had the worse bounce rate. Phones/tablets still get it.
+    var desktop = window.matchMedia('(min-width: 1024px) and (hover: hover) and (pointer: fine)').matches;
+    if (seen || standalone || desktop) return;
 
     var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var root = document.documentElement;

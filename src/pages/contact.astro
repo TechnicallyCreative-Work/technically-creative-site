@@ -212,7 +212,8 @@ const inputClass =
     const phone = String(data.get('phone') ?? '').trim();
     const message = String(data.get('message') ?? '').trim();
 
-    if (!name || !message || !/^[^s@]+@[^s@]+.[^s@]+$/.test(email)) {
+    if (!name || !message || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      (window as any).tcTrack?.('form_error', { form_id: 'contact-form', reason: 'validation', page_path: window.location.pathname });
       show(errorEl, 'Please add your name, a valid email, and a quick note.');
       return;
     }
@@ -247,8 +248,10 @@ const inputClass =
       if (!response.ok) throw new Error(`Webhook responded ${response.status}`);
       show(successEl);
       form.reset();
+      (window as any).tcTrack?.('generate_lead', { form_id: 'contact-form', page_path: window.location.pathname });
     } catch (error) {
       console.error('Contact form submission failed', error);
+      (window as any).tcTrack?.('form_error', { form_id: 'contact-form', reason: 'webhook', page_path: window.location.pathname });
       show(errorEl, FALLBACK);
     } finally {
       if (submitBtn) {
