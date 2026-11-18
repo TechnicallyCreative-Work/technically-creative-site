@@ -711,9 +711,15 @@ const hasHubspotBridge = Boolean(portalId && formGuid);
           form.reset();
           setButtonLoading(submitButton, false);
           showMessage(successEl, wrapper);
+          if (window.tcTrack) {
+            window.tcTrack('generate_lead', { form_id: formElementId, page_path: window.location.pathname });
+          }
         })
         .catch((error) => {
           console.error('HubSpot form submission failed', error);
+          if (window.tcTrack) {
+            window.tcTrack('form_error', { form_id: formElementId, page_path: window.location.pathname });
+          }
           setButtonLoading(submitButton, false);
           showMessage(errorEl, wrapper);
         });

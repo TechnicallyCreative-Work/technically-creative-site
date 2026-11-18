@@ -22,6 +22,15 @@ const naturePrints = [
   { slug: 'moth', name: 'Moth', price: '$8', desc: 'Nature Series single print' },
   { slug: 'frog', name: 'Frog', price: '$8', desc: 'Nature Series single print' },
 ];
+const gumroadItem = (id: string, name: string, price: number | string, category: string) =>
+  JSON.stringify({
+    item_id: id,
+    item_name: name,
+    item_category: category,
+    price: Number(String(price).replace(/[^0-9.]/g, '')),
+    quantity: 1,
+  });
+
 const metadata = {
   title: 'Digital Art — Nature Series — Technically Creative LLC',
   description: 'Original Nature Series digital art prints — buy individual pieces or save with the full bundle on Gumroad.',
@@ -58,6 +67,11 @@ const metadata = {
       <!-- Bundle (featured) -->
       <a
         href="https://techcre8.gumroad.com/l/natureseriesbundle"
+        data-track="begin_checkout"
+        data-track-location="nature-series"
+        data-track-item={gumroadItem('natureseriesbundle', 'Nature Series Bundle', 20, 'art-prints')}
+        data-track-view-item={gumroadItem('natureseriesbundle', 'Nature Series Bundle', 20, 'art-prints')}
+        data-track-list="Nature Series"
         target="_blank"
         rel="noopener noreferrer"
         class="group flex flex-col overflow-hidden rounded-2xl tc-card tc-card-link tc-card--accent"
@@ -78,6 +92,11 @@ const metadata = {
       {naturePrints.map(({ slug, name, price, desc }) => (
         <a
           href={`https://techcre8.gumroad.com/l/${slug}`}
+          data-track="begin_checkout"
+          data-track-location="nature-series"
+          data-track-item={gumroadItem(slug, name, price, 'art-prints')}
+          data-track-view-item={gumroadItem(slug, name, price, 'art-prints')}
+          data-track-list="Nature Series"
           target="_blank"
           rel="noopener noreferrer"
           class="group flex flex-col overflow-hidden rounded-2xl tc-card tc-card-link"

@@ -33,6 +33,15 @@ const darkArt = [
   { slug: 'DREDD-Dark', name: 'Dredd',           price: '$5+',  desc: 'Dark Sci-Fi Fan Art — digital print',                imgSrc: dreddPreview.src },
   { slug: 'CyberOwl',   name: "Hoo's Watching",  price: '$7+',  desc: 'Biomechanical Owl — Ink & Watercolor Digital Print', imgSrc: owlPreview.src },
 ];
+const gumroadItem = (id: string, name: string, price: number | string, category: string) =>
+  JSON.stringify({
+    item_id: id,
+    item_name: name,
+    item_category: category,
+    price: Number(String(price).replace(/[^0-9.]/g, '')),
+    quantity: 1,
+  });
+
 const metadata = {
   title: 'Digital Art — Dark & Fan Art — Technically Creative LLC',
   description: 'Original and fan art digital prints — dark sci-fi, biomechanical, and ink & watercolor works on Gumroad.',
@@ -69,6 +78,11 @@ const metadata = {
       {darkArt.map(({ slug, name, price, desc, imgSrc }) => (
         <a
           href={`https://techcre8.gumroad.com/l/${slug}`}
+          data-track="begin_checkout"
+          data-track-location="dark-art"
+          data-track-item={gumroadItem(slug, name, price, 'art-prints')}
+          data-track-view-item={gumroadItem(slug, name, price, 'art-prints')}
+          data-track-list="Dark Art"
           target="_blank"
           rel="noopener noreferrer"
           class="group flex flex-col overflow-hidden rounded-2xl tc-card tc-card-link"

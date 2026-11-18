@@ -216,6 +216,12 @@ table.fb td.slabel{font-family:'Space Mono',monospace;font-size:10px;color:var(-
 .ebtn-drive{background:var(--mdim);border:1px solid var(--mborder);color:var(--mag);}
 .ebtn-drive:hover{background:rgba(224,64,251,0.22);}
 .ebtn:disabled{opacity:.4;cursor:not-allowed;}
+.next-step{margin-top:22px;}
+.next-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;}
+.next-card{display:flex;flex-direction:column;gap:6px;background:var(--navy2);border:0.5px solid var(--cborder);border-radius:10px;padding:14px 16px;text-decoration:none;color:var(--text);font-size:12.5px;line-height:1.6;transition:border-color .2s,background .2s;}
+.next-card:hover{border-color:var(--cyan);background:var(--navy3);}
+.next-card strong{font-family:'Rajdhani',sans-serif;font-size:15px;letter-spacing:1px;color:var(--cyan);}
+.next-card em{font-style:normal;font-weight:700;color:var(--mag);margin-top:auto;}
 .status-msg{font-family:'Space Mono',monospace;font-size:11px;padding:9px 14px;border-radius:7px;margin-top:10px;display:none;}
 .st-ok{background:var(--gdim);color:var(--green);border:0.5px solid rgba(57,255,20,0.3);}
 .st-err{background:var(--mdim);color:var(--mag);border:0.5px solid var(--mborder);}
@@ -458,12 +464,33 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <div class="section-head">Export Report</div>
     <div class="export-bar">
-      <button class="ebtn ebtn-copy" id="copyBtn2" onclick="copyTab()">⎘ Copy Tab</button>
-      <button class="ebtn ebtn-dl" onclick="downloadReport()">⬇ Download Report</button>
+      <button class="ebtn ebtn-copy" id="copyBtn2" onclick="copyTab()" data-track="tool_export" data-track-label="copy_tab" data-track-location="midi-to-tab">⎘ Copy Tab</button>
+      <button class="ebtn ebtn-dl" onclick="downloadReport()" data-track="tool_export" data-track-label="download_report" data-track-location="midi-to-tab">⬇ Download Report</button>
       <button class="ebtn ebtn-drive" id="driveBtn" onclick="saveToDrive()">▲ Save to Google Drive</button>
       <button class="ebtn ebtn-save" id="saveBtn" onclick="saveToAccount()">★ Save to My Account</button>
     </div>
     <div id="statusMsg" class="status-msg"></div>
+
+    <div class="next-step" id="nextStep">
+      <div class="section-head">Next Step</div>
+      <div class="next-grid">
+        <a class="next-card" href="/membership" data-track="cta_click" data-track-label="midi_next_membership" data-track-location="midi-to-tab-next-step">
+          <strong>Keep your tabs</strong>
+          <span>Save every conversion to your account and pick up where you left off. Membership is $5/mo.</span>
+          <em>See membership →</em>
+        </a>
+        <a class="next-card" href="/services" data-track="cta_click" data-track-label="midi_next_services" data-track-location="midi-to-tab-next-step">
+          <strong>Need it done for you?</strong>
+          <span>Custom transcription, mixing, and music-tech workflow help from a Master's-level producer.</span>
+          <em>Explore services →</em>
+        </a>
+        <a class="next-card" href="/tools" data-track="cta_click" data-track-label="midi_next_tools" data-track-location="midi-to-tab-next-step">
+          <strong>More free tools</strong>
+          <span>Browse the rest of the TechCre8 toolbox.</span>
+          <em>All tools →</em>
+        </a>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -512,6 +539,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <script is:inline define:vars={{ midiToTabState }}>
   window.__MIDI_TO_TAB_STATE__ = midiToTabState;
 </script>
+<script is:inline src="/tc-analytics.js"></script>
 <script is:inline src="/midi-to-tab/Midi.js"></script>
 <script is:inline>
 const NN=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
@@ -812,6 +840,7 @@ In 4-5 sentences: confirm or refine the detected key, describe the scale/mode, c
 
   document.getElementById('loadingBox').style.display='none';
   document.getElementById('result').style.display='block';
+  if(window.tcTrack)window.tcTrack('tool_conversion',{tool_name:'midi_to_tab'});
   document.getElementById('goBtn').disabled=false;
   document.getElementById('result').scrollIntoView({behavior:'smooth',block:'start'});
 }

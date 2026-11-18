@@ -24,7 +24,7 @@ export const POST: APIRoute = async ({ locals }) => {
     ...(profile?.stripe_customer_id
       ? { customer: profile.stripe_customer_id }
       : { customer_email: user.email ?? undefined }),
-    success_url: `${siteUrl}/account?checkout=success`,
+    success_url: `${siteUrl}/account?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${siteUrl}/account?checkout=cancelled`,
   });
 

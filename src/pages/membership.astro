@@ -223,6 +223,14 @@ const metadata = {
     errorEl.classList.add('hidden');
     button.disabled = true;
 
+    (window as any).tcTrack?.('begin_checkout', {
+      ecommerce: {
+        currency: 'USD',
+        value: 5,
+        items: [{ item_id: 'membership_monthly', item_name: 'TechCre8 Membership (monthly)', item_category: 'membership', price: 5, quantity: 1 }],
+      },
+    });
+
     try {
       const res = await fetch('/api/stripe/create-checkout-session', { method: 'POST' });
       const data = await res.json();

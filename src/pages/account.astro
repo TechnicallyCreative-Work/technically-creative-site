@@ -164,6 +164,33 @@ const metadata = {
 </Layout>
 
 <script>
+  // GA4 purchase: Stripe returns here with ?checkout=success&session_id=...
+  // sessionStorage guard stops a reload from double-counting the same order.
+  (() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('checkout') !== 'success') return;
+    const sessionId = params.get('session_id') ?? 'unknown';
+    const key = `tc_purchase_${sessionId}`;
+    try {
+      if (sessionStorage.getItem(key)) return;
+      sessionStorage.setItem(key, '1');
+    } catch {
+      /* storage blocked — fire anyway */
+    }
+    (window as any).tcTrack?.('purchase', {
+      ecommerce: {
+        transaction_id: sessionId,
+        currency: 'USD',
+        value: 5,
+        items: [
+          { item_id: 'membership_monthly', item_name: 'TechCre8 Membership (monthly)', item_category: 'membership', price: 5, quantity: 1 },
+        ],
+      },
+    });
+  })();
+</script>
+
+<script>
   async function goToStripe(endpoint: string, button: HTMLButtonElement) {
     const errorEl = document.getElementById('stripe-action-error') as HTMLParagraphElement;
     errorEl.classList.add('hidden');
