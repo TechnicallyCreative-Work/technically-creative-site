@@ -12,7 +12,8 @@ const bannerId = 'brand-banner';
 
 <!-- The video has no audio track, so the banner is purely visual. Site sound is the
      floating music bed toggle (MusicBedToggle, rendered in the shared layout). -->
-<div id={bannerId} class="relative w-full overflow-hidden bg-black aspect-[6/1]">
+<div class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+<div id={bannerId} class="relative w-full overflow-hidden bg-black aspect-[6/1] rounded-2xl sm:rounded-3xl tc-card-dark ring-1 ring-white/10">
   <video
     id={videoId}
     class="absolute inset-0 h-full w-full object-cover"
@@ -34,4 +35,5 @@ const bannerId = 'brand-banner';
       class="h-full w-full object-cover"
     />
   </video>
+</div>
 </div>

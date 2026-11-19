@@ -2,6 +2,7 @@
 import Layout from '~/layouts/PageLayout.astro';
 
 import Hero from '~/components/widgets/Hero.astro';
+import CtaMeter from '~/components/widgets/CtaMeter.astro';
 import SplashScreen from '~/components/widgets/SplashScreen.astro';
 import BrandBanner from '~/components/widgets/BrandBanner.astro';
 import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
@@ -33,37 +34,24 @@ const metadata = {
   <BrandBanner />
 
   <!-- Hero Widget ******************* -->
-  <Hero
-    actions={[
-      {
-        variant: 'primary',
-        text: 'Explore services ->',
-        href: '/services',
-        'data-track': 'cta_click',
-        'data-track-location': 'home-hero',
-      },
-      {
-        variant: 'secondary',
-        text: 'Try the free tools',
-        href: '/tools',
-        'data-track': 'cta_click',
-        'data-track-location': 'home-hero',
-      },
-      {
-        variant: 'link',
-        text: 'Book a discovery call',
-        href: '/contact',
-        'data-track': 'cta_click',
-        'data-track-location': 'home-hero',
-      },
-    ]}
-  > 
+  <Hero>
     <Fragment slot="title">Creative sound. <span class="block">Engineered with discipline</span></Fragment>
 
     <Fragment slot="subtitle">
       At Technically Creative LLC, I bring together a Master’s in Music Technology and PMP project management expertise.
       That means your music or media project gets the artistry it deserves—and the professional process it needs to
       finish on time, on budget, and with impact.
+    </Fragment>
+
+    <Fragment slot="actions">
+      <CtaMeter
+        location="home-hero"
+        items={[
+          { text: 'Explore services', href: '/services', hint: 'Mixing, sound design, PM and automation' },
+          { text: 'Free tools', href: '/tools', hint: 'MIDI to tab and more, no card needed' },
+          { text: 'Book a call', href: '/contact', hint: 'Tell me what you’re working on' },
+        ]}
+      />
     </Fragment>
   </Hero>
 
