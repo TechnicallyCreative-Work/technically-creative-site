@@ -33,7 +33,9 @@ const {
           ...((classes?.headline as object) ?? {}),
         }}
       />
-      <Timeline items={items} classes={classes?.items as Record<string, never>} />
+      <div class="tc-card rounded-2xl p-5 sm:p-8 mt-6">
+        <Timeline items={items} classes={classes?.items as Record<string, never>} />
+      </div>
     </div>
     {
       image && (
@@ -42,7 +44,7 @@ const {
             <Fragment set:html={image} />
           ) : (
             <Image
-              class="inset-0 object-cover object-top w-full rounded-md shadow-lg md:absolute md:h-full bg-gray-400 dark:bg-slate-700"
+              class="inset-0 object-cover object-top w-full rounded-2xl tc-card md:absolute md:h-full bg-gray-400 dark:bg-slate-700"
               widths={[400, 768]}
               sizes="(max-width: 768px) 100vw, 432px"
               width={432}
