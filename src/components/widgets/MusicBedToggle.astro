@@ -43,6 +43,18 @@ const { src = '/audio/music-bed.mp3', volume = 2.2 } = Astro.props;
   </svg>
 </button>
 
+<div id="music-bed-volume" transition:persist="music-bed-volume">
+  <input
+    id="music-bed-volume-input"
+    type="range"
+    min="0"
+    max="100"
+    step="1"
+    value="73"
+    aria-label="Music volume"
+  />
+</div>
+
 <style is:global>
   #music-bed-toggle {
     position: fixed;
@@ -85,8 +97,52 @@ const { src = '/audio/music-bed.mp3', volume = 2.2 } = Astro.props;
   #music-bed-toggle[aria-pressed='true'] .music-bed-muted {
     display: none;
   }
+  /* Slim volume slider that slides out to the left of the button while music is on. */
+  #music-bed-volume {
+    position: fixed;
+    right: 4.25rem;
+    bottom: 1rem;
+    z-index: 50;
+    height: 2.75rem;
+    display: flex;
+    align-items: center;
+    padding: 0 0.9rem;
+    border-radius: 9999px;
+    background: var(--tc-secondary, rgb(155 48 255));
+    box-shadow: 0 4px 14px rgb(0 0 0 / 0.35);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(10px);
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease,
+      visibility 0s linear 0.2s;
+  }
+  #music-bed-volume.is-open {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease;
+  }
+  #music-bed-volume-input {
+    width: 7rem;
+    height: 1.5rem;
+    margin: 0;
+    cursor: pointer;
+    accent-color: #fff;
+    background: transparent;
+  }
+  #music-bed-volume-input:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+    border-radius: 9999px;
+  }
   @media (prefers-reduced-motion: reduce) {
-    #music-bed-toggle {
+    #music-bed-toggle,
+    #music-bed-volume,
+    #music-bed-volume.is-open {
       transition: none;
     }
   }
@@ -110,6 +166,51 @@ const { src = '/audio/music-bed.mp3', volume = 2.2 } = Astro.props;
     var bufferPromise = null;
     var on = false;
     var busy = false;
+
+    // Volume slider: 0-100 maps to gain 0..MAX_GAIN. Saved so it survives page loads.
+    var MAX_GAIN = 3;
+    var STORE_KEY = 'tc-music-volume';
+    var pct = null;
+    var hideTimer = null;
+    var canHover = window.matchMedia && window.matchMedia('(hover: hover)').matches;
+
+    function defaultPct() {
+      var base = parseFloat((button() && button().getAttribute('data-volume')) || '') || 2.2;
+      return Math.max(0, Math.min(100, Math.round((base / MAX_GAIN) * 100)));
+    }
+
+    function loadPct() {
+      if (pct !== null) return pct;
+      var saved = null;
+      try {
+        saved = parseInt(localStorage.getItem(STORE_KEY), 10);
+      } catch (e) {}
+      pct = saved >= 0 && saved <= 100 ? saved : defaultPct();
+      return pct;
+    }
+
+    function targetGain() {
+      return (loadPct() / 100) * MAX_GAIN;
+    }
+
+    function panel() {
+      return document.getElementById('music-bed-volume');
+    }
+
+    function showPanel() {
+      var el = panel();
+      if (!el) return;
+      clearTimeout(hideTimer);
+      el.classList.add('is-open');
+    }
+
+    function hidePanelSoon(delay) {
+      clearTimeout(hideTimer);
+      hideTimer = setTimeout(function () {
+        var el = panel();
+        if (el) el.classList.remove('is-open');
+      }, delay);
+    }
 
     function button() {
       return document.getElementById('music-bed-toggle');
@@ -181,8 +282,10 @@ const { src = '/audio/music-bed.mp3', volume = 2.2 } = Astro.props;
           var now = ctx.currentTime;
           gain.gain.cancelScheduledValues(now);
           gain.gain.setValueAtTime(0, now);
-          gain.gain.linearRampToValueAtTime(cfg.volume, now + FADE);
+          gain.gain.linearRampToValueAtTime(targetGain(), now + FADE);
           on = true;
+          showPanel();
+          if (canHover) hidePanelSoon(3500);
         })
         .catch(function (err) {
           console.error('Music bed could not start:', err);
@@ -208,7 +311,46 @@ const { src = '/audio/music-bed.mp3', volume = 2.2 } = Astro.props;
         } catch (e) {}
       }, FADE * 1000 + 50);
       on = false;
+      clearTimeout(hideTimer);
+      var pnl = panel();
+      if (pnl) pnl.classList.remove('is-open');
       setUi();
+    }
+
+    function bindVolume(btn) {
+      var wrap = panel();
+      var input = document.getElementById('music-bed-volume-input');
+      if (!wrap || !input) return;
+      input.value = String(loadPct());
+      if (on) wrap.classList.add('is-open');
+      if (input.__tcVolBound) return;
+      input.__tcVolBound = true;
+      input.addEventListener('input', function () {
+        pct = Math.max(0, Math.min(100, parseInt(input.value, 10) || 0));
+        try {
+          localStorage.setItem(STORE_KEY, String(pct));
+        } catch (e) {}
+        if (ctx && gain && on) {
+          gain.gain.cancelScheduledValues(ctx.currentTime);
+          gain.gain.setTargetAtTime(targetGain(), ctx.currentTime, 0.04);
+        }
+        showPanel();
+      });
+      // Pointer devices: keep it open while hovering/focused, tuck away shortly after.
+      [btn, wrap].forEach(function (el) {
+        el.addEventListener('pointerenter', function () {
+          if (on) showPanel();
+        });
+        el.addEventListener('pointerleave', function () {
+          if (on && canHover) hidePanelSoon(1800);
+        });
+        el.addEventListener('focusin', function () {
+          if (on) showPanel();
+        });
+        el.addEventListener('focusout', function () {
+          if (on && canHover) hidePanelSoon(1800);
+        });
+      });
     }
 
     function bind() {
@@ -219,6 +361,7 @@ const { src = '/audio/music-bed.mp3', volume = 2.2 } = Astro.props;
         return;
       }
       setUi(); // a fresh button after a page swap must show the current state
+      bindVolume(btn);
       if (btn.__tcMusicBound) return;
       btn.__tcMusicBound = true;
       btn.addEventListener('click', function () {
